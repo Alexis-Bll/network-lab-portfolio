@@ -2,7 +2,7 @@
 
 ## Network Diagram
 
-![Topology](CCNA_lab.png)
+![Topology](ccna_lab.drawio.png)
 
 This lab simulates a small enterprise network consisting of a headquarters (HQ) and two branch offices connected over a service provider WAN (MPLS). The design demonstrates core networking concepts including routing, redundancy, VLAN segmentation, and scalable architecture.
 
