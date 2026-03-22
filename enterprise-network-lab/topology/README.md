@@ -16,8 +16,18 @@ This lab simulates a small enterprise network consisting of a headquarters (HQ) 
 ## Network Layers
 
 - **Core Layer**: HQ-CSW1 and HQ-CSW2 (Layer 3 switches)  
-- **Access Layer**: HQ-ASW1/2 and HQ-SSW1/2  
-- **Edge/WAN Layer**: HQ-R1 and HQ-R2  
+- **Access Layer**: HQ-ASW1/2 (users) and HQ-SSW1/2 (servers)  
+- **Edge/WAN Layer**: HQ-R1 and HQ-R2
+
+## Branch Sites
+
+Each branch site consists of:
+
+- **Branch Router (BR1 / BR2)** connected to the WAN  
+- **Access Switch (BR-SW1 / BR-SW2)** for end devices  
+- End-user devices (e.g. Engineer PC, Sales PC)  
+
+Branch sites connect to HQ via the service provider WAN (MPLS) and participate in OSPF Area 0.
 
 ## Redundancy
 
