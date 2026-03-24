@@ -76,10 +76,3 @@ Unauthorized access is prohibited
 * SSH provides secure remote access compared to Telnet
 * Local authentication ensures controlled access to devices
 * Proper console configuration improves usability during troubleshooting
-
-## Notes
-
-In a production environment:
-- AAA (RADIUS/TACACS+) would replace local authentication
-- Strong password policies would be enforced
-- Access control lists would restrict management access
