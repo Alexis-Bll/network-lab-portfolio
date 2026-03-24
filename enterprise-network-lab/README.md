@@ -40,3 +40,4 @@ Topology diagram will be added here.
 ## Status
 
 🚧 Lab currently being built.
+- [Base Configuration](labs/00-base-config.md)
