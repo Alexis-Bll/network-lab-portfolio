@@ -44,3 +44,26 @@ vlan 10
 
 vlan 20
  name SERVERS
+```
+
+## EtherChannel Between Core Switches
+
+Two physical interfaces were bundled into a single EtherChannel link between CSW1 and CSW2 using **LACP**.
+
+This provides:
+
+- Link redundancy  
+- Higher aggregated bandwidth  
+- Simplified logical management  
+
+---
+
+## Important Note on 802.1Q Encapsulation
+
+In this lab, trunking could not be enabled until the trunk encapsulation type was manually set.
+
+The following command was required before enabling trunk mode:
+
+```bash
+switchport trunk encapsulation dot1q
+```
