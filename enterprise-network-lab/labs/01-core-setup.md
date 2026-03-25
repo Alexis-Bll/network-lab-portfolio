@@ -73,7 +73,7 @@ This behaviour is typical of older Cisco IOS platforms that support multiple enc
 
 ## Part 2
 
-### CSW1 EtherChannel Configuration
+### HQ-CSW1 EtherChannel Configuration
 
 ```bash
 interface range gi0/2 - 3
@@ -83,4 +83,30 @@ interface range gi0/2 - 3
 
 interface port-channel 1
  switchport mode trunk
-'''
+```
+
+### HQ-CSW2 EtherChannel Configuration
+
+```bash
+interface range gi0/2 - 3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+
+interface port-channel 1
+ switchport mode trunk
+```
+## Trunk Links to Access Switches
+
+Each access switch is dual-homed to both core switches for redundancy.
+
+Uplink interfaces were configured as trunk ports to allow multiple VLANs to traverse the links.
+
+### Example
+
+```bash
+interface range gi1/0 - 3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+```
+Interface numbering may vary depending on the lab topology and switch image used.
