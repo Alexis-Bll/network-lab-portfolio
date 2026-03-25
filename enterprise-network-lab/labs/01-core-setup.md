@@ -67,3 +67,20 @@ The following command was required before enabling trunk mode:
 ```bash
 switchport trunk encapsulation dot1q
 ```
+This behaviour is typical of older Cisco IOS platforms that support multiple encapsulation types.
+
+---
+
+## Part 2
+
+### CSW1 EtherChannel Configuration
+
+```bash
+interface range gi0/2 - 3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+
+interface port-channel 1
+ switchport mode trunk
+'''
