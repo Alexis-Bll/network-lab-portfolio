@@ -234,8 +234,6 @@ show spanning-tree vlan 20
 
 ---
 
----
-
 ## Additional Enhancements
 
 To improve the stability, security, and efficiency of the network, several additional configurations were implemented beyond the core requirements.
