@@ -218,8 +218,8 @@ show spanning-tree vlan 20
 - VLANs present on both switches
 - EtherChannel up and bundled
 - Trunks operational
-- CSW1 active for VLAN 10
-- CSW2 active for VLAN 20
+- HQ-CSW1 active for VLAN 10
+- HQ-CSW2 active for VLAN 20
 - STP root aligned with HSRP
 
 ---
@@ -233,4 +233,83 @@ show spanning-tree vlan 20
 - STP tuning improves traffic flow efficiency
 
 ---
+
+---
+
+## Additional Enhancements
+
+To improve the stability, security, and efficiency of the network, several additional configurations were implemented beyond the core requirements.
+
+---
+
+### Restricting VLANs on Trunk Links
+
+Trunk links were configured to only allow the required VLANs instead of all VLANs by default.
+
+```bash
+switchport trunk allowed vlan 10,20
+```
+
+### Benefits:
+- Reduces unnecessary broadcast traffic
+- Improves security by limiting VLAN exposure
+- Provides better control over Layer 2 traffic
+
+---
+
+## Disabling DTP (Dynamic Trunking Protocol)
+
+DTP was disabled on all manually configured trunk links.
+
+```bash
+switchport nonegotiate
+```
+### Benefits:
+- Prevents unwanted trunk negotiation
+- Reduces attack surface
+- Ensures trunks are explicitly defined
+
+---
+
+## Root Guard (Core Layer)
+
+Root Guard was enabled on interfaces connecting to access switches.
+
+```bash
+interface range gi1/0 - 3
+ spanning-tree guard root
+```
+### Purpose:
+- Prevents access switches from becoming the STP root
+- Ensures root bridge control remains in the core layer
+
+---
+
+## VLAN Design Considerations
+
+Although all trunk links currently allow VLAN 10 and VLAN 20 for simplicity, the design can be further refined by restricting VLANs per access switch based on their role.
+
+For example:
+
+- Admin switches → VLAN 10 only
+- Server switches → VLAN 20 only
+
+This would provide:
+
+- Improved segmentation
+- Reduced unnecessary traffic
+- Stronger security boundaries
+
+---
+
+## Summary of Enhancements
+
+The following improvements were implemented:
+
+- VLAN restriction on trunk links
+- Disabled DTP on all trunk interfaces
+- Root Guard applied to access-facing ports
+- Consideration for further VLAN segmentation
+
+These enhancements align the lab more closely with real-world enterprise network design practices.
 
