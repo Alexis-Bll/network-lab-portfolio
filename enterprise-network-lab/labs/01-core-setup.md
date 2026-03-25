@@ -11,6 +11,12 @@ This phase focuses on the two core switches:
 
 ---
 
+## Topology Overview
+
+![HQ Topology](../topology/eve-ng-topology.png)
+
+---
+
 ## Core Layer Design
 
 The core layer was built using two multilayer switches to provide:
