@@ -13,8 +13,6 @@ This phase focuses on the two core switches:
 
 ## Topology Overview
 
-The diagram below shows the network design implemented in EVE-NG.
-
 ![HQ Topology](../topology/eve-ng-topology.png)
 
 ---
