@@ -36,7 +36,7 @@ The following VLANs were created on both core switches:
 - **VLAN 10** - ADMIN
 - **VLAN 20** - SERVERS
 
-Example configuration:
+### Example configuration:
 
 ```bash
 vlan 10
@@ -45,6 +45,7 @@ vlan 10
 vlan 20
  name SERVERS
 ```
+---
 
 ## EtherChannel Between Core Switches
 
