@@ -23,16 +23,17 @@ Establish a secure and consistent baseline configuration across all network devi
 
 ## Devices Configured
 
-* Core Switches: CSW1, CSW2
-* Access Switches: HQ-ASW1, HQ-ASW2, HQ-SSW1, HQ-SSW2
+* Core Switches: HQ-CSW1, HQ-CSW2
+* Access Switches: HQ-ASW1, HQ-ASW2, HQ-SSW1, HQ-SSW2,
 * Routers: HQ-R1, HQ-R2, BR1, BR2, ISP
+* Branch Switches: BR-SW1, BR-SW2
 
 ---
 
-## Example Configuration (CSW1)
+## Example Configuration (HQ-CSW1)
 
 ```bash
-hostname CSW1
+hostname HQ-CSW1
 no ip domain-lookup
 
 enable secret cisco123
