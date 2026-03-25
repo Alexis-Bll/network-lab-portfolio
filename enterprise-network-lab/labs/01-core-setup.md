@@ -97,6 +97,8 @@ interface range gi0/2 - 3
 interface port-channel 1
  switchport mode trunk
 ```
+---
+
 ## Trunk Links to Access Switches
 
 Each access switch is dual-homed to both core switches for redundancy.
@@ -111,6 +113,8 @@ interface range gi1/0 - 3
  switchport mode trunk
 ```
 Interface numbering may vary depending on the lab topology and switch image used.
+
+---
 
 ## Inter-VLAN Routing (SVIs)
 
@@ -156,6 +160,8 @@ interface vlan 20
  standby 20 preempt
 ```
 
+---
+
 ## HSRP Design
 
 HSRP provides redundant default gateways:
@@ -170,6 +176,8 @@ HSRP provides redundant default gateways:
 - Standby: HQ-CSW1
 
 This enables load sharing across both core switches.
+
+---
 
 ## STP Root Placement
 
@@ -189,12 +197,9 @@ spanning-tree vlan 10 root secondary
 spanning-tree vlan 20 root primary
 ```
 
-
 ---
 
 ## Part 4
-
----
 
 ## Verification Commands
 
@@ -206,6 +211,7 @@ show standby brief
 show spanning-tree vlan 10
 show spanning-tree vlan 20
 ```
+---
 
 ## Expected Results
 
@@ -216,6 +222,8 @@ show spanning-tree vlan 20
 - CSW2 active for VLAN 20
 - STP root aligned with HSRP
 
+---
+
 ## Key Learning Points
 
 - EtherChannel improves redundancy and bandwidth
@@ -223,4 +231,6 @@ show spanning-tree vlan 20
 - SVIs enable inter-VLAN routing on multilayer switches
 - HSRP provides gateway redundancy
 - STP tuning improves traffic flow efficiency
+
+---
 
