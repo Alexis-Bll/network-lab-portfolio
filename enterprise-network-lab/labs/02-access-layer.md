@@ -149,6 +149,10 @@ The following tests were performed to validate the network:
 ping 192.168.10.1
 ping 192.168.20.1
 ```
+![HQ Topology](../topology/vpc_ping_screenshot.png)
+
+![HQ Topology](../topology/server_ping_screenshot.png)
+
 ---
 
 ### Inter-VLAN Routing
