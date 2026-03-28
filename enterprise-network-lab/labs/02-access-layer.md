@@ -55,7 +55,7 @@ interface range gi0/0 - 1
 
 ### Key Design Decisions
 - 802.1Q encapsulation required due to platform limitations
-- Only VLANs 10 and 20 allowed across trunks (principle of least privilege)
+- Only VLANs 10 and 20 allowed across trunks
 - DTP disabled to prevent unwanted trunk negotiation
 - Dual uplinks provide redundancy to both core switches
 
