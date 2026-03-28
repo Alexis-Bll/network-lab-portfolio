@@ -6,6 +6,13 @@ Establish a secure and consistent baseline configuration across all network devi
 
 ---
 
+## Topology Overview
+The screenshot shows the network topology within Eve-ng. Base configurations have been applied to every network device within the toplogy.
+
+![HQ Topology](../topology/eve-ng-topology.png)
+
+---
+
 ## Key Features Implemented
 
 * Hostname configuration for device identification
