@@ -158,9 +158,9 @@ ping 192.168.20.1
 ### Inter-VLAN Routing
 
 ```bash
-ping 192.168.10.10
 ping 192.168.20.10
 ```
+
 
 ---
 
