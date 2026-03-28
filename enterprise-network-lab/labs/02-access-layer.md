@@ -161,6 +161,7 @@ ping 192.168.20.1
 ping 192.168.20.10
 ```
 
+![HQ Topology](../topology/server_ping_screenshot2.png)
 
 ---
 
