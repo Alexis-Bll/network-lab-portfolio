@@ -288,6 +288,83 @@ Core switches were not configured with DAI, as they operate as trusted infrastru
 
 ---
 
+# 📄 Part 7 (Implementing Port Security)
+
+---
+
+## Port Security (Sticky MAC)
+
+Port security was implemented on access ports to restrict each port to a limited number of MAC addresses and prevent unauthorized devices from connecting to the network.
+
+Sticky MAC learning was used to dynamically learn and retain the MAC address of connected devices.
+
+---
+
+### Configuration
+
+Port security was enabled on access ports as follows:
+
+```bash
+interface gi0/2
+ switchport mode access
+ switchport access vlan 10
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+```
+
+---
+
+### Key Settings
+maximum 1
+- Limits each port to a single MAC address
+mac-address sticky
+- Dynamically learns and stores the MAC address of the connected device
+violation restrict
+- Drops traffic from unauthorized MAC addresses while keeping the interface up
+
+---
+
+### Behaviour
+- The first device connected to the port is automatically learned
+- The learned MAC address is stored in the running configuration
+- Any additional or unknown devices are blocked
+
+---
+
+### Verification
+
+Port security was verified using:
+
+```bash
+show port-security interface gi0/2
+show port-security address
+```
+
+---
+
+### Observations
+- The connected device MAC address was successfully learned and secured
+- Unauthorized devices would be prevented from communicating
+- The interface remained operational due to the "restrict" violation mode
+
+---
+
+### Design Justification
+
+Port security was applied at the access layer to enforce device-level access control at the network edge.
+
+This complements other Layer 2 security features such as:
+
+- DHCP Snooping
+- Dynamic ARP Inspection (DAI)
+
+Together, these features provide a stronger overall security posture.
+
+---
+
+
 ## Summary
 
 The access layer successfully provides:
