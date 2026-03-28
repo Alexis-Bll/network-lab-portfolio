@@ -2,7 +2,12 @@
 
 ## Objective
 
-Configure the HQ core layer to provide VLAN segmentation, Layer 3 gateway redundancy, and resilient switching between the core and access layers.
+The objective of this phase is to configure the HQ core layer to provide:
+
+- VLAN segmentation
+- Inter-VLAN routing
+- Default gateway redundancy
+- Resilient Layer 2 and Layer 3 connectivity
 
 This phase focuses on the two core switches:
 
@@ -19,19 +24,22 @@ This phase focuses on the two core switches:
 
 ## Core Layer Design
 
-The core layer was built using two multilayer switches to provide:
+The core layer is built using two multilayer switches to provide high availability and efficient traffic forwarding.
 
-- Centralised inter-VLAN routing
-- Redundant default gateways using HSRP
-- Layer 2 redundancy through STP
-- Increased bandwidth and resiliency between the core switches using EtherChannel
+Key design features:
+- Centralised inter-VLAN routing using SVIs
+- HSRP for redundant default gateways
+- STP tuning for optimal Layer 2 forwarding
+- EtherChannel (LACP) for increased bandwidth and redundancy
 
-The design uses:
+### VLAN Design
+- VLAN 10 → Admin
+- VLAN 20 → Servers
+To optimise resource utilisation, traffic is load-balanced across both core switches:
+- HQ-CSW1 → Active for VLAN 10
+- HQ-CSW2 → Active for VLAN 20
 
-- **VLAN 10** for Admin
-- **VLAN 20** for Servers
-
-HQ-CSW1 was configured as the preferred device for VLAN 10, while HQ-CSW2 was configured as the preferred device for VLAN 20. This allows traffic load-sharing across the two core switches instead of leaving one mostly idle.
+This prevents one switch from remaining idle and improves overall efficiency.
 
 ---
 
