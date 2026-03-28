@@ -45,12 +45,7 @@ This prevents one switch from remaining idle and improves overall efficiency.
 
 ## VLAN Configuration
 
-The following VLANs were created on both core switches:
-
-- **VLAN 10** - ADMIN
-- **VLAN 20** - SERVERS
-
-### Example configuration:
+VLANs were created on both core switches to ensure consistency across the network.
 
 ```bash
 vlan 10
@@ -63,21 +58,16 @@ vlan 20
 
 ## EtherChannel Between Core Switches
 
-Two physical interfaces were bundled into a single EtherChannel link between HQ-CSW1 and HQ-CSW2 using **LACP**.
+Two physical interfaces were bundled into a single logical link using LACP.
 
 This provides:
+- Increased bandwidth
+- Link redundancy
+- Simplified management
 
-- Link redundancy  
-- Higher aggregated bandwidth  
-- Simplified logical management  
+### Important Platform Note
 
----
-
-## Important Note on 802.1Q Encapsulation
-
-In this lab, trunking could not be enabled until the trunk encapsulation type was manually set.
-
-The following command was required before enabling trunk mode:
+On this platform, trunk encapsulation must be defined before enabling trunk mode:
 
 ```bash
 switchport trunk encapsulation dot1q
@@ -85,8 +75,6 @@ switchport trunk encapsulation dot1q
 This behaviour is typical of older Cisco IOS platforms that support multiple encapsulation types.
 
 ---
-
-## Part 2
 
 ### HQ-CSW1 EtherChannel Configuration
 
@@ -100,6 +88,8 @@ interface port-channel 1
  switchport mode trunk
 ```
 
+---
+
 ### HQ-CSW2 EtherChannel Configuration
 
 ```bash
@@ -111,6 +101,7 @@ interface range gi0/2 - 3
 interface port-channel 1
  switchport mode trunk
 ```
+
 ---
 
 ## Trunk Links to Access Switches
@@ -134,6 +125,8 @@ Interface numbering may vary depending on the lab topology and switch image used
 
 Switch Virtual Interfaces (SVIs) were created to provide Layer 3 gateways.
 
+---
+
 ### HQ-CSW1 Configuration
 
 ```bash
@@ -153,8 +146,6 @@ interface vlan 20
 ```
 
 ---
-
-## Part 3
 
 ### HQ-CSW2 Configuration
 
@@ -180,31 +171,27 @@ interface vlan 20
 
 HSRP provides redundant default gateways:
 
-- VLAN 10
-- Gateway: 192.168.10.1
-- Active: HQ-CSW1
-- Standby: HQ-CSW2
-- VLAN 20
-- Gateway: 192.168.20.1
-- Active: HQ-CSW2
-- Standby: HQ-CSW1
+| VLAN | Gateway      | Active Switch | Standby Switch |
+| ---- | ------------ | ------------- | -------------- |
+| 10   | 192.168.10.1 | HQ-CSW1       | HQ-CSW2        |
+| 20   | 192.168.20.1 | HQ-CSW2       | HQ-CSW1        |
 
-This enables load sharing across both core switches.
+This design enables load sharing and high availability.
 
 ---
 
 ## STP Root Placement
 
-Spanning Tree was tuned to align with HSRP.
+Spanning Tree was aligned with HSRP to optimise traffic flow and avoid unnecessary Layer 2 hops.
 
-## HQ-CSW1 Configuration
+### HQ-CSW1 Configuration
 
 ```bash
 spanning-tree vlan 10 root primary
 spanning-tree vlan 20 root secondary
 ```
 
-## HQ-CSW2 Configuration
+### HQ-CSW2 Configuration
 
 ```bash
 spanning-tree vlan 10 root secondary
@@ -213,9 +200,9 @@ spanning-tree vlan 20 root primary
 
 ---
 
-## Part 4
+## Verification
 
-## Verification Commands
+The following commands were used to validate the configuration:
 
 ```bash
 show vlan brief
@@ -228,33 +215,29 @@ show spanning-tree vlan 20
 ---
 
 ## Expected Results
-
 - VLANs present on both switches
-- EtherChannel up and bundled
-- Trunks operational
-- HQ-CSW1 active for VLAN 10
-- HQ-CSW2 active for VLAN 20
+- EtherChannel correctly bundled and operational
+- Trunk links active
+- HSRP active/standby roles aligned with design
 - STP root aligned with HSRP
 
 ---
 
 ## Key Learning Points
-
-- EtherChannel improves redundancy and bandwidth
-- Some IOS versions require manual dot1q encapsulation
-- SVIs enable inter-VLAN routing on multilayer switches
-- HSRP provides gateway redundancy
-- STP tuning improves traffic flow efficiency
+- EtherChannel improves both bandwidth and redundancy
+- Some IOS platforms require manual 802.1Q encapsulation
+- SVIs enable Layer 3 routing on switches
+- HSRP provides gateway failover
+- STP tuning improves traffic efficiency and convergence
 
 ---
 
 ## Additional Enhancements
 
-To improve the stability, security, and efficiency of the network, several additional configurations were implemented beyond the core requirements.
-
+To better reflect real-world enterprise design, the following optimisations were implemented:
 ---
 
-### Restricting VLANs on Trunk Links
+### VLAN Restriction on Trunks
 
 Trunk links were configured to only allow the required VLANs instead of all VLANs by default.
 
@@ -262,67 +245,58 @@ Trunk links were configured to only allow the required VLANs instead of all VLAN
 switchport trunk allowed vlan 10,20
 ```
 
-### Benefits:
+Benefits:
 - Reduces unnecessary broadcast traffic
-- Improves security by limiting VLAN exposure
-- Provides better control over Layer 2 traffic
+- Limits VLAN exposure (security)
+- Improves Layer 2 efficiency
 
 ---
 
 ## Disabling DTP (Dynamic Trunking Protocol)
 
-DTP was disabled on all manually configured trunk links.
-
 ```bash
 switchport nonegotiate
 ```
-### Benefits:
+
+Benefits:
 - Prevents unwanted trunk negotiation
 - Reduces attack surface
-- Ensures trunks are explicitly defined
+- Ensures manual control of trunking
 
 ---
 
-## Root Guard (Core Layer)
-
-Root Guard was enabled on interfaces connecting to access switches.
+## Root Guard (Access-Facing Ports)
 
 ```bash
 interface range gi1/0 - 3
  spanning-tree guard root
 ```
 ### Purpose:
-- Prevents access switches from becoming the STP root
-- Ensures root bridge control remains in the core layer
+- Prevents access switches from becoming STP root
+- Maintains control of Layer 2 topology at the core
 
 ---
 
 ## VLAN Design Considerations
 
-Although all trunk links currently allow VLAN 10 and VLAN 20 for simplicity, the design can be further refined by restricting VLANs per access switch based on their role.
-
-For example:
-
+While VLANs 10 and 20 are currently allowed across all trunks, the design can be refined further:
 - Admin switches → VLAN 10 only
 - Server switches → VLAN 20 only
 
-This would provide:
-
-- Improved segmentation
-- Reduced unnecessary traffic
-- Stronger security boundaries
+This would improve:
+- Network segmentation
+- Traffic efficiency
+- Security boundaries
 
 ---
 
 ## Summary of Enhancements
 
-The following improvements were implemented:
-
-- VLAN restriction on trunk links
-- Disabled DTP on all trunk interfaces
-- Root Guard applied to access-facing ports
-- Consideration for further VLAN segmentation
-
-These enhancements align the lab more closely with real-world enterprise network design practices.
+The core layer provides:
+- Centralised inter-VLAN routing
+- Redundant default gateways using HSRP
+- Optimised Layer 2 forwarding via STP tuning
+- High availability through EtherChannel and dual-homing
+These configurations establish a resilient and scalable foundation for the network.
 
 ---
