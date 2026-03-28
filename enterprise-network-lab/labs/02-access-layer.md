@@ -2,15 +2,15 @@
 
 ## Objective
 
-Configure the access layer switches to provide connectivity for end devices, enforce VLAN segmentation, and ensure secure and efficient Layer 2 operation.
+The objective of this phase is to configure the access layer switches to provide reliable end-device connectivity, enforce VLAN segmentation, and implement secure Layer 2 operations.
 
-This phase includes:
+This includes:
 
 - VLAN implementation on access switches
 - Trunk configuration to the core layer
 - Access port configuration for end devices
 - Layer 2 security features
-- End-device IP configuration and connectivity testing
+- End-device IP configuration and connectivity validation
 
 ---
 
@@ -18,18 +18,18 @@ This phase includes:
 
 The access layer consists of:
 
-- HQ-ASW1 / HQ-ASW2 (Admin users - VLAN 10)
-- HQ-SSW1 / HQ-SSW2 (Servers - VLAN 20)
+- HQ-ASW1 / HQ-ASW2 → Admin users (VLAN 10)
+- HQ-SSW1 / HQ-SSW2 → Servers (VLAN 20)
 
-Each access switch is dual-homed to both core switches for redundancy.
+Each access switch is dual-homed to both core switches, providing redundancy and high availability.
 
-The access layer operates at Layer 2, with all routing handled by the core switches.
+The access layer operates purely at Layer 2, with all routing handled by the core layer via SVIs.
 
 ---
 
 ## VLAN Configuration
 
-The required VLANs were created on all access switches to match the core configuration.
+VLANs were created on all access switches to ensure consistency with the core layer.
 
 ```bash
 vlan 10
@@ -41,13 +41,9 @@ vlan 20
 
 ---
 
-# 📄 Part 2 (Trunks + uplinks)
-
----
-
 ## Uplink Configuration (Trunk Links)
 
-Uplink interfaces connecting access switches to the core were configured as trunk ports.
+Interfaces connecting access switches to the core were configured as trunk ports:
 
 ```bash
 interface range gi0/0 - 1
@@ -57,21 +53,17 @@ interface range gi0/0 - 1
  switchport nonegotiate
 ```
 
-### Key Points
-- 802.1Q encapsulation was required due to the switch platform
-- VLANs 10 and 20 were allowed across all trunk links
-- DTP was disabled to prevent automatic trunk negotiation
+### Key Design Decisions
+- 802.1Q encapsulation required due to platform limitations
+- Only VLANs 10 and 20 allowed across trunks (principle of least privilege)
+- DTP disabled to prevent unwanted trunk negotiation
 - Dual uplinks provide redundancy to both core switches
-
----
-
-# 📄 Part 3 (Access ports + security)
 
 ---
 
 ## Access Port Configuration
 
-Access ports were configured to assign end devices to the correct VLAN.
+Access ports were configured to assign end devices to the correct VLAN and enable fast convergence.
 
 ### Admin Switches (VLAN 10)
 
@@ -101,7 +93,8 @@ Several security features were implemented on access ports:
 
 ### PortFast
 - Allows immediate transition to forwarding state
-- Reduces device startup delay
+- Eliminates unnecessary delay for end devices
+
 ### BPDU Guard
 - Protects against rogue switches
 - Automatically disables port if BPDU is received
@@ -110,18 +103,19 @@ These features help maintain network stability and security at the access layer.
 
 ---
 
-# 📄 Part 4 (IP config + testing)
-
----
-
 ## End Device Configuration
 
 End devices were configured with static IP addressing.
 
-### Admin PCs
+### Admin PCs 
 
 ```text
 IP Address: 192.168.10.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.10.1
+```
+```text
+IP Address: 192.168.10.11
 Subnet Mask: 255.255.255.0
 Default Gateway: 192.168.10.1
 ```
@@ -133,14 +127,21 @@ IP Address: 192.168.20.10
 Subnet Mask: 255.255.255.0
 Default Gateway: 192.168.20.1
 ```
+
+```text
+IP Address: 192.168.20.11
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.20.1
+```
+
 ---
 
 ## Connectivity Testing
 
 The following tests were performed to validate the network:
 
-### Layer 2 Testing
-PC to PC communication within the same VLAN
+### Layer 2 Connectivity
+- Successful communication between devices within the same VLAN
 
 ### Gateway Reachability
 
@@ -159,24 +160,18 @@ ping 192.168.20.10
 ---
 
 ## Observations
-- Devices within the same VLAN successfully communicated via Layer 2 switching
-- Default gateway reachability confirmed correct SVI operation on the core
-- Inter-VLAN communication verified that routing is functioning correctly
-- Initial packet loss was observed due to ARP resolution, which is expected behaviour
+- Intra-VLAN communication confirmed correct Layer 2 switching
+- Gateway reachability verified SVI functionality on the core
+- Inter-VLAN communication confirmed routing operation
+- Initial packet loss observed due to ARP resolution (expected behaviour)
 
 ---
 
+## Troubleshooting
 
----
-
-# 📄 Part 5 (Troubleshooting)
-
----
-
-## Issue Encountered: SVI Down
+### Issue Encountered: SVI Down
 
 During testing, the default gateway was initially unreachable.
-
 This was caused by the VLAN interface (SVI) being in a down/down state on the core switch.
 
 The issue was resolved by enabling the interface:
@@ -186,19 +181,16 @@ interface vlan 10
  no shutdown
 ```
 
-This demonstrates that an SVI requires:
+### Key Takeaway:
 
+An SVI requires:
 - The VLAN to exist
 - Active Layer 2 participation
-- The interface to be administratively up
+- The interface to be administratively enabled
 
 ---
 
-# 📄 Part 6 - Advanced Security Features (Implementing DAI)
-
----
-
-## Dynamic ARP Inspection (DAI)
+## Advanced Security – Dynamic ARP Inspection (DAI)
 
 Dynamic ARP Inspection (DAI) was implemented on the access layer switches to protect against ARP spoofing and man-in-the-middle attacks.
 
@@ -241,15 +233,15 @@ interface range gi0/0 - 1
 
 ### Untrusted Interfaces (Access Ports)
 
-All access ports remain untrusted by default.
-- ARP packets received on these ports are inspected
+- All access ports remain untrusted by default.
+- ARP packets received on these ports are inspected.
 - Invalid ARP packets are dropped.
 
 ---
 
 ### Static IP Addressing Consideration
 
-Since this lab uses static IP addressing instead of DHCP, manual bindings were required to allow DAI to function correctly.
+Since static addressing is used, manual bindings were required:
 
 ### Example:
 ```bash
@@ -280,29 +272,27 @@ This confirms that DAI is actively inspecting and protecting Layer 2 traffic.
 
 ---
 
+### Observations
+- Valid ARP traffic permitted
+- Invalid traffic dropped when bindings missing
+- Connectivity restored after correct bindings
+
+--- 
+
 ### Design Justification
+DAI is implemented only at the access layer, where end devices connect and ARP attacks originate.
 
-DAI was applied at the access layer only, as this is where end devices connect and where ARP-based attacks originate.
-
-Core switches were not configured with DAI, as they operate as trusted infrastructure devices.
-
----
-
-# 📄 Part 7 - Advanced Security Features (Implementing Port Security)
+Core devices are treated as trusted infrastructure.
 
 ---
 
-## Port Security (Sticky MAC)
+## Advanced Security - Port Security
 
-Port security was implemented on access ports to restrict each port to a limited number of MAC addresses and prevent unauthorized devices from connecting to the network.
-
-Sticky MAC learning was used to dynamically learn and retain the MAC address of connected devices.
+Port security was implemented to restrict access at the access layer.
 
 ---
 
 ### Configuration
-
-Port security was enabled on access ports as follows:
 
 ```bash
 interface gi0/2
@@ -316,20 +306,17 @@ interface gi0/2
 
 ---
 
-### Key Settings
-maximum 1
-- Limits each port to a single MAC address
-mac-address sticky
-- Dynamically learns and stores the MAC address of the connected device
-violation restrict
-- Drops traffic from unauthorized MAC addresses while keeping the interface up
+## Key Settings
+- Maximum 1 MAC address → prevents multiple devices
+- Sticky MAC → dynamically learns and saves MAC
+- Violation restrict → drops traffic without shutting down port
 
 ---
 
-### Behaviour
-- The first device connected to the port is automatically learned
-- The learned MAC address is stored in the running configuration
-- Any additional or unknown devices are blocked
+## Behaviour
+- First connected device is learned automatically
+- MAC address stored in running config
+- Unauthorized devices are blocked
 
 ---
 
@@ -345,33 +332,29 @@ show port-security address
 ---
 
 ### Observations
-- The connected device MAC address was successfully learned and secured
-- Unauthorized devices would be prevented from communicating
-- The interface remained operational due to the "restrict" violation mode
+- MAC address successfully learned and secured
+- Unauthorized devices blocked
+- Interface remains operational due to restrict mode
 
 ---
 
 ### Design Justification
 
-Port security was applied at the access layer to enforce device-level access control at the network edge.
-
-This complements other Layer 2 security features such as:
-
+Port security enforces device-level access control at the edge, complementing:
 - DHCP Snooping
-- Dynamic ARP Inspection (DAI)
-
-Together, these features provide a stronger overall security posture.
+- Dynamic ARP Inspection
+Together, these provide layered Layer 2 security.
 
 ---
 
 
 ## Summary
 
-The access layer successfully provides:
-
+The access layer provides:
 - VLAN-based segmentation
-- Secure access port configuration
+- Secure and stable access port configuration
 - Redundant uplinks to the core
-- Reliable connectivity for end devices
+- Reliable end-device connectivity
+At this stage, the LAN is fully operational, with routing handled by the core layer.
 
-At this stage, full LAN connectivity is operational across VLANs, with routing handled by the core layer.
+
