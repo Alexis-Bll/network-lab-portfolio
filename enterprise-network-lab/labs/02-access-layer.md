@@ -194,7 +194,7 @@ This demonstrates that an SVI requires:
 
 ---
 
-# 📄 Part 6 (Implementing DAI)
+# 📄 Part 6 - Advanced Security Features (Implementing DAI)
 
 ---
 
@@ -227,7 +227,7 @@ ip dhcp snooping vlan 10,20
 
 ---
 
-## Trusted Interfaces (Uplinks)
+### Trusted Interfaces (Uplinks)
 
 Uplink interfaces toward the core switches were configured as trusted:
 
@@ -239,7 +239,7 @@ interface range gi0/0 - 1
 
 ---
 
-## Untrusted Interfaces (Access Ports)
+### Untrusted Interfaces (Access Ports)
 
 All access ports remain untrusted by default.
 - ARP packets received on these ports are inspected
@@ -247,7 +247,7 @@ All access ports remain untrusted by default.
 
 ---
 
-## Static IP Addressing Consideration
+### Static IP Addressing Consideration
 
 Since this lab uses static IP addressing instead of DHCP, manual bindings were required to allow DAI to function correctly.
 
@@ -259,7 +259,7 @@ Without these bindings, ARP traffic is dropped and devices cannot communicate.
 
 ---
 
-## Verification
+### Verification
 
 DAI operation was verified using:
 
@@ -288,7 +288,7 @@ Core switches were not configured with DAI, as they operate as trusted infrastru
 
 ---
 
-# 📄 Part 7 (Implementing Port Security)
+# 📄 Part 7 - Advanced Security Features (Implementing Port Security)
 
 ---
 
