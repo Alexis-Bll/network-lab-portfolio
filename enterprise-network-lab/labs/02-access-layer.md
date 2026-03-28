@@ -169,7 +169,7 @@ ping 192.168.20.10
 
 ---
 
-# 📄 Part 5 (Troubleshooting + summary)
+# 📄 Part 5 (Troubleshooting)
 
 ---
 
@@ -191,6 +191,100 @@ This demonstrates that an SVI requires:
 - The VLAN to exist
 - Active Layer 2 participation
 - The interface to be administratively up
+
+---
+
+# 📄 Part 6 (Implementing DAI)
+
+---
+
+## Dynamic ARP Inspection (DAI)
+
+Dynamic ARP Inspection (DAI) was implemented on the access layer switches to protect against ARP spoofing and man-in-the-middle attacks.
+
+DAI works by validating ARP packets against a trusted database of IP-to-MAC bindings before allowing them to be forwarded.
+
+---
+
+### Configuration
+
+DAI was enabled for the relevant VLANs:
+
+```bash
+ip arp inspection vlan 10,20
+```
+
+---
+
+## DHCP Snooping Dependency
+
+DAI relies on DHCP Snooping to build a binding table of valid IP-to-MAC mappings.
+
+```bash
+ip dhcp snooping
+ip dhcp snooping vlan 10,20
+```
+
+---
+
+## Trusted Interfaces (Uplinks)
+
+Uplink interfaces toward the core switches were configured as trusted:
+
+```bash
+interface range gi0/0 - 1
+ ip dhcp snooping trust
+ ip arp inspection trust
+```
+
+---
+
+## Untrusted Interfaces (Access Ports)
+
+All access ports remain untrusted by default.
+- ARP packets received on these ports are inspected
+- Invalid ARP packets are dropped.
+
+---
+
+## Static IP Addressing Consideration
+
+Since this lab uses static IP addressing instead of DHCP, manual bindings were required to allow DAI to function correctly.
+
+### Example:
+```bash
+ip source binding 5000.0002.0000 vlan 20 192.168.20.10 interface gi0/2
+```
+Without these bindings, ARP traffic is dropped and devices cannot communicate.
+
+---
+
+## Verification
+
+DAI operation was verified using:
+
+```bash
+show ip arp inspection statistics
+show ip arp inspection interfaces
+show ip source binding
+```
+
+---
+
+### Observations
+- ARP traffic from valid devices was successfully permitted
+- ARP traffic was dropped when bindings were missing
+- Connectivity was restored after adding correct bindings
+
+This confirms that DAI is actively inspecting and protecting Layer 2 traffic.
+
+---
+
+### Design Justification
+
+DAI was applied at the access layer only, as this is where end devices connect and where ARP-based attacks originate.
+
+Core switches were not configured with DAI, as they operate as trusted infrastructure devices.
 
 ---
 
