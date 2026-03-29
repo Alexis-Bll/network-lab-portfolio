@@ -81,19 +81,11 @@ The lab is built using:
 
 ## Status
 
-🚧 Lab currently in progress
+✅ Lab completed
 
-### Completed
-- Base configuration
-- Core layer setup (VLANs, HSRP, trunking, EtherChannel)
+This lab demonstrates a full enterprise network design using private WAN routing.
 
-### In Progress
-- OSPF configuration
-- Branch connectivity
-
-### Next Steps
-- ACL implementation
-- Network security (DHCP snooping, DAI)
+A follow-up lab will be developed with a modified design to demonstrate additional networking features such as NAT, internet edge connectivity, and enhanced security configurations.
 
 ---
 
@@ -103,3 +95,5 @@ The lab is built using:
 - [Core Configuration](labs/01-core-setup.md)
 - [Access Layer Configuration](labs/02-access-layer.md)
 - [Routing Configuration (OSPF)](labs/03-routing-ospf.md)
+- [Branch Switches Configuration](labs/04-branch-switches.md)
+- [Access Control Lists Configuration (OSPF)](labs/05-access-control-lists.md)
