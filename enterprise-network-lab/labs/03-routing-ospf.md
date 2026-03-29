@@ -158,7 +158,7 @@ show ip protocols
 ping 192.168.30.1
 ping 192.168.40.1
 ```
-
+![HQ Topology](../topology/server_pinging_branches.png)
 ---
 
 ## Observations
