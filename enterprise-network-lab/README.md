@@ -26,7 +26,7 @@ The lab is built using:
 
 ## Topology
 
-![HQ Topology](../topology/ccna_lab.png)
+![HQ Topology](./topology/ccna_lab.png)
 
 ## Objectives
 
