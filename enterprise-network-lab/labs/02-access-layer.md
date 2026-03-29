@@ -35,8 +35,6 @@ The full configuration and design details are documented in the Core Layer Setup
 
 👉 [View Spanning Tree Configuration](01-core-setup.md)
 
-At the access layer, features such as PortFast and BPDU Guard are used alongside Rapid STP to improve convergence and protect the network.
-
 ---
 
 ### Design Justification
