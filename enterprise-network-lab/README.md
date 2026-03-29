@@ -13,7 +13,6 @@ The goal of the lab is to combine multiple networking concepts together into a r
 - OSPF
 - HSRP
 - EtherChannel
-- NAT
 - Access Control Lists (ACL)
 
 ## Lab Environment
@@ -23,6 +22,7 @@ The lab is built using:
 - EVE-NG
 - Cisco IOS routers and switches
 - Virtual PCs for testing
+- Windows 2008 R2 Server VM
 
 ## Topology
 
@@ -41,3 +41,6 @@ Topology diagram will be added here.
 
 🚧 Lab currently being built.
 - [Base Configuration](labs/00-base-config.md)
+- [Core Configuration](labs/01-core-setup.md)
+- [Access Layer Configuration](labs/02-access-layer.md)
+- [Routing Configuration](labs/03-routing-ospf.md)
