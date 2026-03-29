@@ -180,6 +180,44 @@ This design enables load sharing and high availability.
 
 ---
 
+## Spanning Tree Protocol (Rapid PVST+)
+
+Rapid Spanning Tree Protocol (Rapid PVST+) was implemented across all switches to provide fast Layer 2 convergence and improve network stability.
+
+Rapid PVST+ significantly reduces convergence time compared to traditional STP, allowing the network to quickly recover from link or device failures in a redundant topology.
+
+
+### Configuration
+```bash
+spanning-tree mode rapid-pvst
+```
+
+---
+
+### Design Justification
+- Enables faster convergence during topology changes
+- Improves failover performance in redundant Layer 2 designs
+- Aligns with enterprise best practices for modern switching environments
+- Ensures consistent Spanning Tree behaviour across all switches
+
+--- 
+
+### Verification
+
+```bash
+show spanning-tree summary
+```
+
+<img width="856" height="580" alt="image" src="https://github.com/user-attachments/assets/e98264f3-7754-4e65-a720-69a618682492" />
+
+
+Expected output should confirm:
+
+- Spanning Tree mode is Rapid PVST+
+- Protocol shown as RSTP
+
+---
+
 ## STP Root Placement
 
 Spanning Tree was aligned with HSRP to optimise traffic flow and avoid unnecessary Layer 2 hops.
