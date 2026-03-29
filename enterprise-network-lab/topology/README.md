@@ -4,104 +4,163 @@
 
 ![Topology](ccna_lab.png)
 
-This lab simulates a small enterprise network consisting of a headquarters (HQ) and two branch offices connected over a service provider WAN (MPLS). The design demonstrates core networking concepts including routing, redundancy, VLAN segmentation, and scalable architecture.
+This lab simulates a small enterprise network consisting of a headquarters (HQ) and two branch offices connected over a service provider WAN (MPLS-style).
 
-## Architecture
+The design demonstrates how enterprise networks use hierarchical architecture, private WAN connectivity, and dynamic routing to provide scalable and resilient communication between sites.
 
-- **WAN**: Service Provider MPLS network connecting all sites  
-- **Routing Protocol**: OSPF Area 0 across all routers  
-- **HQ Design**: Collapsed core with dual core switches (CSW1/CSW2)  
+---
+
+## Architecture Overview
+
+- **WAN**: Simulated service provider network (MPLS-style using private IP addressing)  
+- **Routing Protocol**: OSPF Area 0 across all Layer 3 devices  
+- **HQ Design**: Collapsed core using dual Layer 3 switches  
 - **Branch Design**: Single router and access switch per branch  
+
+---
 
 ## Network Layers
 
-- **Core Layer**: HQ-CSW1 and HQ-CSW2 (Layer 3 switches)  
-- **Access Layer**: HQ-ASW1/2 (users) and HQ-SSW1/2 (servers)  
-- **Edge/WAN Layer**: HQ-R1 and HQ-R2
+### Core Layer (HQ)
+- HQ-CSW1
+- HQ-CSW2  
+Layer 3 switches providing:
+- Inter-VLAN routing (SVIs)
+- HSRP gateway redundancy
+- Core switching and traffic distribution
+
+---
+
+### Access Layer (HQ)
+- HQ-ASW1 / HQ-ASW2 → Admin VLAN (VLAN 10)
+- HQ-SSW1 / HQ-SSW2 → Server VLAN (VLAN 20)
+
+Provides:
+- End-device connectivity
+- VLAN segmentation
+- Layer 2 security features
+
+---
+
+### WAN / Edge Layer
+- HQ-R1
+- HQ-R2
+- ISP router
+
+Provides:
+- Connectivity between HQ and branches
+- Transit network for inter-site communication
+- OSPF route propagation across all sites
+
+---
 
 ## Branch Sites
 
 Each branch site consists of:
 
-- **Branch Router (BR1 / BR2)** connected to the WAN  
-- **Access Switch (BR-SW1 / BR-SW2)** for end devices  
-- End-user devices (e.g. Engineer PC, Sales PC)  
+### Branch 1 (Engineering)
+- Network: 192.168.30.0/24
+- VLAN 30
+- Devices: BR1 + BR-SW1 + Engineering PC
 
-Branch sites connect to HQ via the service provider WAN (MPLS) and participate in OSPF Area 0.
+### Branch 2 (Sales)
+- Network: 192.168.40.0/24
+- VLAN 40
+- Devices: BR2 + BR-SW2 + Sales PC
 
-## Redundancy
+### Key Design Choice
+- Each branch uses a **single VLAN**
+- Routing is handled by the **branch router**, not the switch
+- Simplifies design while reflecting real-world small branch deployments
 
-The network is designed with multiple layers of redundancy to ensure high availability and fault tolerance across both the HQ and branch sites:
+---
 
-- **Dual Core Switches (Collapsed Core Design)**:  
-  Two Layer 3 core switches (HQ-CSW1 and HQ-CSW2) provide redundancy at the HQ core layer, ensuring continued operation if one switch fails.
+## IP Addressing Strategy
 
-- **HSRP (Hot Standby Router Protocol)**:  
-  HSRP is configured on the core switches to provide default gateway redundancy for HQ VLANs. A virtual IP address is used as the gateway for end devices, allowing seamless failover between switches.
+The entire network uses **private IP addressing**, simulating an enterprise MPLS WAN:
 
-- **EtherChannel (LACP)**:  
-  An EtherChannel is configured between HQ-CSW1 and HQ-CSW2 using LACP. This provides both increased bandwidth and link redundancy while preventing Spanning Tree blocking.
+### LAN Networks
+- VLAN 10 (Admin): 192.168.10.0/24
+- VLAN 20 (Servers): 192.168.20.0/24
+- Engineering Branch: 192.168.30.0/24
+- Sales Branch: 192.168.40.0/24
 
-- **Spanning Tree Protocol (STP)**:  
-  Rapid PVST+ is used at the HQ site to prevent Layer 2 loops and ensure fast convergence.  
-  STP root roles are intentionally split:
-  - HQ-CSW1 is configured as the primary root bridge for the Admin/Management VLAN  
-  - HQ-CSW2 is configured as the primary root bridge for the Server VLAN  
-  Each switch is configured as the secondary root for the opposing VLAN.
+### WAN / Transit Networks
+- /30 subnets used for point-to-point links (efficient and scalable)
 
-  STP tuning is applied only at HQ, as branch VLANs are locally switched and do not form extended Layer 2 domains with HQ.
+### Design Justification
+- Reflects real enterprise WAN/MPLS deployments
+- No public IP addressing required internally
+- All routing handled via OSPF
 
-- **Dual WAN Edge Routers**:  
-  Two edge routers (HQ-R1 and HQ-R2) provide redundancy at the WAN edge, ensuring continued connectivity to the service provider network in the event of a router failure.
+---
 
-- **Redundant Core-to-Edge Connectivity**:  
-  Each core switch is connected to both WAN edge routers, providing multiple paths between the LAN and WAN. This ensures traffic can still reach the WAN even if a single link or device fails.
+## Redundancy Design
 
-- **OSPF Dynamic Routing (Area 0)**:  
-  OSPF is used across all routers to provide dynamic routing and automatic failover. In the event of a link or device failure, OSPF recalculates routes to maintain connectivity.
+The network includes multiple layers of redundancy:
 
-- **Redundant Access Layer Uplinks**:  
-  Access switches at HQ are connected to the core switches via trunk links, providing alternative paths and improving resilience within the LAN.
+### Core Redundancy
+- Dual core switches (HQ-CSW1 / HQ-CSW2)
+- Load sharing using HSRP:
+  - CSW1 active for VLAN 10
+  - CSW2 active for VLAN 20
 
-- **Service Provider WAN (MPLS)**:  
-  The WAN is modelled as a service provider MPLS network, providing resilient connectivity between HQ and branch sites. Branch VLANs remain locally switched, with routing performed between sites.
+---
 
-## Technologies Used
+### Layer 2 Redundancy
+- EtherChannel (LACP) between core switches
+- Dual uplinks from access switches to both core switches
+- STP tuning aligned with HSRP roles
 
-The following technologies are implemented within this lab to demonstrate core networking concepts at a CCNA level:
+---
 
-- **OSPF (Open Shortest Path First)**:  
-  OSPF Area 0 is used as the dynamic routing protocol across all routers, enabling automatic route calculation and failover between HQ and branch sites.
+### WAN Redundancy
+- Dual HQ routers (HQ-R1 / HQ-R2)
+- Each core switch connects to both routers
+- Multiple paths to the WAN
 
-- **VLANs (Virtual Local Area Networks)**:  
-  Network segmentation is implemented using VLANs to separate Sales, Engineering, Admin/Management, and Server traffic.
+---
 
-- **Inter-VLAN Routing (SVIs)**:  
-  Layer 3 switching is used at the HQ core switches (CSW1 and CSW2) to route traffic between VLANs using Switch Virtual Interfaces (SVIs).
+### Routing Redundancy
+- OSPF dynamically recalculates routes
+- Equal-cost load balancing (ECMP)
+- Automatic failover on link/device failure
 
-- **HSRP (Hot Standby Router Protocol)**:  
-  HSRP is configured on the core switches to provide default gateway redundancy for HQ VLANs, ensuring high availability for end devices.
+---
 
-- **802.1Q Trunking**:  
-  Trunk links are configured between switches to allow multiple VLANs to traverse the network.
+## Technologies Implemented
 
-- **EtherChannel (LACP)**:  
-  Link aggregation is used between the core switches to increase bandwidth and provide redundancy while preventing Spanning Tree blocking.
+- OSPF (Dynamic routing across all sites)
+- VLANs (Network segmentation)
+- Inter-VLAN Routing (SVIs)
+- HSRP (Gateway redundancy)
+- EtherChannel (Link aggregation)
+- 802.1Q Trunking
+- Rapid PVST+ (Spanning Tree)
+- ACLs (Traffic filtering between departments)
+- DHCP Snooping & DAI (Layer 2 security)
+- Port Security (Access layer protection)
 
-- **Spanning Tree Protocol (Rapid PVST+)**:  
-  Rapid PVST+ is implemented to prevent Layer 2 loops and ensure fast convergence. Root bridge roles are manually controlled for optimal traffic flow.
+---
 
-- **Static Routing (Edge/WAN)**:  
-  Static or default routes may be used on WAN edge routers to direct traffic toward the service provider network.
+## Key Design Principles
 
-- **IP Addressing and Subnetting**:  
-  Structured IP addressing is used to logically separate network segments and support routing across the topology.
+- **Hierarchical network design** (Core + Access)
+- **Separation of Layer 2 and Layer 3 roles**
+- **Private WAN/MPLS-style architecture**
+- **Redundancy at every layer**
+- **Security at the network edge**
+- **Scalability through dynamic routing (OSPF)**
 
-- **Default Gateway Redundancy**:  
-  Provided using HSRP to ensure uninterrupted access to network resources in the event of device failure.
+---
 
-- **Layer 2 Switching**:  
-  Access switches provide connectivity for end devices and support VLAN segmentation at both HQ and branch sites.
+## Summary
 
-- **Service Provider WAN (MPLS Concept)**:  
-  The WAN is modelled as an MPLS-based service provider network, allowing communication between geographically separated sites.
+This topology represents a realistic enterprise network design, demonstrating how multiple networking technologies integrate to provide:
+
+- Secure segmentation of departments
+- High availability through redundancy
+- Scalable multi-site connectivity
+- Efficient routing across a private WAN
+
+The lab reflects both CCNA-level concepts and real-world enterprise design principles.
