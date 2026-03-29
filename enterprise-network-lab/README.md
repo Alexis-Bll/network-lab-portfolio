@@ -22,7 +22,7 @@ The lab is built using:
 - EVE-NG
 - Cisco IOS routers and switches
 - Virtual PCs for testing
-- Windows 2008 R2 Server VM
+- Windows 2008 R2 Server VMs
 
 ## Topology
 
