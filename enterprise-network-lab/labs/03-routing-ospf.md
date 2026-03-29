@@ -1,7 +1,5 @@
 # 03 - Routing (OSPF Multi-Site Connectivity)
 
----
-
 ## Objective
 
 The objective of this phase was to implement dynamic routing across the enterprise network to enable full end-to-end connectivity between:
