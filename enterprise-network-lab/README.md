@@ -81,7 +81,7 @@ The lab is built using:
 
 ## Status
 
-✅ Lab completed
+### ✅ Lab completed
 
 This lab demonstrates a full enterprise network design using private WAN routing.
 
