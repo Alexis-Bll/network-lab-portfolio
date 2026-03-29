@@ -90,10 +90,14 @@ From Engineering:
 ping 192.168.40.10
 ```
 
+<img width="875" height="325" alt="image" src="https://github.com/user-attachments/assets/1bd0f577-e52f-439f-8b53-46550be7a5a0" />
+
 From Sales:
 ```bash
 ping 192.168.30.10
 ```
+
+
 
 ### Expected to Succeed
 
@@ -103,6 +107,8 @@ From Engineering:
 ping 192.168.10.10
 ping 192.168.20.10
 ```
+
+
 
 From Sales:
 
