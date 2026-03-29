@@ -363,4 +363,4 @@ The access layer provides:
 - Reliable end-device connectivity
 At this stage, the LAN is fully operational, with routing handled by the core layer.
 
-
+---
