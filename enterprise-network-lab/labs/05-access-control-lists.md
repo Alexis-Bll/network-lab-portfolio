@@ -97,6 +97,7 @@ From Sales:
 ping 192.168.30.10
 ```
 
+<img width="875" height="273" alt="image" src="https://github.com/user-attachments/assets/0636a0d0-7760-40b9-869e-a339d9aaeb0a" />
 
 
 ### Expected to Succeed
@@ -108,6 +109,7 @@ ping 192.168.10.10
 ping 192.168.20.10
 ```
 
+<img width="884" height="394" alt="image" src="https://github.com/user-attachments/assets/9ff6b704-f5e8-489f-8c99-6356f68c44ab" />
 
 
 From Sales:
@@ -116,6 +118,9 @@ From Sales:
 ping 192.168.10.10
 ping 192.168.20.10
 ```
+
+<img width="878" height="443" alt="image" src="https://github.com/user-attachments/assets/2a6f11dc-a889-417a-9571-d53c750c8413" />
+
 
 ---
 
