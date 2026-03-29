@@ -212,6 +212,9 @@ show standby brief
 show spanning-tree vlan 10
 show spanning-tree vlan 20
 ```
+
+<img width="882" height="615" alt="image" src="https://github.com/user-attachments/assets/ad33b50b-965a-4c52-bf73-63233c2dcf24" />
+
 ---
 
 ## Expected Results
