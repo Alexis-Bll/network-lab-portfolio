@@ -145,7 +145,7 @@ This demonstrates effective traffic segmentation using Layer 3 policy enforcemen
 
 ---
 
-##Summary
+## Summary
 
 Extended ACLs were successfully implemented on the branch routers to prevent direct communication between Engineering and Sales.
 This improved the security posture of the network while maintaining required access to HQ services.
