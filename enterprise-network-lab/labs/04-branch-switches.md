@@ -28,6 +28,16 @@ Routing is performed on the branch routers, not the switches.
 
 ---
 
+## Spanning Tree Protocol
+
+Rapid PVST+ is implemented across all switches in the network to provide fast Layer 2 convergence.
+
+The full configuration and design details are documented in the Core Layer Setup section:
+
+👉 [View Spanning Tree Configuration](01-core-setup.md)
+
+---
+
 ## VLAN Configuration
 
 VLANs were created on each branch switch to match their respective subnet.
