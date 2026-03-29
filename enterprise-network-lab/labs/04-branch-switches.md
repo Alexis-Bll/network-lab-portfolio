@@ -126,6 +126,9 @@ show interfaces status
 show port-security
 ```
 
+<img width="883" height="666" alt="image" src="https://github.com/user-attachments/assets/383c7eda-529e-496b-86aa-3eb0e31949d5" />
+
+
 Connectivity tests were also performed:
 
 - PC to default gateway (branch router)
