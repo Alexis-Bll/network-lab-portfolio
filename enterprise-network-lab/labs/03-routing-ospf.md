@@ -142,7 +142,7 @@ show ip ospf neighbor
 show ip route
 show ip protocols
 ```
-![HQ Topology](../topology/isp_sh_ip_ospf_ip_route.png)
+![HQ Topology](../topology/isp_sh_ip_ospf_sh_ip_route.png)
 
 ---
 
