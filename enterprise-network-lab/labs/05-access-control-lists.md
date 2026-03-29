@@ -131,6 +131,9 @@ show access-lists
 show ip interface gi0/0
 ```
 
+<img width="886" height="659" alt="image" src="https://github.com/user-attachments/assets/adefdb4c-79de-4cd1-8af7-80659d502f0a" />
+
+
 ### These commands confirm:
 
 - ACL entries are present
