@@ -267,6 +267,9 @@ show ip arp inspection interfaces
 show ip source binding
 ```
 
+<img width="887" height="836" alt="image" src="https://github.com/user-attachments/assets/6976d3f2-4980-4b14-b49a-6a8a1d8bc9d9" />
+
+
 ---
 
 ### Observations
@@ -334,6 +337,8 @@ Port security was verified using:
 show port-security interface gi0/2
 show port-security address
 ```
+<img width="878" height="531" alt="image" src="https://github.com/user-attachments/assets/6d959b23-a64c-40d5-aee7-d5148f22fc83" />
+
 
 ---
 
