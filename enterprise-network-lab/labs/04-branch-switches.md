@@ -1,5 +1,4 @@
 # 04 - Branch Switch Configuration
----
 
 ## Objective
 
