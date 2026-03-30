@@ -15,7 +15,8 @@ The design demonstrates how enterprise networks use hierarchical architecture, p
 - **WAN**: Simulated service provider network (MPLS-style using private IP addressing)  
 - **Routing Protocol**: OSPF Area 0 across all Layer 3 devices  
 - **HQ Design**: Collapsed core using dual Layer 3 switches  
-- **Branch Design**: Single router and access switch per branch  
+- **Branch Design**: Single router and access switch per branch
+- **WAN Edge Devices**: HQ-R1, HQ-R2, BR1, BR2
 
 ---
 
@@ -43,14 +44,29 @@ Provides:
 ---
 
 ### WAN / Edge Layer
-- HQ-R1
-- HQ-R2
-- ISP router
+
+* HQ-R1
+* HQ-R2
+* BR1
+* BR2
+* ISP Router
 
 Provides:
-- Connectivity between HQ and branches
-- Transit network for inter-site communication
-- OSPF route propagation across all sites
+
+* Connectivity between headquarters and branch sites
+* WAN edge routing for both HQ and branch networks
+* Transit network simulating a service provider (MPLS-style)
+* OSPF adjacency and route propagation across all sites
+
+### Design Notes
+
+* Both **HQ and branch routers operate as WAN edge devices**, connecting their local networks to the service provider WAN
+* The ISP router acts as a **simulated MPLS core**, providing transit between sites
+* Branch routers (BR1 / BR2) serve as:
+
+  * Default gateways for branch LANs
+  * Edge devices connecting to the WAN
+
 
 ---
 
@@ -68,10 +84,12 @@ Each branch site consists of:
 - VLAN 40
 - Devices: BR2 + BR-SW2 + Sales PC
 
-### Key Design Choice
-- Each branch uses a **single VLAN**
-- Routing is handled by the **branch router**, not the switch
-- Simplifies design while reflecting real-world small branch deployments
+### Key Design Choices
+
+- Each branch uses a **single VLAN**, reflecting a simplified small-site deployment
+- The **branch router acts as both the default gateway and WAN edge device**
+- Layer 2 switching is kept minimal at branch sites to reduce complexity
+- Routing decisions are handled at the edge (router), aligning with real-world branch designs
 
 ---
 
