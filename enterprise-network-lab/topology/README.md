@@ -120,8 +120,8 @@ The network includes multiple layers of redundancy:
 ### Core Redundancy
 - Dual core switches (HQ-CSW1 / HQ-CSW2)
 - Load sharing using HSRP:
-  - CSW1 active for VLAN 10
-  - CSW2 active for VLAN 20
+  - HQ-CSW1 active for VLAN 10
+  - HQ-CSW2 active for VLAN 20
 
 ---
 
