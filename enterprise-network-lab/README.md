@@ -83,9 +83,18 @@ The lab is built using:
 
 ### ✅ Lab completed
 
-This lab demonstrates a full enterprise network design using private WAN routing.
+While the core lab has been fully implemented and is operational, a small number of final steps are currently in progress to enhance the overall quality and completeness of the project.
 
-A follow-up lab will be developed with a modified design to demonstrate additional networking features such as NAT, internet edge connectivity, and enhanced security configurations.
+These include:
+
+* Organising and publishing final device configurations
+* Performing additional validation and testing (e.g. failover scenarios for HSRP and redundancy)
+* Making minor design refinements and optimisations
+
+These updates are focused on improving clarity, validation, and presentation rather than core functionality, which is already complete.
+
+The lab will continue to be refined to better reflect real-world deployment and testing practices.
+
 
 ---
 
