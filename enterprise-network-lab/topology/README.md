@@ -17,6 +17,7 @@ The design demonstrates how enterprise networks use hierarchical architecture, p
 - **HQ Design**: Collapsed core using dual Layer 3 switches  
 - **Branch Design**: Single router and access switch per branch
 - **WAN Edge Devices**: HQ-R1, HQ-R2, BR1, BR2
+- **Traffic Flow**: Inter-VLAN routing occurs at the HQ core, while inter-site traffic is routed via OSPF across the WAN edge and service provider network
 
 ---
 
@@ -55,7 +56,7 @@ Provides:
 
 * Connectivity between headquarters and branch sites
 * WAN edge routing for both HQ and branch networks
-* Transit network simulating a service provider (MPLS-style)
+* Transit network simulating a service provider MPLS core using private addressing
 * OSPF adjacency and route propagation across all sites
 
 ### Design Notes
@@ -89,7 +90,7 @@ Each branch site consists of:
 - Each branch uses a **single VLAN**, reflecting a simplified small-site deployment
 - The **branch router acts as both the default gateway and WAN edge device**
 - Layer 2 switching is kept minimal at branch sites to reduce complexity
-- Routing decisions are handled at the edge (router), aligning with real-world branch designs
+- Routing decisions are handled at the branch edge (router), aligning with real-world branch deployments
 
 ---
 
@@ -136,6 +137,7 @@ The network includes multiple layers of redundancy:
 - Dual HQ routers (HQ-R1 / HQ-R2)
 - Each core switch connects to both routers
 - Multiple paths to the WAN
+- Failover is achieved through OSPF convergence and redundant physical paths
 
 ---
 
@@ -171,6 +173,10 @@ The network includes multiple layers of redundancy:
 - **Scalability through dynamic routing (OSPF)**
 
 ---
+
+## Scope
+
+This lab focuses on private WAN connectivity and internal enterprise design. Internet edge services such as NAT and public connectivity are not included in this version and will be introduced in a future iteration.
 
 ## Summary
 
