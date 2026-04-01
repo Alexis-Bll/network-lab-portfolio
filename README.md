@@ -1,8 +1,8 @@
 # Network Lab Portfolio
 
-This repository showcases my hands-on networking labs built in **EVE-NG**, designed to simulate real-world enterprise environments.
+This repository showcases my hands-on lab work and technical projects, focused on building real-world IT and networking skills.
 
-The goal of this portfolio is to demonstrate my ability to **design, configure, and troubleshoot network infrastructure** using technologies aligned with the **Cisco CCNA**.
+The aim of this portfolio is to demonstrate my ability to design, configure, and troubleshoot systems across networking, infrastructure, and security, while continuously developing practical, job-ready experience.
 
 ---
 
@@ -18,12 +18,19 @@ My next step is to develop my skills in **network security and firewalls**, with
 
 ## What This Portfolio Demonstrates
 
-* Designing multi-site enterprise network topologies (HQ + branch environments)
-* Implementing VLAN segmentation and inter-VLAN routing
-* Configuring dynamic routing using **OSPF**
-* Providing gateway redundancy using **HSRP**
-* Building resilient Layer 2 networks using **STP and EtherChannel**
-* Applying basic network security using **ACLs**
+This portfolio is continuously evolving and reflects my growing hands-on experience across networking, infrastructure, and security.
+
+Current and developing areas include:
+
+* Designing and implementing multi-site network topologies
+* Configuring and troubleshooting routing and switching technologies
+* Building resilient and redundant network environments
+* Applying network segmentation and access control
+* Troubleshooting connectivity and performance issues
+* Exploring network security concepts and firewall technologies
+* Working with virtualised lab environments to simulate real-world scenarios
+
+As I continue to develop my skills, this section will expand to include additional technologies, tools, and real-world scenarios.
 
 ---
 
@@ -32,7 +39,7 @@ My next step is to develop my skills in **network security and firewalls**, with
 All labs are built using:
 
 * **EVE-NG** for network simulation
-* **Cisco IOS routers and switches**
+* **Virtual images of routers and switches**
 * **Virtual PCs and servers**
 
 This environment allows me to replicate realistic enterprise scenarios and test configurations in a controlled setting.
