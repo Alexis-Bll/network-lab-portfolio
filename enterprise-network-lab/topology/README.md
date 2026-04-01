@@ -33,9 +33,11 @@ Layer 3 switches providing:
 
 ---
 
-### Access Layer (HQ)
+### Access Layer
 - HQ-ASW1 / HQ-ASW2 → Admin VLAN (VLAN 10)
 - HQ-SSW1 / HQ-SSW2 → Server VLAN (VLAN 20)
+- BR-SW1 → Engineering VLAN (VLAN 30)
+- BR-SW2 → Sales VLAN (VLAN 40)
 
 Provides:
 - End-device connectivity
@@ -124,22 +126,16 @@ The network includes multiple layers of redundancy:
   - HQ-CSW1 active for VLAN 10
   - HQ-CSW2 active for VLAN 20
 
----
-
 ### Layer 2 Redundancy
 - EtherChannel (LACP) between core switches
 - Dual uplinks from access switches to both core switches
 - STP tuning aligned with HSRP roles
-
----
 
 ### WAN Redundancy
 - Dual HQ routers (HQ-R1 / HQ-R2)
 - Each core switch connects to both routers
 - Multiple paths to the WAN
 - Failover is achieved through OSPF convergence and redundant physical paths
-
----
 
 ### Routing Redundancy
 - OSPF dynamically recalculates routes
@@ -157,6 +153,7 @@ The network includes multiple layers of redundancy:
 - EtherChannel (Link aggregation)
 - 802.1Q Trunking
 - Rapid PVST+ (Spanning Tree)
+- Spanning Tree Enhancements (Portfast, BPDU Guard)
 - ACLs (Traffic filtering between departments)
 - DHCP Snooping & DAI (Layer 2 security)
 - Port Security (Access layer protection)
