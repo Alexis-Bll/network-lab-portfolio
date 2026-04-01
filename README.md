@@ -48,13 +48,16 @@ This environment allows me to replicate realistic enterprise scenarios and test 
 
 ## Key Technologies
 
-* VLANs (802.1Q)
-* Inter-VLAN Routing (SVIs)
-* OSPF (Area 0)
-* HSRP (First Hop Redundancy)
-* Spanning Tree Protocol (Rapid-PVST)
-* EtherChannel (LACP)
-* Access Control Lists (ACLs)
+Technologies and concepts I am working with include:
+
+* Networking fundamentals (VLANs, subnetting, switching)
+* Routing protocols (OSPF and static routing)
+* Network redundancy and high availability (e.g. HSRP, STP)
+* Layer 2 technologies (EtherChannel, trunking)
+* Network security fundamentals (ACLs, segmentation)
+* Virtual lab environments (EVE-NG)
+
+This list will continue to evolve as I expand into areas such as firewalls, network security, and infrastructure technologies.
 
 ---
 
