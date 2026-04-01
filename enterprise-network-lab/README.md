@@ -64,8 +64,13 @@ The lab is built using:
 - Implement VLAN segmentation for different departments
 - Configure inter-VLAN routing using Layer 3 switches
 - Deploy OSPF for dynamic routing across all sites
-- Implement HSRP for gateway redundancy
-- Apply ACLs for traffic filtering
+- Implement HSRP for gateway redundancy and high availability
+- Configure Rapid Spanning Tree (RSTP) for efficient Layer 2 convergence
+- Optimise Layer 2 topology using Spanning Tree enhancements (PortFast, BPDU Guard)
+- Apply Layer 2 security features including DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security
+- Configure EtherChannel for link aggregation and redundancy
+- Apply Access Control Lists (ACLs) for traffic filtering and segmentation
+- Validate network resilience through failover and troubleshooting scenarios
 
 ---
 
