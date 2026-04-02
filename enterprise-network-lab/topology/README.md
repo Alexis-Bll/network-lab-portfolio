@@ -104,8 +104,8 @@ The entire network uses **private IP addressing**, simulating an enterprise MPLS
 ### LAN Networks
 - VLAN 10 (Admin): 192.168.10.0/24
 - VLAN 20 (Servers): 192.168.20.0/24
-- Engineering Branch: 192.168.30.0/24
-- Sales Branch: 192.168.40.0/24
+- VLAN 30 (Engineering Branch): 192.168.30.0/24
+- VLAN 40 (Sales Branch): 192.168.40.0/24
 
 ### WAN / Transit Networks
 - /30 subnets used for point-to-point links (efficient and scalable)
