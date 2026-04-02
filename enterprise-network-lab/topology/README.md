@@ -17,7 +17,7 @@ The design demonstrates how enterprise networks use hierarchical architecture, p
 - **HQ Design**: Collapsed core using dual Layer 3 switches  
 - **Branch Design**: Single router and access switch per branch
 - **WAN Edge Devices**: HQ-R1, HQ-R2, BR1, BR2
-- **Traffic Flow**: Inter-VLAN routing occurs at the HQ core, while inter-site traffic is routed via OSPF across the WAN edge and service provider network
+- **Traffic Flow**: Inter-VLAN routing is performed at the core layer (SVIs), while inter-site traffic is routed via OSPF across the WAN edge
 
 ---
 
@@ -42,7 +42,7 @@ Layer 3 switches providing:
 Provides:
 - End-device connectivity
 - VLAN segmentation
-- Layer 2 security features
+- Layer 2 security is applied at the access layer using DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security to protect against common network attacks
 
 ---
 
@@ -70,7 +70,7 @@ Provides:
   * Default gateways for branch LANs
   * Edge devices connecting to the WAN
 
-
+* The design reflects a balance between performance, redundancy, and operational simplicity, aligning with real-world enterprise network design principles
 ---
 
 ## Branch Sites
@@ -129,7 +129,7 @@ The network includes multiple layers of redundancy:
 ### Layer 2 Redundancy
 - EtherChannel (LACP) between core switches
 - Dual uplinks from access switches to both core switches
-- STP tuning aligned with HSRP roles
+- Spanning Tree root bridge placement aligned with HSRP active gateways to optimise traffic flow and avoid suboptimal Layer 2 paths
 
 ### WAN Redundancy
 - Dual HQ routers (HQ-R1 / HQ-R2)
