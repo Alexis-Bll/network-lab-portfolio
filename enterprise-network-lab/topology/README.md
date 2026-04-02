@@ -26,10 +26,11 @@ The design demonstrates how enterprise networks use hierarchical architecture, p
 ### Core Layer (HQ)
 - HQ-CSW1
 - HQ-CSW2
+
 Layer 3 switches providing:
- - Inter-VLAN routing (SVIs)
- - HSRP gateway redundancy
- - Core switching and traffic distribution
+- Inter-VLAN routing (SVIs)
+- HSRP gateway redundancy
+- Core switching and traffic distribution
 
 ---
 
