@@ -93,6 +93,8 @@ This configuration is applied to routers only (BR1, BR2, ISP, HQ-R1, HQ-R2), as 
 ## Verification Commands
 
 * `show running-config`
+<img width="882" height="667" alt="image" src="https://github.com/user-attachments/assets/a477753b-9161-4c11-a609-1caf4f18b316" />
+
 * `show ip ssh`
 * `show users`
 * `show line`
