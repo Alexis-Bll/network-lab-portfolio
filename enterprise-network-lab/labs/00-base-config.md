@@ -69,6 +69,27 @@ Unauthorized access is prohibited
 
 ---
 
+## Interface Automation (EVE-NG Workaround)
+
+Due to certain EVE-NG router images not preserving interface states after reboot, an Embedded Event Manager (EEM) applet is used to automatically bring interfaces up on boot.
+
+This ensures consistent device behaviour across lab restarts without requiring manual intervention.
+
+```cisco
+event manager applet AUTO-UP-INTERFACES
+ event none
+ action 1.0 cli command "enable"
+ action 2.0 cli command "conf t"
+ action 3.0 cli command "interface range g0/0 - 2"
+ action 4.0 cli command "no shutdown"
+```
+
+The range may vary per router depending on what interfaces need to be up and operational.
+
+This configuration is applied to routers only (BR1, BR2, ISP, HQ-R1, HQ-R2), as switches retain interface state correctly within the lab environment.
+
+---
+
 ## Verification Commands
 
 * `show running-config`
