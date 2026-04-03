@@ -110,7 +110,9 @@ This configuration is applied to routers only (BR1, BR2, ISP, HQ-R1, HQ-R2), as 
 
 * Establishing a consistent baseline configuration simplifies management across multiple devices
 * SSH provides secure remote access compared to Telnet
-* Local authentication ensures controlled access to devices
+* Local authentication ensures controlled and secure access to network devices
 * Proper console configuration improves usability during troubleshooting
+* Identifying and working around platform limitations (EVE-NG interface state issue) reinforces the importance of adaptability in lab environments
+* Using automation (EEM applets) to maintain consistent device behaviour demonstrates practical problem-solving beyond standard configuration tasks
 
 --- 
