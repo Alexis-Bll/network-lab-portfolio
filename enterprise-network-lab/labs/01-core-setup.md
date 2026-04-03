@@ -47,7 +47,7 @@ This prevents one switch from remaining idle and improves overall efficiency.
 
 VLANs were created on both core switches to ensure consistency across the network.
 
-```bash
+```cisco
 vlan 10
  name ADMIN
 
@@ -69,7 +69,7 @@ This provides:
 
 On this platform, trunk encapsulation must be defined before enabling trunk mode:
 
-```bash
+```cisco
 switchport trunk encapsulation dot1q
 ```
 This behaviour is typical of older Cisco IOS platforms that support multiple encapsulation types.
@@ -78,7 +78,7 @@ This behaviour is typical of older Cisco IOS platforms that support multiple enc
 
 ### HQ-CSW1 EtherChannel Configuration
 
-```bash
+```cisco
 interface range gi0/2 - 3
  switchport trunk encapsulation dot1q
  switchport mode trunk
@@ -92,7 +92,7 @@ interface port-channel 1
 
 ### HQ-CSW2 EtherChannel Configuration
 
-```bash
+```cisco
 interface range gi0/2 - 3
  switchport trunk encapsulation dot1q
  switchport mode trunk
@@ -112,7 +112,7 @@ Uplink interfaces were configured as trunk ports to allow multiple VLANs to trav
 
 ### Example
 
-```bash
+```cisco
 interface range gi1/0 - 3
  switchport trunk encapsulation dot1q
  switchport mode trunk
@@ -129,7 +129,7 @@ Switch Virtual Interfaces (SVIs) were created to provide Layer 3 gateways.
 
 ### HQ-CSW1 Configuration
 
-```bash
+```cisco
 ip routing
 
 interface vlan 10
@@ -149,7 +149,7 @@ interface vlan 20
 
 ### HQ-CSW2 Configuration
 
-```bash
+```cisco
 ip routing
 
 interface vlan 10
@@ -163,6 +163,30 @@ interface vlan 20
  standby 20 ip 192.168.20.1
  standby 20 priority 110
  standby 20 preempt
+```
+
+---
+
+## Loopback Interfaces (Management & Router ID)
+
+Loopback interfaces were configured on the core switches to provide a stable management address and consistent Layer 3 identity.
+
+Unlike physical interfaces, loopbacks remain up as long as the device is operational, making them ideal for management access and routing protocols.
+
+---
+
+### HQ-CSW1
+
+```cisco
+interface loopback0
+ ip address 1.1.1.1 255.255.255.255
+```
+
+### HQ-CSW2
+
+```cisco
+interface loopback0
+ ip address 2.2.2.2 255.255.255.255
 ```
 
 ---
@@ -188,7 +212,7 @@ Rapid PVST+ significantly reduces convergence time compared to traditional STP, 
 
 
 ### Configuration
-```bash
+```cisco
 spanning-tree mode rapid-pvst
 ```
 
@@ -204,7 +228,7 @@ spanning-tree mode rapid-pvst
 
 ### Verification
 
-```bash
+```cisco
 show spanning-tree summary
 ```
 
@@ -224,14 +248,14 @@ Spanning Tree was aligned with HSRP to optimise traffic flow and avoid unnecessa
 
 ### HQ-CSW1 Configuration
 
-```bash
+```cisco
 spanning-tree vlan 10 root primary
 spanning-tree vlan 20 root secondary
 ```
 
 ### HQ-CSW2 Configuration
 
-```bash
+```cisco
 spanning-tree vlan 10 root secondary
 spanning-tree vlan 20 root primary
 ```
@@ -242,7 +266,7 @@ spanning-tree vlan 20 root primary
 
 The following commands were used to validate the configuration:
 
-```bash
+```cisco
 show vlan brief
 show interfaces trunk
 show etherchannel summary
@@ -282,7 +306,7 @@ To better reflect real-world enterprise design, the following optimisations were
 
 Trunk links were configured to only allow the required VLANs instead of all VLANs by default.
 
-```bash
+```cisco
 switchport trunk allowed vlan 10,20
 ```
 
@@ -295,7 +319,7 @@ Benefits:
 
 ## Disabling DTP (Dynamic Trunking Protocol)
 
-```bash
+```cisco
 switchport nonegotiate
 ```
 
@@ -308,7 +332,7 @@ Benefits:
 
 ## Root Guard (Access-Facing Ports)
 
-```bash
+```cisco
 interface range gi1/0 - 3
  spanning-tree guard root
 ```
