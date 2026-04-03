@@ -39,7 +39,7 @@ The screenshot shows the network topology within Eve-ng. Base configurations hav
 
 ## Example Configuration (HQ-CSW1)
 
-```bash
+```cisco
 hostname HQ-CSW1
 no ip domain-lookup
 
