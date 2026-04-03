@@ -125,8 +125,6 @@ Interface numbering may vary depending on the lab topology and switch image used
 
 Switch Virtual Interfaces (SVIs) were created to provide Layer 3 gateways.
 
----
-
 ### HQ-CSW1 Configuration
 
 ```cisco
