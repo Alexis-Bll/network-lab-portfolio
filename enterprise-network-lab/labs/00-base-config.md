@@ -96,8 +96,13 @@ This configuration is applied to routers only (BR1, BR2, ISP, HQ-R1, HQ-R2), as 
 <img width="882" height="667" alt="image" src="https://github.com/user-attachments/assets/a477753b-9161-4c11-a609-1caf4f18b316" />
 
 * `show ip ssh`
+<img width="868" height="318" alt="image" src="https://github.com/user-attachments/assets/613afd73-d0bc-45b3-81af-ea5053b80d7d" />
+
 * `show users`
+<img width="878" height="146" alt="image" src="https://github.com/user-attachments/assets/d08f4341-c164-4641-8d9b-27926ef52d40" />
+
 * `show line`
+<img width="880" height="427" alt="image" src="https://github.com/user-attachments/assets/d6b10d78-5a18-4941-b83f-7b9b5ed89ab7" />
 
 ---
 
