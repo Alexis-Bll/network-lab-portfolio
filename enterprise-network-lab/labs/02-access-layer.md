@@ -59,6 +59,79 @@ vlan 20
 
 ---
 
+## Management Access (SVI for SSH)
+
+Although the access switches operate purely at Layer 2, they still require an IP address for remote management.
+
+To support SSH access, each access switch is configured with a management SVI in VLAN 10. This provides a reachable IP address for administration, while the default gateway points to the HSRP virtual IP on the core layer.
+
+VLAN 10 is used as the management VLAN because it already exists across the HQ access layer and has routed reachability through the core switches.
+
+---
+
+### Management IP Addressing
+
+- HQ-ASW1 → 192.168.10.4
+- HQ-ASW2 → 192.168.10.5
+- HQ-SSW1 → 192.168.10.6
+- HQ-SSW2 → 192.168.10.7
+
+Default gateway for all access switches:
+
+```text
+192.168.10.1
+```
+
+---
+
+### HQ-ASW1 Configuration
+
+```cisco
+interface vlan 10
+ ip address 192.168.10.4 255.255.255.0
+ no shutdown
+
+ip default-gateway 192.168.10.1
+```
+
+---
+
+### HQ-ASW2 Configuration
+
+```cisco
+interface vlan 10
+ ip address 192.168.10.5 255.255.255.0
+ no shutdown
+
+ip default-gateway 192.168.10.1
+```
+
+---
+
+### HQ-SSW1 Configuration
+
+```cisco
+interface vlan 10
+ ip address 192.168.10.6 255.255.255.0
+ no shutdown
+
+ip default-gateway 192.168.10.1
+```
+
+---
+
+### HQ-SSW2 Configuration
+
+```cisco
+interface vlan 10
+ ip address 192.168.10.7 255.255.255.0
+ no shutdown
+
+ip default-gateway 192.168.10.1
+```
+
+---
+
 ## Uplink Configuration (Trunk Links)
 
 Interfaces connecting access switches to the core were configured as trunk ports:
