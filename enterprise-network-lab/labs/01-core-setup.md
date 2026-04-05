@@ -305,7 +305,6 @@ The following commands were used to validate the configuration:
 ## Additional Enhancements
 
 To better reflect real-world enterprise design, the following optimisations were implemented:
----
 
 ### VLAN Restriction on Trunks
 
