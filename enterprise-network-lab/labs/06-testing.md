@@ -63,7 +63,26 @@ The following connectivity scenarios were tested:
 - ```ping 192.168.40.10```
 <img width="884" height="237" alt="image" src="https://github.com/user-attachments/assets/4e6c60a9-fe42-41ea-b3ca-619a5ab70b1d" />
 
+#### Ping from Engineering to Sales PC
+
+- ```ping 192.168.40.10```
+<img width="880" height="325" alt="image" src="https://github.com/user-attachments/assets/5732823f-e1bf-4ab5-94f7-720aba383c65" />
+
+#### Ping from Sales to Engineering PC
+
+- ```ping 192.168.40.10```
+<img width="880" height="225" alt="image" src="https://github.com/user-attachments/assets/b283bf61-95bf-4b67-9f22-9207726ed892" />
+
 ---
+
+### Result
+
+- All permitted traffic successfully reached its destination
+- Inter-branch communication was correctly blocked by ACL policies
+- Confirms correct operation of VLAN segmentation, OSPF routing, and ACL enforcement
+
+---
+
 
 ## Known Behaviour / Platform Limitation (IOSvL2)
 
