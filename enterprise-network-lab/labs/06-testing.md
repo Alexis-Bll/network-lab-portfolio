@@ -29,10 +29,10 @@ The following connectivity scenarios were tested:
 
 #### 1. Branch to HQ
 
-- Engineering PC → HQ Admin VLAN (192.168.10.0/24)
-- Engineering PC → HQ Server VLAN (192.168.20.0/24)
-- Sales PC → HQ Admin VLAN (192.168.10.0/24)
-- Sales PC → HQ Server VLAN (192.168.20.0/24)
+- HQ-R2 → HQ Admin VLAN (192.168.10.0/24)
+- HQ Admin VLAN → HQ Server VLAN (192.168.20.0/24)
+- HQ Admin VLAN → Engineering VLAN (192.168.30.0/24)
+- HQ Admin VLAN → Sales VLAN (192.168.40.0/24)
 
 #### 2. Inter-Branch Communication
 
@@ -82,6 +82,62 @@ The following connectivity scenarios were tested:
 - Confirms correct operation of VLAN segmentation, OSPF routing, and ACL enforcement
 
 ---
+
+## Management Access (SSH Testing)
+
+### Objective
+
+To verify that all network devices can be securely accessed using SSH, ensuring proper management connectivity across the enterprise network.
+
+---
+
+### Test Scenarios
+
+The following management access scenarios were tested:
+
+#### 1. Access Switch to Core
+
+- HQ Access Switch → Core Switch (SVI / Loopback)
+
+#### 2. Router to Router
+
+- HQ Router → Branch Router (Loopback)
+- Branch Router → HQ Router (Loopback)
+
+#### 3. End Device (HQ Access Switch to Network Devices)
+
+- HQ Access Switch → Branch Switch (Management SVI)
+
+Note:
+- SSH testing was performed between network devices (routers and switches), as end hosts in this lab environment do not natively support SSH clients.
+- This reflects real-world scenarios where network devices are commonly managed from other infrastructure devices or dedicated management workstations.
+
+
+
+---
+
+### Commands Used
+
+#### ssh from HQ-access to Core
+
+- ```ssh 1.1.1.1```
+<img width="875" height="549" alt="image" src="https://github.com/user-attachments/assets/d21cfbba-cbd2-4157-9980-a0508d24d3cb" />
+
+#### ssh from HQ Router to Core
+
+- ```ssh 1.1.1.1```
+<img width="887" height="545" alt="image" src="https://github.com/user-attachments/assets/ec8713a4-7d71-47f9-9997-5ceb85da5b16" />
+
+#### ssh from HQ Router to Branch Router
+
+- ```ssh 7.7.7.7```
+<img width="881" height="588" alt="image" src="https://github.com/user-attachments/assets/0f575928-17c4-4442-bec2-37fa1d14801d" />
+
+#### ssh HQ Access Switch to Branch Switch
+
+- ```ssh 192.168.30.2```
+<img width="881" height="532" alt="image" src="https://github.com/user-attachments/assets/97a2c5da-37d8-4f7d-86ee-8952247146bf" />
+
 
 
 ## Known Behaviour / Platform Limitation (IOSvL2)
