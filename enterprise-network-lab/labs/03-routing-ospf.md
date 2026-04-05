@@ -123,6 +123,7 @@ interface loopback0
 router ospf 1
  router-id 3.3.3.3
  network 3.3.3.3 0.0.0.0 area 0
+ passive-interface loopback0
 ```
 
 ---
@@ -136,6 +137,9 @@ interface loopback0
 router ospf 1
  router-id 1.1.1.1
  network 1.1.1.1 0.0.0.0 area 0
+ passive-interface loopback0
+ passive-interface vlan 10
+ passive-interface vlan 20
  ```
 
 ## Passive Interfaces
