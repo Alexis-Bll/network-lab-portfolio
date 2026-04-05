@@ -133,12 +133,13 @@ ping 192.168.20.10
 
 ## Verification Commands
 
-```cisco
-show access-lists
-show ip interface gi0/0
-```
+- ```show access-lists```
+<img width="885" height="358" alt="image" src="https://github.com/user-attachments/assets/4bfd9ccf-2fce-4074-992f-8df9634c2ff2" />
 
-<img width="886" height="659" alt="image" src="https://github.com/user-attachments/assets/adefdb4c-79de-4cd1-8af7-80659d502f0a" />
+- ```show ip interface gi0/0```
+<img width="888" height="237" alt="image" src="https://github.com/user-attachments/assets/3ce49e08-b2ee-440a-8aa5-efe53e12172b" />
+
+
 
 
 ### These commands confirm:
