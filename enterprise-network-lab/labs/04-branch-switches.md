@@ -10,7 +10,7 @@ Each branch site is designed as a simple access network connected to a branch ro
 
 ## Branch Network Design
 
-Each branch consists of:
+Each branch site consists of:
 
 - One access switch
 - One router
@@ -44,14 +44,14 @@ VLANs were created on each branch switch to match their respective subnet.
 
 ### BR-SW1 (Engineering)
 
-```bash
+```cisco
 vlan 30
  name ENGINEERING
 ```
 
 ### BR-SW2 (Sales)
 
-```bash
+```cisco
 vlan 40
  name SALES
 ```
@@ -60,11 +60,10 @@ vlan 40
 
 ## Management Access (SVI Configuration)
 
-Branch switches are managed using a Switch Virtual Interface (SVI) within their local VLAN.
-
-As each branch operates with a single VLAN, the management IP is assigned within the same subnet as the connected end devices. This allows the switch to be accessed remotely via SSH.
-
-The default gateway is set to the branch router, which provides connectivity to the wider enterprise network.
+- Branch switches are managed using a Switch Virtual Interface (SVI) within their local VLAN.
+- As each branch operates with a single VLAN, the management IP is assigned within the same subnet as the connected end devices. This allows the switch to be accessed remotely via SSH.
+- The default gateway is set to the branch router, which provides connectivity to the wider enterprise network.
+- Management traffic is carried in-band within the local VLAN, allowing the switch to be reachable from the wider enterprise network via the branch router.
 
 ---
 
@@ -77,6 +76,9 @@ interface vlan 30
 
 ip default-gateway 192.168.30.1
 ```
+
+---
+
 ### BR-SW2 (Sales VLAN 40)
 
 ```cisco
@@ -86,6 +88,9 @@ interface vlan 40
 
 ip default-gateway 192.168.40.1
 ```
+
+---
+
 ### Design Justification
 - Provides simple and effective remote management using SSH
 - Avoids introducing additional VLAN complexity at the branch
@@ -186,8 +191,9 @@ Connectivity tests were also performed:
 
 <img width="875" height="666" alt="image" src="https://github.com/user-attachments/assets/4e74a9aa-6787-47a5-8d6a-d6fd0f4cfac1" />
 
+These tests confirm both local VLAN connectivity and end-to-end reachability across the enterprise network.
 
-Successful communication confirmed correct Layer 2 configuration.
+Connectivity across sites confirms correct routing via OSPF configured on the branch and core routers.
 
 Access-control lists have been configured in the next section to stop communication between Sales and Engineering.
 
@@ -206,8 +212,8 @@ This reflects a typical small branch deployment in enterprise environments.
 
 ## Summary
 
-Branch switches were successfully configured to provide secure Layer 2 connectivity for end devices.
-Each branch site now integrates into the wider enterprise network via its router, allowing full communication with HQ and other branches.
-This completes the branch access layer configuration and prepares the network for implementing traffic control using ACLs.
+- Branch switches were successfully configured to provide secure Layer 2 connectivity for end devices.
+- Each branch site now integrates into the wider enterprise network via its router, allowing full communication with HQ and other branches.
+- This completes the branch access layer configuration and prepares the network for implementing traffic control using ACLs.
 
 ---
