@@ -238,7 +238,8 @@ spanning-tree mode rapid-pvst
 show spanning-tree summary
 ```
 
-<img width="856" height="580" alt="image" src="https://github.com/user-attachments/assets/e98264f3-7754-4e65-a720-69a618682492" />
+<img width="874" height="423" alt="image" src="https://github.com/user-attachments/assets/e6bf65a4-1e50-4481-9b0b-d38b4e0d27d4" />
+
 
 
 Expected output should confirm:
