@@ -249,9 +249,7 @@ The following tests were performed to validate the network:
 ping 192.168.10.1
 ping 192.168.20.1
 ```
-![HQ Topology](../topology/vpc_ping_screenshot.png)
-
-![HQ Topology](../topology/server_ping_screenshot.png)
+<img width="884" height="668" alt="image" src="https://github.com/user-attachments/assets/f5888c34-e802-49e4-9bad-9fcfdffa260d" />
 
 ---
 
@@ -261,7 +259,8 @@ ping 192.168.20.1
 ping 192.168.20.10
 ```
 
-![HQ Topology](../topology/vpc_ping_screenshot2.png)
+<img width="878" height="239" alt="image" src="https://github.com/user-attachments/assets/7bc65c49-8915-45de-a271-f9a3b1215ce6" />
+
 
 ---
 
@@ -361,13 +360,14 @@ Without these bindings, ARP traffic is dropped and devices cannot communicate.
 
 DAI operation was verified using:
 
-```cisco
-show ip arp inspection statistics
-show ip arp inspection interfaces
-show ip source binding
-```
+- ```show ip arp inspection statistics```
+<img width="884" height="412" alt="image" src="https://github.com/user-attachments/assets/923e3512-99a9-4153-b6bb-4b8b1284d79c" />
 
-<img width="887" height="836" alt="image" src="https://github.com/user-attachments/assets/6976d3f2-4980-4b14-b49a-6a8a1d8bc9d9" />
+- ```show ip arp inspection interfaces```
+<img width="885" height="338" alt="image" src="https://github.com/user-attachments/assets/132dbdca-1779-4d1a-a4ec-62fee2c0e7e6" />
+
+- ```show ip source binding```
+<img width="880" height="197" alt="image" src="https://github.com/user-attachments/assets/130d2439-14fe-496b-8a79-5898cab3d71d" />
 
 
 ---
@@ -433,12 +433,11 @@ interface gi0/2
 
 Port security was verified using:
 
-```cisco
-show port-security interface gi0/2
-show port-security address
-```
-<img width="878" height="531" alt="image" src="https://github.com/user-attachments/assets/6d959b23-a64c-40d5-aee7-d5148f22fc83" />
+- ```show port-security interface gi0/2```
+<img width="882" height="353" alt="image" src="https://github.com/user-attachments/assets/579fd378-3e3e-4af7-9bb5-71edc806b312" />
 
+- ```show port-security address```
+<img width="887" height="306" alt="image" src="https://github.com/user-attachments/assets/fcb71b60-a246-48e4-84e4-3bd6e9303d5c" />
 
 ---
 
