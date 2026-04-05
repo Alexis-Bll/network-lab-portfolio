@@ -132,11 +132,20 @@ ip default-gateway 192.168.10.1
 
 ---
 
+### Design Justification
+
+- Provides IP-based management for Layer 2 switches
+- Uses a dedicated management address on each switch without conflicting with end devices
+- Relies on the HSRP virtual IP at the core for gateway redundancy
+- Keeps management simple and consistent across the HQ access layer
+
+---
+
 ## Uplink Configuration (Trunk Links)
 
 Interfaces connecting access switches to the core were configured as trunk ports:
 
-```bash
+```cisco
 interface range gi0/0 - 1
  switchport trunk encapsulation dot1q
  switchport mode trunk
@@ -158,7 +167,7 @@ Access ports were configured to assign end devices to the correct VLAN and enabl
 
 ### Admin Switches (VLAN 10)
 
-```bash
+```cisco
 interface gi0/2
  switchport mode access
  switchport access vlan 10
@@ -168,7 +177,7 @@ interface gi0/2
 
 ### Server Switches (VLAN 20)
 
-```bash
+```cisco
 interface gi0/2
  switchport mode access
  switchport access vlan 20
@@ -236,7 +245,7 @@ The following tests were performed to validate the network:
 
 ### Gateway Reachability
 
-```bash
+```cisco
 ping 192.168.10.1
 ping 192.168.20.1
 ```
@@ -248,7 +257,7 @@ ping 192.168.20.1
 
 ### Inter-VLAN Routing
 
-```bash
+```cisco
 ping 192.168.20.10
 ```
 
@@ -273,7 +282,7 @@ This was caused by the VLAN interface (SVI) being in a down/down state on the co
 
 The issue was resolved by enabling the interface:
 
-```bash
+```cisco
 interface vlan 10
  no shutdown
 ```
@@ -299,7 +308,7 @@ DAI works by validating ARP packets against a trusted database of IP-to-MAC bind
 
 DAI was enabled for the relevant VLANs:
 
-```bash
+```cisco
 ip arp inspection vlan 10,20
 ```
 
@@ -309,7 +318,7 @@ ip arp inspection vlan 10,20
 
 DAI relies on DHCP Snooping to build a binding table of valid IP-to-MAC mappings.
 
-```bash
+```cisco
 ip dhcp snooping
 ip dhcp snooping vlan 10,20
 ```
@@ -320,7 +329,7 @@ ip dhcp snooping vlan 10,20
 
 Uplink interfaces toward the core switches were configured as trusted:
 
-```bash
+```cisco
 interface range gi0/0 - 1
  ip dhcp snooping trust
  ip arp inspection trust
@@ -341,7 +350,7 @@ interface range gi0/0 - 1
 Since static addressing is used, manual bindings were required:
 
 ### Example:
-```bash
+```cisco
 ip source binding 5000.0002.0000 vlan 20 192.168.20.10 interface gi0/2
 ```
 Without these bindings, ARP traffic is dropped and devices cannot communicate.
@@ -352,7 +361,7 @@ Without these bindings, ARP traffic is dropped and devices cannot communicate.
 
 DAI operation was verified using:
 
-```bash
+```cisco
 show ip arp inspection statistics
 show ip arp inspection interfaces
 show ip source binding
@@ -394,7 +403,7 @@ Port security was implemented to restrict access at the access layer.
 
 ### Configuration
 
-```bash
+```cisco
 interface gi0/2
  switchport mode access
  switchport access vlan 10
@@ -424,7 +433,7 @@ interface gi0/2
 
 Port security was verified using:
 
-```bash
+```cisco
 show port-security interface gi0/2
 show port-security address
 ```
