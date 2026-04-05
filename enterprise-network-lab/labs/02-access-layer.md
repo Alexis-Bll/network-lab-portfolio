@@ -25,6 +25,8 @@ Each access switch is dual-homed to both core switches, providing redundancy and
 
 The access layer operates purely at Layer 2, with all routing handled by the core layer via SVIs.
 
+Management traffic is carried in-band over VLAN 10, ensuring all access switches remain reachable from the admin network.
+
 ---
 
 ## Spanning Tree Protocol
@@ -446,7 +448,7 @@ Port security was verified using:
 Port security enforces device-level access control at the edge, complementing:
 - DHCP Snooping
 - Dynamic ARP Inspection
-Together, these provide ehanced Layer 2 security.
+Together, these provide advanced Layer 2 security.
 
 ---
 
