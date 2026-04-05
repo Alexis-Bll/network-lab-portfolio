@@ -146,7 +146,7 @@ router ospf 1
 
 To improve efficiency and security, OSPF was not enabled on user-facing interfaces:
 
-```bash
+```cisco
 router ospf 1
  passive-interface vlan 10
  passive-interface vlan 20
@@ -158,6 +158,14 @@ This prevents unnecessary OSPF neighbor formation on access networks while still
 note:
 - passive-interface loopback0 was applied to all routers and core switches.
 - passive-interface vlan 10 & vlan 20 was applied to core switches only.
+
+---
+
+### Design Justification
+- Provides stable IP reachability for management access
+- Ensures router IDs remain consistent even if physical interfaces change
+- Advertises loopbacks as /32 routes across the network
+- Aligns with enterprise best practices for management and routing design
 
 ---
 
@@ -193,12 +201,14 @@ OSPF automatically performs load balancing across equal-cost paths (ECMP).
 
 The following commands were used to verify correct operation:
 
-```bash
-show ip ospf neighbor
-show ip route
-show ip protocols
-```
-![HQ Topology](../topology/isp_sh_ip_ospf_sh_ip_route.png)
+- ```show ip ospf neighbor```
+<img width="883" height="212" alt="image" src="https://github.com/user-attachments/assets/123aa4eb-bace-4418-8207-0f228cfc4a5d" />
+
+- ```show ip route```
+<img width="888" height="668" alt="image" src="https://github.com/user-attachments/assets/3d84814d-5c20-416d-bbeb-816b4203236b" />
+
+- ```show ip protocols```
+<img width="883" height="672" alt="image" src="https://github.com/user-attachments/assets/678169b8-35c1-4fdf-9a5c-9decdf494c58" />
 
 ---
 
@@ -210,11 +220,13 @@ show ip protocols
 
 ### Example:
 
-```bash
+```cisco
 ping 192.168.30.1
 ping 192.168.40.1
 ```
-![HQ Topology](../topology/server_pinging_branches.png)
+<img width="883" height="398" alt="image" src="https://github.com/user-attachments/assets/d1f92e4c-b97d-4933-8aae-3a9f47c1c818" />
+
+
 ---
 
 ## Observations
