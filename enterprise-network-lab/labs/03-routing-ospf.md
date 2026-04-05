@@ -78,9 +78,10 @@ Each device was assigned a unique router ID for stability and troubleshooting.
 
 ### Example Configuration (HQ-CSW1)
 
-```bash
+```cisco
 router ospf 1
  router-id 1.1.1.1
+ network 1.1.1.1 0.0.0.0 area 0
  network 192.168.10.0 0.0.0.255 area 0
  network 192.168.20.0 0.0.0.255 area 0
  network 10.0.1.0 0.0.0.3 area 0
@@ -88,6 +89,54 @@ router ospf 1
 ```
 
 ---
+
+## Loopback Interfaces and OSPF Advertisement
+
+Loopback interfaces were configured on all Layer 3 devices to provide a stable management address and consistent router identity.
+
+Unlike physical interfaces, loopbacks remain up as long as the device is operational, making them well suited for SSH management and OSPF router IDs.
+
+To ensure reachability across the entire enterprise network, each loopback was advertised into OSPF as a /32 route in Area 0.
+
+This allows routers and core switches to be managed using stable loopback addresses rather than relying only on physical or SVI addresses.
+
+---
+
+### Loopback Addressing
+
+- HQ-CSW1 → 1.1.1.1/32
+- HQ-CSW2 → 2.2.2.2/32
+- HQ-R1 → 3.3.3.3/32
+- HQ-R2 → 4.4.4.4/32
+- BR1 → 5.5.5.5/32
+- BR2 → 6.6.6.6/32
+- ISP → 7.7.7.7/32
+
+---
+
+### Example Configuration (HQ-R1)
+
+```cisco
+interface loopback0
+ ip address 3.3.3.3 255.255.255.255
+
+router ospf 1
+ router-id 3.3.3.3
+ network 3.3.3.3 0.0.0.0 area 0
+```
+
+---
+
+### Example Configuration (HQ-CSW1)
+
+```cisco 
+interface loopback0
+ ip address 1.1.1.1 255.255.255.255
+
+router ospf 1
+ router-id 1.1.1.1
+ network 1.1.1.1 0.0.0.0 area 0
+ ```
 
 ## Passive Interfaces
 
@@ -97,9 +146,14 @@ To improve efficiency and security, OSPF was not enabled on user-facing interfac
 router ospf 1
  passive-interface vlan 10
  passive-interface vlan 20
+ passive-interface loopback0
 ```
 
 This prevents unnecessary OSPF neighbor formation on access networks while still advertising the networks.
+
+note:
+- passive-interface loopback0 was applied to all routers and core switches.
+- passive-interface vlan 10 & vlan 20 was applied to core switches only.
 
 ---
 
