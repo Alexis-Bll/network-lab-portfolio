@@ -72,7 +72,7 @@ OSPF was configured on all Layer 3 devices using Process ID 1.
 
 All devices were placed into Area 0 (backbone area).
 
-Each device was assigned a unique router ID for stability and troubleshooting.
+Each Layer 3 device was assigned a unique router ID, derived from its loopback interface, to provide stability and simplify troubleshooting.
 
 ---
 
@@ -118,12 +118,12 @@ This allows routers and core switches to be managed using stable loopback addres
 
 ```cisco
 interface loopback0
- ip address 3.3.3.3 255.255.255.255
+ip address 3.3.3.3 255.255.255.255
 
 router ospf 1
- router-id 3.3.3.3
- network 3.3.3.3 0.0.0.0 area 0
- passive-interface loopback0
+router-id 3.3.3.3
+network 3.3.3.3 0.0.0.0 area 0
+passive-interface loopback0
 ```
 
 ---
@@ -132,14 +132,14 @@ router ospf 1
 
 ```cisco 
 interface loopback0
- ip address 1.1.1.1 255.255.255.255
+ip address 1.1.1.1 255.255.255.255
 
 router ospf 1
- router-id 1.1.1.1
- network 1.1.1.1 0.0.0.0 area 0
- passive-interface loopback0
- passive-interface vlan 10
- passive-interface vlan 20
+router-id 1.1.1.1
+network 1.1.1.1 0.0.0.0 area 0
+passive-interface loopback0
+passive-interface vlan 10
+passive-interface vlan 20
  ```
 
 ## Passive Interfaces
@@ -148,16 +148,17 @@ To improve efficiency and security, OSPF was not enabled on user-facing interfac
 
 ```cisco
 router ospf 1
- passive-interface vlan 10
- passive-interface vlan 20
- passive-interface loopback0
+passive-interface vlan 10
+passive-interface vlan 20
+passive-interface loopback0
 ```
 
 This prevents unnecessary OSPF neighbor formation on access networks while still advertising the networks.
 
-note:
-- passive-interface loopback0 was applied to all routers and core switches.
-- passive-interface vlan 10 & vlan 20 was applied to core switches only.
+### Implementation Notes
+
+- `passive-interface loopback0` was applied to all routers and core switches
+- `passive-interface vlan 10` and `vlan 20` were applied to core switches only
 
 ---
 
@@ -176,6 +177,7 @@ Once OSPF was enabled:
 - All routers dynamically learned remote networks
 - Manual static routes were no longer required
 - The network converged automatically
+- Loopback interfaces are also reachable across the network, enabling stable SSH management of all Layer 3 devices.
 
 ### Example:
 
@@ -209,6 +211,9 @@ The following commands were used to verify correct operation:
 
 - ```show ip protocols```
 <img width="883" height="672" alt="image" src="https://github.com/user-attachments/assets/678169b8-35c1-4fdf-9a5c-9decdf494c58" />
+
+- ```show ip route | include 1.1.1.1|2.2.2.2|3.3.3.3|4.4.4.4|5.5.5.5|6.6.6.6|7.7.7.7```
+<img width="873" height="181" alt="image" src="https://github.com/user-attachments/assets/82f146f9-67e6-456e-be03-47d8e8cf5665" />
 
 ---
 
