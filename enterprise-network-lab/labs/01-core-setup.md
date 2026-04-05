@@ -189,6 +189,14 @@ interface loopback0
 
 ---
 
+### Integration with Routing and Management
+
+Loopback interfaces are advertised into OSPF to ensure reachability across the network.
+
+They are also used as the source interface for SSH to provide consistent management access.
+
+---
+
 ## HSRP Design
 
 HSRP provides redundant default gateways:
