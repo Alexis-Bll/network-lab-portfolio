@@ -58,13 +58,49 @@ vlan 40
 
 ---
 
+## Management Access (SVI Configuration)
+
+Branch switches are managed using a Switch Virtual Interface (SVI) within their local VLAN.
+
+As each branch operates with a single VLAN, the management IP is assigned within the same subnet as the connected end devices. This allows the switch to be accessed remotely via SSH.
+
+The default gateway is set to the branch router, which provides connectivity to the wider enterprise network.
+
+---
+
+### BR-SW1 (Engineering VLAN 30)
+
+```cisco
+interface vlan 30
+ ip address 192.168.30.2 255.255.255.0
+ no shutdown
+
+ip default-gateway 192.168.30.1
+```
+### BR-SW2 (Sales VLAN 40)
+
+```cisco
+interface vlan 40
+ ip address 192.168.40.2 255.255.255.0
+ no shutdown
+
+ip default-gateway 192.168.40.1
+```
+### Design Justification
+- Provides simple and effective remote management using SSH
+- Avoids introducing additional VLAN complexity at the branch
+- Aligns with a single-VLAN branch network design
+- Reflects common real-world small branch deployments
+
+---
+
 ## Access Port Configuration
 
 Access ports were configured to assign end devices to the correct VLAN.
 
 ### BR-SW1
 
-```bash
+```cisco
 interface gi0/1
  description Engineering-PC
  switchport mode access
@@ -75,7 +111,7 @@ interface gi0/1
 
 ### BR-SW2
 
-```bash
+```cisco
 interface gi0/1
  description Sales-PC
  switchport mode access
@@ -94,7 +130,7 @@ Each branch switch connects to its local router using an access port.
 
 ### BR-SW1
 
-```bash
+```cisco
 interface gi0/0
  description Uplink to BR1
  switchport mode access
@@ -103,7 +139,7 @@ interface gi0/0
 
 ### BR-SW2
 
-```bash
+```cisco
 interface gi0/0
  description Uplink to BR2
  switchport mode access
@@ -116,7 +152,7 @@ interface gi0/0
 
 Port security was implemented on access ports to restrict each port to a single device.
 
-```bash
+```cisco
 interface gi0/1
  switchport port-security
  switchport port-security maximum 1
@@ -130,13 +166,16 @@ interface gi0/1
 
 The following commands were used to verify switch operation:
 
-```bash
-show vlan brief
-show interfaces status
-show port-security
-```
 
-<img width="883" height="666" alt="image" src="https://github.com/user-attachments/assets/383c7eda-529e-496b-86aa-3eb0e31949d5" />
+- ```show vlan brief```
+<img width="885" height="668" alt="image" src="https://github.com/user-attachments/assets/150da1ad-2d27-409e-8e96-ddd6c4275da9" />
+
+- ```show interfaces status```
+<img width="881" height="355" alt="image" src="https://github.com/user-attachments/assets/4d665af2-9452-43e6-8339-078670919d38" />
+
+```show port-security```
+<img width="880" height="254" alt="image" src="https://github.com/user-attachments/assets/deb58219-31c7-415b-b228-4f1d0d090e05" />
+
 
 
 Connectivity tests were also performed:
@@ -145,7 +184,12 @@ Connectivity tests were also performed:
 - PC to HQ VLANs
 - PC to remote branch network
 
+<img width="875" height="666" alt="image" src="https://github.com/user-attachments/assets/4e74a9aa-6787-47a5-8d6a-d6fd0f4cfac1" />
+
+
 Successful communication confirmed correct Layer 2 configuration.
+
+Access-control lists have been configured in the next section to stop communication between Sales and Engineering.
 
 ---
 
