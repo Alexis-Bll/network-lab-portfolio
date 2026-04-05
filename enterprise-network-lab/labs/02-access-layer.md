@@ -51,7 +51,7 @@ The full configuration and design details are documented in the Core Layer Setup
 
 VLANs were created on all access switches to ensure consistency with the core layer.
 
-```bash
+```cisco
 vlan 10
  name ADMIN
 
