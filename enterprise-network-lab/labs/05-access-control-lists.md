@@ -2,7 +2,7 @@
 
 ## Objective
 
-The objective of this phase was to implement basic traffic filtering between branch networks using extended ACLs.
+The objective of this phase was to implement controlled traffic filtering between branch networks using extended ACLs.
 
 This demonstrates how routers can be used to enforce security policy and control communication between departments while still allowing access to shared HQ resources.
 
@@ -33,13 +33,17 @@ The ACLs were placed close to the source of the traffic, which is best practice 
 
 This prevents unwanted traffic from crossing the WAN unnecessarily.
 
+ACLs were implemented symmetrically on both branch routers to ensure bidirectional traffic restrictions between the two networks.
+
 ---
 
 ## ACL Configuration
 
 ### BR1 - Block Engineering to Sales
 
-```bash
+This ACL prevents traffic originating from the Engineering network from reaching the Sales network, while still allowing all other traffic.
+
+```cisco
 ip access-list extended BLOCK_ENG_TO_SALES
  deny ip 192.168.30.0 0.0.0.255 192.168.40.0 0.0.0.255
  permit ip any any
@@ -47,15 +51,17 @@ ip access-list extended BLOCK_ENG_TO_SALES
 
 Applied inbound on the LAN-facing interface:
 
-```bash
+```cisco
 interface gi0/0
  ip access-group BLOCK_ENG_TO_SALES in
 ```
 ---
 
-## Block sales to Engineering 
+### Block sales to Engineering 
 
-```bash
+This ACL prevents traffic originating from the Sales network from reaching the Engineering network, ensuring full bidirectional isolation.
+
+```cisco
 ip access-list extended BLOCK_SALES_TO_ENG
  deny ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
  permit ip any any
@@ -63,7 +69,7 @@ ip access-list extended BLOCK_SALES_TO_ENG
 
 Applied inbound on the LAN-facing interface:
 
-```bash
+```cisco
 interface gi0/0
  ip access-group BLOCK_SALES_TO_ENG in
 ```
@@ -76,6 +82,7 @@ The ACLs were applied inbound on the branch LAN interfaces because:
 - traffic is filtered as soon as it enters the router
 - unnecessary traffic is stopped before it crosses the WAN
 - this follows the best practice of placing extended ACLs close to the source
+This ensures that only valid traffic is forwarded into the enterprise network, improving both performance and security.
 
 ---
 
@@ -86,14 +93,14 @@ The following tests were performed:
 ### Expected to Fail
 
 From Engineering:
-```bash
+```cisco
 ping 192.168.40.10
 ```
 
 <img width="875" height="325" alt="image" src="https://github.com/user-attachments/assets/1bd0f577-e52f-439f-8b53-46550be7a5a0" />
 
 From Sales:
-```bash
+```cisco
 ping 192.168.30.10
 ```
 
@@ -104,7 +111,7 @@ ping 192.168.30.10
 
 From Engineering:
 
-```bash
+```cisco
 ping 192.168.10.10
 ping 192.168.20.10
 ```
@@ -114,7 +121,7 @@ ping 192.168.20.10
 
 From Sales:
 
-```bash
+```cisco
 ping 192.168.10.10
 ping 192.168.20.10
 ```
@@ -126,7 +133,7 @@ ping 192.168.20.10
 
 ## Verification Commands
 
-```bash
+```cisco
 show access-lists
 show ip interface gi0/0
 ```
@@ -143,15 +150,18 @@ show ip interface gi0/0
 ---
 
 ## Observations
+
 - Inter-branch communication was successfully blocked
 - Branch access to HQ resources remained functional
 - ACL hit counters confirmed that the deny statements were matching traffic as expected
+- The use of `permit ip any any` ensures that only the specified traffic is denied, while all other communication remains unaffected.
 
 This demonstrates effective traffic segmentation using Layer 3 policy enforcement.
 
 ---
 
 ## Key Learning Points
+
 - Standard ACLs filter only by source address, while extended ACLs filter by both source and destination
 - Extended ACLs should generally be placed as close to the source as possible
 - ACLs can be used to enforce simple departmental security boundaries
