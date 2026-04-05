@@ -381,13 +381,6 @@ This confirms that DAI is actively inspecting and protecting Layer 2 traffic.
 
 ---
 
-### Observations
-- Valid ARP traffic permitted
-- Invalid traffic dropped when bindings missing
-- Connectivity restored after correct bindings
-
---- 
-
 ### Design Justification
 DAI is implemented only at the access layer, where end devices connect and ARP attacks originate.
 
@@ -453,7 +446,7 @@ Port security was verified using:
 Port security enforces device-level access control at the edge, complementing:
 - DHCP Snooping
 - Dynamic ARP Inspection
-Together, these provide layered Layer 2 security.
+Together, these provide ehanced Layer 2 security.
 
 ---
 
