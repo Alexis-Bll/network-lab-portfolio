@@ -264,14 +264,24 @@ spanning-tree vlan 20 root primary
 
 The following commands were used to validate the configuration:
 
-```cisco
-show vlan brief
-show interfaces trunk
-show etherchannel summary
-show standby brief
-show spanning-tree vlan 10
-show spanning-tree vlan 20
-```
+```show vlan brief```
+<img width="879" height="236" alt="image" src="https://github.com/user-attachments/assets/d3228a19-7221-4952-9e14-3a6bcefd3c43" />
+
+```show interfaces trunk```
+<img width="896" height="488" alt="image" src="https://github.com/user-attachments/assets/7fb766d8-ac35-4f44-a7f3-05ae882a801d" />
+
+```show etherchannel summary```
+<img width="878" height="489" alt="image" src="https://github.com/user-attachments/assets/2f71a724-552e-45c4-a5ff-f4475b4665e1" />
+
+```show standby brief```
+<img width="875" height="147" alt="image" src="https://github.com/user-attachments/assets/f056fa55-9589-4534-bc89-96ea73c5bcc6" />
+
+```show spanning-tree vlan 10```
+<img width="883" height="463" alt="image" src="https://github.com/user-attachments/assets/5ad32eae-e969-4054-ace1-c2b96c190ac5" />
+
+```show spanning-tree vlan 20```
+<img width="882" height="489" alt="image" src="https://github.com/user-attachments/assets/d3330948-b37d-43ba-8e4c-acf7f4e621ea" />
+
 
 <img width="882" height="615" alt="image" src="https://github.com/user-attachments/assets/ad33b50b-965a-4c52-bf73-63233c2dcf24" />
 
