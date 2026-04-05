@@ -44,15 +44,22 @@ The following connectivity scenarios were tested:
 ### Commands Used
 
 #### Ping from HQ-R2 to Admin 1
+
 - ```ping 192.168.10.10```
 <img width="884" height="666" alt="image" src="https://github.com/user-attachments/assets/6e5c70b0-d272-4132-b46e-008bf3983827" />
+
 #### Ping from Admin 1 to Server 1
+
 - ```ping 192.168.20.10```
 <img width="883" height="229" alt="image" src="https://github.com/user-attachments/assets/4d7b5f62-8315-42aa-b427-64e7a252b16e" />
+
 #### Ping from Admin 1 to Engineering PC
+
 - ```ping 192.168.30.10```
 <img width="885" height="191" alt="image" src="https://github.com/user-attachments/assets/9f83bdb4-5b75-4cfb-9224-8f4b6ebc2e34" />
+
 #### Ping from Admin 1 to Sales PC
+
 - ```ping 192.168.40.10```
 <img width="884" height="237" alt="image" src="https://github.com/user-attachments/assets/4e6c60a9-fe42-41ea-b3ca-619a5ab70b1d" />
 
