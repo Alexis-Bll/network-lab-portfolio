@@ -1,3 +1,41 @@
+## End-to-End Connectivity Testing
+
+Basic connectivity tests were performed to validate that all network segments can communicate as expected.
+
+---
+
+### Test Scenarios
+
+#### Branch to HQ
+
+- Engineering PC → HQ Admin VLAN
+- Engineering PC → HQ Server VLAN
+- Sales PC → HQ Admin VLAN
+- Sales PC → HQ Server VLAN
+
+#### Inter-Branch Communication
+
+- Engineering → Sales ❌ (blocked by ACL)
+- Sales → Engineering ❌ (blocked by ACL)
+
+---
+
+### Example Commands
+
+```bash
+ping 192.168.10.10
+ping 192.168.20.10
+ping 192.168.40.10
+```
+
+### Result
+
+- All permitted traffic successfully reached its destination
+- Inter-branch communication was correctly blocked by ACLs
+- Confirms correct VLAN segmentation, routing, and policy enforcement
+
+---
+
 ## Known Behaviour / Platform Limitation (IOSvL2)
 
 During testing, an issue was observed where Layer 2 switches were unable to reach remote subnets using only the `ip default-gateway` command.
