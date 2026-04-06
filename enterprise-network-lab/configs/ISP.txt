@@ -4,6 +4,7 @@ hostname ISP
 ! --- Security Banner ---
 banner motd ^C
 Unauthorized access is prohibited
+^C
 
 !
 ! --- Local User ---
