@@ -171,6 +171,9 @@ A failover test was performed by simulating a failure of the active HSRP device.
 show standby brief
 ```
 
+<img width="889" height="227" alt="image" src="https://github.com/user-attachments/assets/89e03127-5d79-42bc-8c2b-9dbe72987893" />
+
+
 2. Simulate failure on the active device (HQ-CSW1):
 
 ```cisco
@@ -178,17 +181,29 @@ interface vlan 10
 shutdown
 ```
 
+<img width="887" height="235" alt="image" src="https://github.com/user-attachments/assets/918a67fe-8f76-49e0-913c-a6734fe81198" />
+
+
 3. Verify that the standby device (HQ-CSW2) becomes active:
 
 ```cisco
 show standby brief
 ```
 
+<img width="881" height="199" alt="image" src="https://github.com/user-attachments/assets/b747fec1-6c3a-4b4e-b0d8-8d860b906a24" />
+
+<img width="891" height="194" alt="image" src="https://github.com/user-attachments/assets/5675428f-3e9f-4118-bdb7-57ce5116276f" />
+
+
+
 4. Test connectivity from an end device:
 
 ```bash
 ping 192.168.10.1
 ```
+
+<img width="883" height="237" alt="image" src="https://github.com/user-attachments/assets/3e4beb20-a454-4973-bf83-19b78613d02e" />
+
 
 ---
 
