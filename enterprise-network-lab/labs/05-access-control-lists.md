@@ -49,6 +49,8 @@ ip access-list extended BLOCK_ENG_TO_SALES
  permit ip any any
 ```
 
+---
+
 Applied inbound on the LAN-facing interface:
 
 ```cisco
@@ -66,6 +68,8 @@ ip access-list extended BLOCK_SALES_TO_ENG
  deny ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
  permit ip any any
 ```
+
+---
 
 Applied inbound on the LAN-facing interface:
 
@@ -92,24 +96,30 @@ The following tests were performed:
 
 ### Expected to Fail
 
-From Engineering:
+#### From Engineering:
+
 ```cisco
 ping 192.168.40.10
 ```
 
 <img width="875" height="325" alt="image" src="https://github.com/user-attachments/assets/1bd0f577-e52f-439f-8b53-46550be7a5a0" />
 
-From Sales:
+---
+
+#### From Sales:
+
 ```cisco
 ping 192.168.30.10
 ```
 
 <img width="882" height="335" alt="image" src="https://github.com/user-attachments/assets/16a822fa-12d3-4eee-b9d0-b6d79f0c3d8a" />
 
+---
+
 
 ### Expected to Succeed
 
-From Engineering:
+#### From Engineering:
 
 ```cisco
 ping 192.168.10.10
@@ -118,8 +128,9 @@ ping 192.168.20.10
 
 <img width="884" height="394" alt="image" src="https://github.com/user-attachments/assets/9ff6b704-f5e8-489f-8c99-6356f68c44ab" />
 
+---
 
-From Sales:
+#### From Sales:
 
 ```cisco
 ping 192.168.10.10
@@ -127,7 +138,6 @@ ping 192.168.20.10
 ```
 
 <img width="878" height="443" alt="image" src="https://github.com/user-attachments/assets/2a6f11dc-a889-417a-9571-d53c750c8413" />
-
 
 ---
 
@@ -139,8 +149,7 @@ ping 192.168.20.10
 - ```show ip interface gi0/0```
 <img width="888" height="237" alt="image" src="https://github.com/user-attachments/assets/3ce49e08-b2ee-440a-8aa5-efe53e12172b" />
 
-
-
+---
 
 ### These commands confirm:
 
