@@ -1,53 +1,78 @@
 # Device Configurations
 
-This folder contains (and will continue to contain) the final running configurations for all devices within the enterprise network lab.
+This folder contains the final, cleaned running configurations for all devices within the enterprise network lab.
 
-Each configuration file represents the full setup of routers, switches, and supporting infrastructure after implementation and validation.
+Each configuration file represents a fully implemented and validated device, structured to reflect real-world enterprise deployment standards.
 
 ---
 
 ## Project Status
 
-✅ Core enterprise lab successfully built and operational
-🚧 Currently refining configurations and preparing final versions for publication
+### ✅ Completed
 
-The lab has been fully implemented and tested, covering:
+The enterprise network lab has been fully configured, tested, and documented.
 
-* VLAN segmentation and inter-VLAN routing
-* OSPF dynamic routing
-* HSRP gateway redundancy
-* Spanning Tree optimisation and EtherChannel
-* Access Control Lists (ACLs) for basic security
+This includes:
 
-Configurations are currently being reviewed and cleaned to ensure they are:
+* Full device configurations across all routers and switches
+* End-to-end connectivity validation
+* OSPF route propagation across all sites
+* HSRP failover and redundancy testing
+* ACL enforcement between departments
+* SSH management access across all devices
 
-* Consistent across all devices
-* Easy to read and understand
-* Structured to reflect real-world deployment standards
+All configurations in this folder are final and reflect the working state of the lab.
 
 ---
 
 ## Configuration Scope
 
-Once finalised, this folder will include:
+This folder includes configurations for:
 
-* Core Layer 3 switch configurations
-* Access layer switch configurations
-* Branch router configurations
-* Routing and redundancy protocols (OSPF, HSRP)
-* Security configurations (ACLs)
+### WAN / Edge Devices
+
+* ISP router
+* HQ-R1 / HQ-R2
+* BR1 / BR2
+
+### Core Layer
+
+* HQ-CSW1 / HQ-CSW2
+
+### Access Layer
+
+* HQ-ASW1 / HQ-ASW2 (Admin VLAN)
+* HQ-SSW1 / HQ-SSW2 (Server VLAN)
+* BR-SW1 / BR-SW2 (Branch switches)
+
+---
+
+## Technologies Implemented
+
+The configurations demonstrate:
+
+* VLAN segmentation and inter-VLAN routing (SVIs)
+* OSPF dynamic routing across a multi-site network
+* HSRP for gateway redundancy and load sharing
+* EtherChannel (LACP) for link aggregation
+* Rapid PVST+ with STP tuning (root bridge placement)
+* Access Control Lists (ACLs) for traffic filtering
+* DHCP Snooping and Dynamic ARP Inspection (DAI)
+* Port Security and STP protections (PortFast, BPDU Guard)
+* Secure remote access using SSH
 
 ---
 
 ## Engineering Approach
 
-Rather than uploading raw or partially refined configurations, the focus is on publishing:
+Configurations have been intentionally cleaned and structured to:
 
-* Clean, production-style configurations
-* Clearly structured and readable files
-* Fully tested and validated setups
+* Remove unnecessary default or auto-generated Cisco output
+* Highlight only relevant and meaningful configuration
+* Maintain consistency across all devices
+* Improve readability for documentation and review
 
-This approach reflects real-world engineering practices, where configurations are refined and verified before being deployed or documented.
+This reflects real-world practices where configurations are reviewed, standardised, and documented before deployment or handover.
 
 ---
 
@@ -66,6 +91,6 @@ Planned additions include:
 
 ## Notes
 
-This repository is actively maintained and improved as part of ongoing hands-on networking development.
+This repository represents a completed enterprise network lab designed to demonstrate practical networking skills and real-world design principles.
 
-The aim is to build a portfolio that reflects both technical capability and a structured engineering approach.
+It will continue to be expanded with additional labs and technologies as part of ongoing development.
