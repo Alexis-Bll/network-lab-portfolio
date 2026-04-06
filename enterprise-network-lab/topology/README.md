@@ -71,6 +71,8 @@ Provides:
 - Transit network simulating a service provider MPLS core using private addressing
 - OSPF adjacency and route propagation across all sites
 
+---
+
 ### Design Notes
 
 - Both **HQ and branch routers operate as WAN edge devices**, connecting their local networks to the service provider WAN
@@ -93,10 +95,14 @@ Each branch site consists of:
 - VLAN 30
 - Devices: BR1 + BR-SW1 + Engineering PC
 
+---
+
 ### Branch 2 (Sales)
 - Network: 192.168.40.0/24
 - VLAN 40
 - Devices: BR2 + BR-SW2 + Sales PC
+
+---
 
 ### Key Design Choices
 
@@ -117,8 +123,12 @@ The entire network uses **private IP addressing**, simulating an enterprise MPLS
 - VLAN 30 (Engineering Branch): 192.168.30.0/24
 - VLAN 40 (Sales Branch): 192.168.40.0/24
 
+---
+
 ### WAN / Transit Networks
 - /30 subnets used for point-to-point links (efficient and scalable)
+
+---
 
 ### Design Justification
 - Reflects real enterprise WAN/MPLS deployments
