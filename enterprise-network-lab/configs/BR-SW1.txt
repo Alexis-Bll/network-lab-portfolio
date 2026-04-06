@@ -1,1 +1,60 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname BR-SW1
+
+!
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Domain & SSH ---
+no ip domain-lookup
+ip domain-name lab.local
+ip ssh version 2
+
+!
+! --- Spanning Tree ---
+spanning-tree mode rapid-pvst
+
+!
+! --- Uplink to Router ---
+interface GigabitEthernet0/0
+ description Uplink to BR1
+ switchport mode access
+ switchport access vlan 30
+
+!
+! --- Access Port (Engineering PC) ---
+interface GigabitEthernet0/1
+ description ENGINEERING-PC
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0050.7966.680c
+ switchport port-security violation restrict
+
+!
+! --- VLAN Interface (Management) ---
+interface Vlan30
+ ip address 192.168.30.2 255.255.255.0
+
+!
+! --- Default Gateway ---
+ip default-gateway 192.168.30.1
+
+!
+! --- Remote Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
