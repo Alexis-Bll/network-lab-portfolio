@@ -275,18 +275,20 @@ To verify that OSPF is correctly establishing adjacencies and advertising all re
 #### To verify OSPF are seeing it's neighbours
 
 ```show ip ospf neighbor```
+
 <img width="886" height="249" alt="image" src="https://github.com/user-attachments/assets/210d718f-2502-48c6-86cb-1a1ecce2ef4a" />
 
 <img width="888" height="171" alt="image" src="https://github.com/user-attachments/assets/80b96972-4537-4da4-8053-de4f09f9ce00" />
 
+---
+
 #### To verify that OSPF is populating the route table that it has dynamically learnt.
 
 ```show ip route```
+
 <img width="805" height="837" alt="image" src="https://github.com/user-attachments/assets/b123a10b-799b-4e24-b9d2-136093e9988f" />
 
 <img width="787" height="831" alt="image" src="https://github.com/user-attachments/assets/190c92cd-cf9b-4f4d-b0ba-f08f4a5953b7" />
-
-
 
 ---
 
