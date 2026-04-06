@@ -48,25 +48,35 @@ The following connectivity scenarios were tested:
 - ```ping 192.168.10.10```
 <img width="884" height="666" alt="image" src="https://github.com/user-attachments/assets/6e5c70b0-d272-4132-b46e-008bf3983827" />
 
+---
+
 #### Ping from Admin 1 to Server 1
 
 - ```ping 192.168.20.10```
 <img width="883" height="229" alt="image" src="https://github.com/user-attachments/assets/4d7b5f62-8315-42aa-b427-64e7a252b16e" />
+
+---
 
 #### Ping from Admin 1 to Engineering PC
 
 - ```ping 192.168.30.10```
 <img width="885" height="191" alt="image" src="https://github.com/user-attachments/assets/9f83bdb4-5b75-4cfb-9224-8f4b6ebc2e34" />
 
+---
+
 #### Ping from Admin 1 to Sales PC
 
 - ```ping 192.168.40.10```
 <img width="884" height="237" alt="image" src="https://github.com/user-attachments/assets/4e6c60a9-fe42-41ea-b3ca-619a5ab70b1d" />
 
+---
+
 #### Ping from Engineering to Sales PC
 
 - ```ping 192.168.40.10```
 <img width="880" height="325" alt="image" src="https://github.com/user-attachments/assets/5732823f-e1bf-4ab5-94f7-720aba383c65" />
+
+---
 
 #### Ping from Sales to Engineering PC
 
@@ -121,15 +131,21 @@ Note:
 - ```ssh 1.1.1.1```
 <img width="875" height="549" alt="image" src="https://github.com/user-attachments/assets/d21cfbba-cbd2-4157-9980-a0508d24d3cb" />
 
+---
+
 #### ssh from HQ Router to Core
 
 - ```ssh 1.1.1.1```
 <img width="887" height="545" alt="image" src="https://github.com/user-attachments/assets/ec8713a4-7d71-47f9-9997-5ceb85da5b16" />
 
+---
+
 #### ssh from HQ Router to Branch Router
 
 - ```ssh 7.7.7.7```
 <img width="881" height="588" alt="image" src="https://github.com/user-attachments/assets/0f575928-17c4-4442-bec2-37fa1d14801d" />
+
+---
 
 #### ssh HQ Access Switch to Branch Switch
 
@@ -165,7 +181,7 @@ A failover test was performed by simulating a failure of the active HSRP device.
 
 ### Test Steps
 
-1. Identify the active and standby devices:
+#### 1. Identify the active and standby devices:
 
 ```cisco
 show standby brief
@@ -176,7 +192,7 @@ show standby brief
 ---
 
 
-2. Simulate failure on the active device (HQ-CSW1):
+#### 2. Simulate failure on the active device (HQ-CSW1):
 
 ```cisco
 interface vlan 10
@@ -188,7 +204,7 @@ shutdown
 ---
 
 
-3. Verify that the standby device (HQ-CSW2) becomes active:
+#### 3. Verify that the standby device (HQ-CSW2) becomes active:
 
 ```cisco
 show standby brief
@@ -200,16 +216,13 @@ show standby brief
 
 ---
 
-4. Test connectivity from an end device:
+#### 4. Test connectivity from an end device:
 
 ```bash
 ping 192.168.10.1
 ```
 
 <img width="883" height="237" alt="image" src="https://github.com/user-attachments/assets/3e4beb20-a454-4973-bf83-19b78613d02e" />
-
----
-
 
 ---
 
