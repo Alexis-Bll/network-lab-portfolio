@@ -1,1 +1,71 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname BR2
+
+!
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Domain & SSH ---
+no ip domain lookup
+ip domain name lab.local
+ip ssh version 2
+
+!
+! --- Loopback (Router ID) ---
+interface Loopback0
+ ip address 7.7.7.7 255.255.255.255
+
+!
+! --- LAN Interface ---
+interface GigabitEthernet0/0
+ ip address 192.168.40.1 255.255.255.0
+ ip access-group BLOCK_SALES_TO_ENG in
+ no shutdown
+
+!
+! --- WAN Interface (to ISP) ---
+interface GigabitEthernet0/1
+ ip address 10.0.0.14 255.255.255.252
+ no shutdown
+
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 7.7.7.7
+ passive-interface GigabitEthernet0/0
+ passive-interface Loopback0
+ network 7.7.7.7 0.0.0.0 area 0
+ network 10.0.0.12 0.0.0.3 area 0
+ network 192.168.40.0 0.0.0.255 area 0
+
+!
+! --- Access Control List ---
+ip access-list extended BLOCK_SALES_TO_ENG
+ deny   ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
+ permit ip any any
+
+!
+! --- Console & VTY Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
+
+!
+! --- EEM Script (Lab Fix for Interfaces) ---
+event manager applet AUTO-UP-INTERFACES
+ event syslog pattern "SYS-5-RESTART"
+ action 1.0 cli command "enable"
+ action 2.0 cli command "conf t"
+ action 3.0 cli command "interface range g0/0 - 1"
+ action 4.0 cli command "no shutdown"
+ action 5.0 cli command "end"
