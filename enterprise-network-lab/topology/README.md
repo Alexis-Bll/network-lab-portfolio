@@ -196,6 +196,8 @@ The network includes multiple layers of redundancy:
 
 This lab focuses on private WAN connectivity and internal enterprise design. Internet edge services such as NAT and public connectivity are not included in this version and will be introduced in a future iteration.
 
+---
+
 ## Summary
 
 This topology represents a complete enterprise network design, demonstrating how multiple networking technologies integrate to provide:
