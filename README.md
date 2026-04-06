@@ -74,8 +74,7 @@ A complete enterprise-style network built in EVE-NG, featuring:
 * Security controls at both Layer 2 and Layer 3
 * Full configuration set and testing validation
 
-👉 View the lab:
-[`enterprise-network-lab/`](labs/00-base-config.md)
+👉 [`View the lab`](enterprise-network-lab/labs/00-base-config.md)
 
 ---
 
