@@ -1,1 +1,66 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname HQ-R2
+
+!
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Domain & SSH ---
+no ip domain lookup
+ip domain name lab.local
+ip ssh version 2
+
+!
+! --- Loopback (Router ID) ---
+interface Loopback0
+ ip address 4.4.4.4 255.255.255.255
+
+!
+! --- WAN / Transit Interfaces ---
+interface GigabitEthernet0/0
+ ip address 10.0.0.5 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/1
+ ip address 10.0.1.14 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/2
+ ip address 10.0.1.10 255.255.255.252
+ no shutdown
+
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 4.4.4.4
+ passive-interface Loopback0
+ network 4.4.4.4 0.0.0.0 area 0
+ network 10.0.0.4 0.0.0.3 area 0
+ network 10.0.1.8 0.0.0.3 area 0
+ network 10.0.1.12 0.0.0.3 area 0
+
+!
+! --- Console & VTY Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
+
+!
+! --- EEM Script (Lab Fix for Interfaces) ---
+event manager applet AUTO-UP-INTERFACES
+ event syslog pattern "SYS-5-RESTART"
+ action 1.0 cli command "enable"
+ action 2.0 cli command "conf t"
+ action 3.0 cli command "interface range g0/0 - 2"
+ action 4.0 cli command "no shutdown"
+ action 5.0 cli command "end"
