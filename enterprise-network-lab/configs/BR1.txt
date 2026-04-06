@@ -1,1 +1,65 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname BR1
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Domain & SSH ---
+no ip domain lookup
+ip domain name lab.local
+ip ssh version 2
+
+!
+! --- Loopback (Router ID) ---
+interface Loopback0
+ ip address 6.6.6.6 255.255.255.255
+
+!
+! --- LAN Interface ---
+interface GigabitEthernet0/0
+ ip address 192.168.30.1 255.255.255.0
+ ip access-group BLOCK_ENG_TO_SALES in
+ no shutdown
+
+!
+! --- WAN Interface (to ISP) ---
+interface GigabitEthernet0/1
+ ip address 10.0.0.10 255.255.255.252
+ no shutdown
+
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 6.6.6.6
+ passive-interface GigabitEthernet0/0
+ passive-interface Loopback0
+ network 6.6.6.6 0.0.0.0 area 0
+ network 10.0.0.8 0.0.0.3 area 0
+ network 192.168.30.0 0.0.0.255 area 0
+
+!
+! --- Access Control List ---
+ip access-list extended BLOCK_ENG_TO_SALES
+ deny ip 192.168.30.0 0.0.0.255 192.168.40.0 0.0.0.255
+ permit ip any any
+
+!
+! --- Console & VTY Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
+
+!
+! --- EEM Script (Lab Fix for Interfaces) ---
+event manager applet AUTO-UP-INTERFACES
+ event syslog pattern "SYS-5-RESTART"
+ action 1.0 cli command "enable"
+ action 2.0 cli command "conf t"
+ action 3.0 cli command "interface range g0/0 - 1"
+ action 4.0 cli command "no shutdown"
+ action 5.0 cli command "end"
