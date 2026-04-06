@@ -248,7 +248,7 @@ ping 192.168.10.1
 - HSRP provided seamless gateway redundancy
 - The virtual IP remained consistent during failover
 - Network resilience was maintained without manual intervention
-- One thing to note that during failover, the original active device entered an INIT state and displayed unknown HSRP roles due to loss of peer communication. Despite this, the standby device successfully assumed the active role and the virtual IP remained reachable.
+- During failover, the original active device entered an INIT state and displayed unknown HSRP roles due to loss of peer communication. Despite this, the standby device successfully assumed the active role and the virtual IP remained reachable.
 
 This confirms correct implementation of redundancy at the core layer.
 
@@ -272,7 +272,7 @@ To verify that OSPF is correctly establishing adjacencies and advertising all re
 
 ### Commands Used
 
-#### To verify OSPF are seeing it's neighbours
+#### To verify that OSPF is establishing neighbour adjacencies
 
 ```show ip ospf neighbor```
 
@@ -282,7 +282,7 @@ To verify that OSPF is correctly establishing adjacencies and advertising all re
 
 ---
 
-#### To verify that OSPF is populating the route table that it has dynamically learnt.
+#### To verify that OSPF is populating the routing table with dynamically learned routes.
 
 ```show ip route```
 
@@ -326,7 +326,7 @@ ip routing
 ip route 0.0.0.0 0.0.0.0 <gateway>
 ```
 
-### example:
+### Example:
 
 ```cisco
 ip routing
@@ -346,6 +346,14 @@ ip route 0.0.0.0 0.0.0.0 192.168.30.1
 ### Note
 
 In production environments, this behaviour would typically not be required, as Layer 2 switches correctly utilise the ip default-gateway for management traffic.
+
+---
+
+## Summary
+
+The network was successfully validated across all key areas, including connectivity, security, redundancy, and management.
+
+Testing confirmed that the design operates reliably under both normal conditions and simulated failure scenarios, demonstrating a resilient and scalable enterprise network implementation.
 
 ---
 
