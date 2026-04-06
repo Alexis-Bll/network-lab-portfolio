@@ -112,8 +112,6 @@ Note:
 - SSH testing was performed between network devices (routers and switches), as end hosts in this lab environment do not natively support SSH clients.
 - This reflects real-world scenarios where network devices are commonly managed from other infrastructure devices or dedicated management workstations.
 
-
-
 ---
 
 ### Commands Used
@@ -138,7 +136,89 @@ Note:
 - ```ssh 192.168.30.2```
 <img width="881" height="532" alt="image" src="https://github.com/user-attachments/assets/97a2c5da-37d8-4f7d-86ee-8952247146bf" />
 
+---
 
+### Result
+
+- SSH connectivity was successfully established across all devices
+- Loopback interfaces provided stable and consistent management endpoints
+- Access switches were reachable via their management SVIs
+- Confirms correct implementation of the management plane across the network
+
+---
+
+## Redundancy and Failover Testing (HSRP)
+
+### Objective
+
+To verify that gateway redundancy is functioning correctly using HSRP, ensuring continuous network availability in the event of a core switch failure.
+
+---
+
+### Test Scenario
+
+HSRP was configured on the core switches to provide a virtual default gateway for end devices.
+
+A failover test was performed by simulating a failure of the active HSRP device.
+
+---
+
+### Test Steps
+
+1. Identify the active and standby devices:
+
+```cisco
+show standby brief
+```
+
+2. Simulate failure on the active device (HQ-CSW1):
+
+```cisco
+interface vlan 10
+shutdown
+```
+
+3. Verify that the standby device (HQ-CSW2) becomes active:
+
+```cisco
+show standby brief
+```
+
+4. Test connectivity from an end device:
+
+```bash
+ping 192.168.10.1
+```
+
+---
+
+### Expected Behaviour
+
+- The standby device should transition to the active state
+- The virtual IP (192.168.10.1) should remain reachable
+- Minimal packet loss may occur during failover
+
+---
+
+### Result
+
+- HSRP failover occurred successfully
+- The standby core switch assumed the active role
+- End devices maintained connectivity to the default gateway
+- Traffic continued to flow with minimal disruption
+
+---
+
+
+### Observations
+
+- HSRP provided seamless gateway redundancy
+- The virtual IP remained consistent during failover
+- Network resilience was maintained without manual intervention
+
+This confirms correct implementation of redundancy at the core layer.
+
+---
 
 ## Known Behaviour / Platform Limitation (IOSvL2)
 
