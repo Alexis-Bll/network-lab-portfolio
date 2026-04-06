@@ -111,3 +111,6 @@ The lab will continue to be refined to better reflect real-world deployment and 
 - [Routing Configuration (OSPF)](labs/03-routing-ospf.md)
 - [Branch Switches Configuration](labs/04-branch-switches.md)
 - [Access Control Lists Configuration](labs/05-access-control-lists.md)
+- [Testing](labs/06-testing.md)
+
+---
