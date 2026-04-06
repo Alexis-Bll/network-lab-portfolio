@@ -104,7 +104,7 @@ From Sales:
 ping 192.168.30.10
 ```
 
-<img width="875" height="273" alt="image" src="https://github.com/user-attachments/assets/0636a0d0-7760-40b9-869e-a339d9aaeb0a" />
+<img width="882" height="335" alt="image" src="https://github.com/user-attachments/assets/16a822fa-12d3-4eee-b9d0-b6d79f0c3d8a" />
 
 
 ### Expected to Succeed
