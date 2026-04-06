@@ -1,1 +1,65 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname BR-SW2
+
+!
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Domain & SSH ---
+no ip domain-lookup
+ip domain-name lab.local
+ip ssh version 2
+
+!
+! --- Spanning Tree ---
+spanning-tree mode rapid-pvst
+
+!
+! --- VLAN Definition ---
+vlan 40
+ name SALES
+
+!
+! --- Uplink to Router ---
+interface GigabitEthernet0/0
+ description Uplink to BR2
+ switchport mode access
+ switchport access vlan 40
+
+!
+! --- Access Port (Sales PC) ---
+interface GigabitEthernet0/1
+ description SALES-PC
+ switchport mode access
+ switchport access vlan 40
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 0050.7966.6810
+ switchport port-security violation restrict
+
+!
+! --- VLAN Interface (Management) ---
+interface Vlan40
+ ip address 192.168.40.2 255.255.255.0
+
+!
+! --- Default Gateway ---
+ip default-gateway 192.168.40.1
+
+!
+! --- Console & VTY Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
