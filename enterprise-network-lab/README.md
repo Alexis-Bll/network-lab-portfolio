@@ -2,9 +2,9 @@
 
 ## Overview
 
-This lab simulates a small enterprise network using technologies covered in the Cisco CCNA.
+This lab simulates a small enterprise network based on technologies covered in the Cisco CCNA.
 
-The design represents a realistic business environment with a headquarters (HQ), two branch offices, and an ISP. The network is built to demonstrate scalability, redundancy, and secure communication between sites.
+The design represents a realistic business environment with a headquarters (HQ), two branch offices, and an ISP. It demonstrates scalability, redundancy, and secure communication between sites using industry-relevant networking practices.
 
 ---
 
@@ -14,7 +14,8 @@ The design represents a realistic business environment with a headquarters (HQ),
   <img src="./topology/ccna_lab.png" width="800">
 </p>
 
-The topology includes:
+### The topology includes:
+
 - HQ with core and access layer switching
 - Two branch offices (Sales and Engineering)
 - Simulated ISP network (representing private MPLS/WAN connectivity)
@@ -29,7 +30,11 @@ The topology includes:
 - OSPF (Dynamic routing across the enterprise)
 - HSRP (Gateway redundancy at HQ)
 - EtherChannel (Link aggregation between core switches)
-- Access Control Lists (ACL)
+- Access Control Lists (ACLs)
+- DHCP Snooping
+- Dynamic ARP Inspection (DAI)
+- Port Security
+- Rapid Spanning Tree (RSTP) with PortFast and BPDU Guard
 
 ---
 
@@ -42,9 +47,10 @@ The network uses **private IP addressing throughout**, simulating an internal en
 - No public IP addressing is required within the lab
 
 This reflects real-world enterprise environments where:
+
 - MPLS or private WAN links are used between sites
-- Internal traffic never leaves the private network
-- Routing is handled internally rather than relying on internet-based connectivity
+- Internal traffic remains within the private network
+- Routing is handled internally without reliance on internet-based connectivity
 
 ---
 
@@ -55,7 +61,7 @@ The lab is built using:
 - EVE-NG (Network emulation)
 - Cisco IOS routers and switches
 - Virtual PCs for endpoint testing
-- Windows Server 2008 R2 VM (for future services like DHCP/DNS)
+- Windows Server 2008 R2 VM (used for extended testing)
 
 ---
 
@@ -66,11 +72,11 @@ The lab is built using:
 - Deploy OSPF for dynamic routing across all sites
 - Implement HSRP for gateway redundancy and high availability
 - Configure Rapid Spanning Tree (RSTP) for efficient Layer 2 convergence
-- Optimise Layer 2 topology using Spanning Tree enhancements (PortFast, BPDU Guard)
-- Apply Layer 2 security features including DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security
+- Optimise Layer 2 topology using PortFast and BPDU Guard
+- Apply Layer 2 security features including DHCP Snooping, DAI, and Port Security
 - Configure EtherChannel for link aggregation and redundancy
-- Apply Access Control Lists (ACLs) for traffic filtering and segmentation
-- Validate network resilience through failover and troubleshooting scenarios
+- Apply ACLs for traffic filtering and segmentation
+- Validate network behaviour through testing and failover scenarios
 
 ---
 
@@ -88,18 +94,18 @@ The lab is built using:
 
 ### ✅ Lab completed
 
-While the core lab has been fully implemented and is operational, a small number of final steps are currently in progress to enhance the overall quality and completeness of the project.
+The enterprise network lab has been fully implemented, configured, and tested.
 
-These include:
+This includes:
 
-* Organising and publishing final device configurations
-* Performing additional validation and testing (e.g. failover scenarios for HSRP and redundancy)
-* Making minor design refinements and optimisations
+- Full device configuration across all routers and switches
+- End-to-end connectivity validation
+- OSPF route propagation across all sites
+- HSRP failover testing at the core layer
+- ACL enforcement between departments
+- SSH management access across devices
 
-These updates are focused on improving clarity, validation, and presentation rather than core functionality, which is already complete.
-
-The lab will continue to be refined to better reflect real-world deployment and testing practices.
-
+The lab reflects a complete, working enterprise network design with both Layer 2 and Layer 3 security controls in place.
 
 ---
 
@@ -111,6 +117,6 @@ The lab will continue to be refined to better reflect real-world deployment and 
 - [Routing Configuration (OSPF)](labs/03-routing-ospf.md)
 - [Branch Switches Configuration](labs/04-branch-switches.md)
 - [Access Control Lists Configuration](labs/05-access-control-lists.md)
-- [Testing](labs/06-testing.md)
+- [Testing & Validation](labs/06-testing.md)
 
 ---
