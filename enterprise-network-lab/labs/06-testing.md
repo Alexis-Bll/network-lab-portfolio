@@ -173,6 +173,8 @@ show standby brief
 
 <img width="889" height="227" alt="image" src="https://github.com/user-attachments/assets/89e03127-5d79-42bc-8c2b-9dbe72987893" />
 
+---
+
 
 2. Simulate failure on the active device (HQ-CSW1):
 
@@ -182,6 +184,8 @@ shutdown
 ```
 
 <img width="887" height="235" alt="image" src="https://github.com/user-attachments/assets/918a67fe-8f76-49e0-913c-a6734fe81198" />
+
+---
 
 
 3. Verify that the standby device (HQ-CSW2) becomes active:
@@ -194,7 +198,7 @@ show standby brief
 
 <img width="891" height="194" alt="image" src="https://github.com/user-attachments/assets/5675428f-3e9f-4118-bdb7-57ce5116276f" />
 
-
+---
 
 4. Test connectivity from an end device:
 
@@ -204,32 +208,34 @@ ping 192.168.10.1
 
 <img width="883" height="237" alt="image" src="https://github.com/user-attachments/assets/3e4beb20-a454-4973-bf83-19b78613d02e" />
 
+---
+
 
 ---
 
 ### Expected Behaviour
 
-- The standby device should transition to the active state
-- The virtual IP (192.168.10.1) should remain reachable
-- Minimal packet loss may occur during failover
+- The standby device should transition to the active state.
+- The virtual IP (192.168.10.1) should remain reachable.
+- Minimal packet loss may occur during failover.
 
 ---
 
 ### Result
 
-- HSRP failover occurred successfully
-- The standby core switch assumed the active role
-- End devices maintained connectivity to the default gateway
-- Traffic continued to flow with minimal disruption
+- HSRP failover occurred successfully.
+- The standby core switch assumed the active role.
+- End devices maintained connectivity to the default gateway.
+- Traffic continued to flow with minimal disruption.
 
 ---
-
 
 ### Observations
 
 - HSRP provided seamless gateway redundancy
 - The virtual IP remained consistent during failover
 - Network resilience was maintained without manual intervention
+- One thing to note that during failover, the original active device entered an INIT state and displayed unknown HSRP roles due to loss of peer communication. Despite this, the standby device successfully assumed the active role and the virtual IP remained reachable.
 
 This confirms correct implementation of redundancy at the core layer.
 
