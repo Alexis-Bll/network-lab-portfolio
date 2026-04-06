@@ -1,1 +1,139 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname HQ-CSW1
+
+!
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Domain & SSH ---
+no ip domain-lookup
+ip domain-name lab.local
+ip ssh version 2
+
+!
+! --- Spanning Tree ---
+spanning-tree mode rapid-pvst
+spanning-tree vlan 10 priority 24576
+spanning-tree vlan 20 priority 28672
+
+!
+! --- VLAN Definitions ---
+vlan 10
+ name ADMIN
+
+vlan 20
+ name SERVERS
+
+!
+! --- Loopback (Router ID) ---
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+
+!
+! --- EtherChannel Trunk ---
+interface Port-channel1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+
+!
+! --- Routed Uplinks to HQ Routers ---
+interface GigabitEthernet0/0
+ no switchport
+ ip address 10.0.1.1 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/1
+ no switchport
+ ip address 10.0.1.9 255.255.255.252
+ no shutdown
+
+!
+! --- EtherChannel Member Links ---
+interface GigabitEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ channel-group 1 mode active
+
+interface GigabitEthernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ channel-group 1 mode active
+
+!
+! --- Uplinks to Access Switches ---
+interface GigabitEthernet1/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ spanning-tree guard root
+
+interface GigabitEthernet1/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ spanning-tree guard root
+
+interface GigabitEthernet1/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ spanning-tree guard root
+
+interface GigabitEthernet1/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ spanning-tree guard root
+
+!
+! --- SVIs with HSRP ---
+interface Vlan10
+ ip address 192.168.10.2 255.255.255.0
+ standby 10 ip 192.168.10.1
+ standby 10 priority 110
+ standby 10 preempt
+
+interface Vlan20
+ ip address 192.168.20.2 255.255.255.0
+ standby 20 ip 192.168.20.1
+ standby 20 priority 90
+ standby 20 preempt
+
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.1
+ passive-interface Loopback0
+ passive-interface Vlan10
+ passive-interface Vlan20
+ network 1.1.1.1 0.0.0.0 area 0
+ network 10.0.1.0 0.0.0.3 area 0
+ network 10.0.1.8 0.0.0.3 area 0
+ network 192.168.10.0 0.0.0.255 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+
+!
+! --- Console & VTY Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
