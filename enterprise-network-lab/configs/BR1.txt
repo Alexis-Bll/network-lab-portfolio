@@ -1,6 +1,12 @@
 hostname BR1
 
 !
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
 ! --- Local User ---
 username admin privilege 15 secret <hidden>
 
