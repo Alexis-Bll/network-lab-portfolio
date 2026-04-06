@@ -75,7 +75,7 @@ A complete enterprise-style network built in EVE-NG, featuring:
 * Full configuration set and testing validation
 
 👉 View the lab:
-[`enterprise-network-lab/`](labs/)
+[`enterprise-network-lab/`](labs/00-base-config.md)
 
 ---
 
