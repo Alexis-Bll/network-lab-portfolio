@@ -1,1 +1,88 @@
-🚧 Currently refining configurations and preparing final versions for publication!
+hostname HQ-SSW1
+
+!
+! --- Security Banner ---
+banner motd ^C
+Unauthorized access is prohibited
+^C
+
+!
+! --- Local User ---
+username admin privilege 15 secret <hidden>
+
+!
+! --- Layer 2 Security ---
+ip dhcp snooping
+ip dhcp snooping vlan 10,20
+ip arp inspection vlan 10,20
+
+!
+! --- Domain & SSH ---
+no ip domain-lookup
+ip domain-name lab.local
+ip ssh version 2
+
+!
+! --- Spanning Tree ---
+spanning-tree mode rapid-pvst
+
+!
+! --- VLAN Definitions ---
+vlan 10
+ name ADMIN
+
+vlan 20
+ name SERVERS
+
+!
+! --- Trunk Uplinks to Core Switches ---
+interface GigabitEthernet0/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ ip dhcp snooping trust
+ ip arp inspection trust
+
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ ip dhcp snooping trust
+ ip arp inspection trust
+
+!
+! --- Access Port (Server) ---
+interface GigabitEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security mac-address sticky
+ switchport port-security mac-address sticky 5000.0002.0000
+ switchport port-security violation restrict
+
+!
+! --- Management SVI ---
+interface Vlan10
+ ip address 192.168.10.6 255.255.255.0
+
+!
+! --- Default Gateway ---
+ip default-gateway 192.168.10.1
+
+!
+! --- Static IP-to-MAC Binding ---
+ip source binding 5000.0002.0000 vlan 20 192.168.20.10 interface GigabitEthernet0/2
+
+!
+! --- Console & VTY Access ---
+line con 0
+ logging synchronous
+ login local
+
+line vty 0 15
+ login local
+ transport input ssh
