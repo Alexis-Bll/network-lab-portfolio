@@ -4,9 +4,19 @@
 
 ![Topology](ccna_lab.png)
 
-This lab simulates a small enterprise network consisting of a headquarters (HQ) and two branch offices connected over a service provider WAN (MPLS-style).
+This lab represents a simulated enterprise network built using CCNA-level technologies, designed to reflect real-world network architecture and design principles.
 
 The design demonstrates how enterprise networks use hierarchical architecture, private WAN connectivity, and dynamic routing to provide scalable and resilient communication between sites.
+
+---
+
+## What This Topology Demonstrates
+
+- Multi-site enterprise network design (HQ + branch offices)
+- Redundant core architecture using HSRP and dual core switches
+- Dynamic routing across a private WAN using OSPF
+- Layer 2 and Layer 3 security implementation at the network edge
+- High availability through multiple physical and logical paths
 
 ---
 
@@ -27,7 +37,7 @@ The design demonstrates how enterprise networks use hierarchical architecture, p
 - HQ-CSW1
 - HQ-CSW2
 
-Layer 3 switches providing:
+Layer 3 switches provides:
 - Inter-VLAN routing (SVIs)
 - HSRP gateway redundancy
 - Core switching and traffic distribution
@@ -43,35 +53,35 @@ Layer 3 switches providing:
 Provides:
 - End-device connectivity
 - VLAN segmentation
-- Layer 2 security is applied at the access layer using DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security to protect against common network attacks
+- Layer 2 security is implemented at the access layer using DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security
 
 ---
 
 ### WAN / Edge Layer
 
-* HQ-R1
-* HQ-R2
-* BR1
-* BR2
-* ISP Router
+- HQ-R1
+- HQ-R2
+- BR1
+- BR2
+- ISP Router
 
 Provides:
-
-* Connectivity between headquarters and branch sites
-* WAN edge routing for both HQ and branch networks
-* Transit network simulating a service provider MPLS core using private addressing
-* OSPF adjacency and route propagation across all sites
+- Connectivity between headquarters and branch sites
+- WAN edge routing for both HQ and branch networks
+- Transit network simulating a service provider MPLS core using private addressing
+- OSPF adjacency and route propagation across all sites
 
 ### Design Notes
 
-* Both **HQ and branch routers operate as WAN edge devices**, connecting their local networks to the service provider WAN
-* The ISP router acts as a **simulated MPLS core**, providing transit between sites
-* Branch routers (BR1 / BR2) serve as:
+- Both **HQ and branch routers operate as WAN edge devices**, connecting their local networks to the service provider WAN
+- The ISP router acts as a **simulated MPLS core**, providing transit between sites
+- Branch routers (BR1 / BR2) serve as:
 
-  * Default gateways for branch LANs
-  * Edge devices connecting to the WAN
+  - Default gateways for branch LANs
+  - Edge devices connecting to the WAN
 
-* The design reflects a balance between performance, redundancy, and operational simplicity, aligning with real-world enterprise network design principles
+- The design reflects a balance between performance, redundancy, and operational simplicity, aligning with real-world enterprise network design principles
+
 ---
 
 ## Branch Sites
@@ -178,11 +188,13 @@ This lab focuses on private WAN connectivity and internal enterprise design. Int
 
 ## Summary
 
-This topology represents a realistic enterprise network design, demonstrating how multiple networking technologies integrate to provide:
+This topology represents a complete enterprise network design, demonstrating how multiple networking technologies integrate to provide:
 
 - Secure segmentation of departments
 - High availability through redundancy
 - Scalable multi-site connectivity
 - Efficient routing across a private WAN
 
-The lab reflects both CCNA-level concepts and real-world enterprise design principles.
+It reflects both CCNA-level knowledge and practical enterprise design principles used in real-world environments.
+
+---
