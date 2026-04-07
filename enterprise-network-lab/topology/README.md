@@ -97,8 +97,8 @@ These topology diagrams document the design evolution of the Enterprise Network 
 - Scalable multi-site connectivity
 - High availability through redundancy
 - Clear separation of network roles
-
----
 - Progression from private WAN design to enterprise internet edge integration
 
 Together, they reflect both foundational CCNA-level knowledge and a growing understanding of practical enterprise network design.
+
+---
