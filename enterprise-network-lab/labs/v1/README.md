@@ -1,6 +1,6 @@
 # Lab Documentation
 
-This folder contains structured documentation for each phase of the enterprise network lab.
+This folder contains structured documentation for the **V1 implementation** of the enterprise network lab.
 
 The lab has been built in a phased approach to reflect how a real-world enterprise network would be deployed, from initial device configuration through to routing, security, and validation.
 
@@ -88,9 +88,17 @@ Full device configurations can be found in the `configs/` directory.
 
 ## Notes
 
-This lab is designed to reflect enterprise networking best practices at a CCNA level, with elements extending slightly beyond to demonstrate deeper understanding.
+## Notes
 
-A follow-up lab will be developed with an updated design to demonstrate additional features such as:
-- NAT and internet edge connectivity
-- More advanced security controls
-- Expanded routing scenarios
+This lab represents the **V1 implementation** of the Enterprise Network Lab and focuses on core enterprise networking concepts using a private WAN design.
+
+A second version (V2) builds upon this foundation and introduces additional features, including:
+
+- Internet edge connectivity  
+- NAT (Network Address Translation)  
+- Centralised services (DHCP, DNS, Active Directory)  
+- Enhanced realism in enterprise network design  
+
+The phased structure used in this version reflects how enterprise networks are deployed in practice and provides a strong foundation for more advanced implementations.
+
+---
