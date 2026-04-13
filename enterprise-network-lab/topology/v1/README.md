@@ -2,7 +2,7 @@
 
 ## Network Diagram
 
-![Topology](ccna_lab.png)
+![Topology](v1_ccna_lab.drawio.png)
 
 This lab represents a simulated enterprise network built using CCNA-level technologies, designed to reflect real-world network architecture and design principles.
 
