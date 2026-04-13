@@ -2,28 +2,36 @@
 
 ## Overview
 
-This lab simulates a small enterprise network based on technologies covered in the Cisco CCNA.
+This project simulates a small enterprise network based on technologies covered in the Cisco CCNA.
 
-The design represents a realistic business environment with a headquarters (HQ), two branch offices, and an ISP. It demonstrates scalability, redundancy, and secure communication between sites using industry-relevant networking practices.
+The lab is designed to represent a realistic business environment with a headquarters (HQ), two branch offices, and WAN connectivity. It demonstrates scalability, redundancy, and secure communication between sites using industry-relevant networking practices.
+
+The project is split into two versions to show progression in both design and implementation:
+
+- **V1** – Core enterprise network (completed)
+- **V2** – Enhanced enterprise network with internet connectivity and services (in progress)
 
 ---
 
 ## Topology
 
 <p align="center">
-  <img src="./topology/ccna_lab.png" width="800">
+  <img src="./topology/v2/v2_ccna_lab.drawio.png" width="800">
 </p>
 
 ### The topology includes:
 
 - HQ with core and access layer switching
 - Two branch offices (Sales and Engineering)
-- Simulated ISP network (representing private MPLS/WAN connectivity)
+- Private WAN (MPLS-style) connectivity between sites
+- Public internet connectivity via HQ edge (V2)
 - End devices and servers for testing
 
 ---
 
 ## Technologies Used
+
+### Core Technologies (V1)
 
 - VLANs (Network segmentation)
 - Inter-VLAN Routing (SVIs on Layer 3 switches)
@@ -36,21 +44,27 @@ The design represents a realistic business environment with a headquarters (HQ),
 - Port Security
 - Rapid Spanning Tree (RSTP) with PortFast and BPDU Guard
 
+### Additional Technologies (V2)
+
+- NAT (Network Address Translation)
+- Internet edge connectivity
+- Centralised services (DHCP, DNS, Active Directory)
+- Application server integration
+
 ---
 
 ## IP Addressing Design
 
-The network uses **private IP addressing throughout**, simulating an internal enterprise WAN similar to MPLS.
+The network primarily uses **private IP addressing**, simulating an internal enterprise WAN similar to MPLS.
 
-- All sites communicate using private IP ranges
-- OSPF is used to advertise routes across the entire network
-- No public IP addressing is required within the lab
+- All internal communication uses private IP ranges
+- OSPF is used to advertise routes across the network
+- WAN links use /30 subnets for efficient point-to-point communication
 
-This reflects real-world enterprise environments where:
+In **V2**, external connectivity is introduced:
 
-- MPLS or private WAN links are used between sites
-- Internal traffic remains within the private network
-- Routing is handled internally without reliance on internet-based connectivity
+- NAT is used at the HQ edge to allow internal devices to access the public internet
+- Internal addressing remains private while external access is translated
 
 ---
 
@@ -61,22 +75,31 @@ The lab is built using:
 - EVE-NG (Network emulation)
 - Cisco IOS routers and switches
 - Virtual PCs for endpoint testing
-- Windows Server 2008 R2 VM (used for extended testing)
+- Windows Server 2008 R2 VM (used for extended testing and services)
 
 ---
 
 ## Objectives
+
+### V1 Objectives
 
 - Implement VLAN segmentation for different departments
 - Configure inter-VLAN routing using Layer 3 switches
 - Deploy OSPF for dynamic routing across all sites
 - Implement HSRP for gateway redundancy and high availability
 - Configure Rapid Spanning Tree (RSTP) for efficient Layer 2 convergence
-- Optimise Layer 2 topology using PortFast and BPDU Guard
-- Apply Layer 2 security features including DHCP Snooping, DAI, and Port Security
-- Configure EtherChannel for link aggregation and redundancy
-- Apply ACLs for traffic filtering and segmentation
-- Validate network behaviour through testing and failover scenarios
+- Apply Layer 2 security features (DHCP Snooping, DAI, Port Security)
+- Configure EtherChannel for redundancy
+- Apply ACLs for traffic filtering
+- Validate failover and connectivity
+
+### V2 Objectives
+
+- Introduce internet connectivity via an ISP edge
+- Implement NAT (PAT) for outbound traffic
+- Deploy centralised services (DHCP, DNS, Active Directory)
+- Replace static addressing with dynamic host configuration
+- Improve realism of enterprise network design
 
 ---
 
@@ -87,36 +110,51 @@ The lab is built using:
 - **Scalability** through dynamic routing (OSPF)
 - **Segmentation** using VLANs
 - **Enterprise WAN Simulation** using private MPLS-style routing
+- **Internet Edge Design and NAT** (V2)
 
 ---
 
 ## Status
 
-### ✅ Lab completed
+### ✅ V1 – Completed
 
-The enterprise network lab has been fully implemented, configured, and tested.
+The original enterprise network lab has been fully implemented and tested, including:
 
-This includes:
-
-- Full device configuration across all routers and switches
+- Full configuration of all routers and switches
 - End-to-end connectivity validation
 - OSPF route propagation across all sites
-- HSRP failover testing at the core layer
+- HSRP failover testing
 - ACL enforcement between departments
-- SSH management access across devices
+- Layer 2 security implementation
+- SSH management access
 
-The lab reflects a complete, working enterprise network design with both Layer 2 and Layer 3 security controls in place.
+---
+
+### 🚧 V2 – In Progress
+
+The enhanced version of the lab is currently being developed and includes:
+
+- Internet connectivity via HQ edge
+- NAT configuration for external access
+- Deployment of centralised services
+- Additional testing and validation
 
 ---
 
 ## Lab Documentation
 
-- [Base Configuration](labs/00-base-config.md)
-- [Core Configuration](labs/01-core-setup.md)
-- [Access Layer Configuration](labs/02-access-layer.md)
-- [Routing Configuration (OSPF)](labs/03-routing-ospf.md)
-- [Branch Switches Configuration](labs/04-branch-switches.md)
-- [Access Control Lists Configuration](labs/05-access-control-lists.md)
-- [Testing & Validation](labs/06-testing.md)
+### V1
+
+- [Base Configuration](labs/v1/00-base-config.md)
+- [Core Configuration](labs/v1/01-core-setup.md)
+- [Access Layer Configuration](labs/v1/02-access-layer.md)
+- [Routing Configuration (OSPF)](labs/v1/03-routing-ospf.md)
+- [Branch Switches Configuration](labs/v1/04-branch-switches.md)
+- [Access Control Lists Configuration](labs/v1/05-access-control-lists.md)
+- [Testing & Validation](labs/v1/06-testing.md)
+
+### V2
+
+Documentation will be added as the lab progresses.
 
 ---
