@@ -1,4 +1,4 @@
-# Enterprise Network Topology
+# Enterprise Network Topology – V1
 
 ## Network Diagram
 
@@ -7,6 +7,10 @@
 This lab represents a simulated enterprise network built using CCNA-level technologies, designed to reflect real-world network architecture and design principles.
 
 The design demonstrates how enterprise networks use hierarchical architecture, private WAN connectivity, and dynamic routing to provide scalable and resilient communication between sites.
+
+This version represents the original implementation of the lab and focuses on private WAN connectivity and internal enterprise design.
+
+A second version (V2) builds upon this foundation by introducing internet connectivity, NAT, and centralised services.
 
 ---
 
@@ -194,7 +198,7 @@ The network includes multiple layers of redundancy:
 
 ## Scope
 
-This lab focuses on private WAN connectivity and internal enterprise design. Internet edge services such as NAT and public connectivity are not included in this version and will be introduced in a future iteration.
+This lab focuses on private WAN connectivity and internal enterprise design. Internet edge services such as NAT and public connectivity are not included in this version and are introduced in V2 of the lab.
 
 ---
 
