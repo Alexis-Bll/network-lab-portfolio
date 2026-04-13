@@ -6,7 +6,7 @@ This directory contains the network topology diagrams for the Enterprise Network
 
 Two versions of the topology are included to demonstrate the progression of the lab from a private enterprise WAN design to a more complete enterprise network with public internet connectivity and centralised services.
 
-Both versions are designed using CCNA-level networking concepts and reflect real-world enterprise architecture and design principles.
+Both versions are built using CCNA-level networking concepts and are designed to reflect real-world enterprise architecture and design principles.
 
 ---
 
@@ -54,7 +54,7 @@ This version expands the scope of the lab to better simulate how enterprise netw
 
 ## Design Progression
 
-The purpose of maintaining both topology versions is to clearly demonstrate the evolution of the lab design.
+The purpose of maintaining both topology versions is to demonstrate the evolution of the lab design.
 
 ### V1 focuses on:
 - Private WAN/MPLS-style architecture
@@ -75,7 +75,6 @@ This progression reflects a deliberate move from foundational CCNA-level enterpr
 
 - `v1/` → Original enterprise topology
 - `v2/` → Enhanced enterprise topology
-- Root topology files may also be retained for reference during development and revision
 
 ---
 
