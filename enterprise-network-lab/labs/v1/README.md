@@ -88,8 +88,6 @@ Full device configurations can be found in the `configs/` directory.
 
 ## Notes
 
-## Notes
-
 This lab represents the **V1 implementation** of the Enterprise Network Lab and focuses on core enterprise networking concepts using a private WAN design.
 
 A second version (V2) builds upon this foundation and introduces additional features, including:
