@@ -76,21 +76,19 @@ This reflects real-world practices where configurations are reviewed, standardis
 
 ---
 
-## Future Enhancements (Lab v2)
+## V2 Enhancements
 
-A second iteration of this lab is planned to extend functionality and simulate a more complete enterprise environment.
+The configurations in this folder represent the completed V1 implementation of the lab.
 
-Planned additions include:
+In V2, the existing design is extended with additional functionality while maintaining the same core architecture.
 
-* NAT for internet connectivity
-* DHCP and DNS services
-* Integration with additional network services
-* Further security enhancements
+Key enhancements include:
+
+- NAT (PAT) configured at the HQ edge (HQ-R1) for internet access  
+- Introduction of centralised services (DHCP, DNS, Active Directory via DC1)  
+- Integration of an application server within the server VLAN  
+- Minor updates to router configurations to support external connectivity  
+
+These changes build upon the existing configurations rather than replacing them, reflecting how real enterprise networks evolve incrementally.
 
 ---
-
-## Notes
-
-This repository represents a completed enterprise network lab designed to demonstrate practical networking skills and real-world design principles.
-
-It will continue to be expanded with additional labs and technologies as part of ongoing development.
