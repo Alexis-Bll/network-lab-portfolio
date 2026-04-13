@@ -136,7 +136,15 @@ Each branch site consists of:
 ---
 
 ### WAN / Transit Networks
-- /30 subnets used for point-to-point links  
+- 10.0.0.0/8 private address space used for point-to-point links  
+- /30 subnets used for efficient addressing of router-to-router connections  
+
+---
+
+### Design Approach
+- 192.168.x.x ranges are used for LAN and VLAN segmentation  
+- 10.x.x.x range is reserved for WAN/transit networks  
+- This separation improves clarity, scalability, and aligns with real-world enterprise addressing practices  
 
 ---
 
