@@ -9,7 +9,7 @@ Establish a secure and consistent baseline configuration across all network devi
 ## Topology Overview
 The screenshot shows the network topology within Eve-ng. Base configurations have been applied to every network device within the toplogy.
 
-![HQ Topology](../topology/eve-ng-topology.png)
+![HQ Topology](../topology/v1-eve-ng-topology.png)
 
 ---
 
