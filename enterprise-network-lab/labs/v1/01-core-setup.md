@@ -18,7 +18,7 @@ This phase focuses on the two core switches:
 
 ## Topology Overview
 
-![HQ Topology](../topology/eve-ng-topology.png)
+![HQ Topology](../../topology/v1/v1-eve-ng-topology.png)
 
 ---
 
