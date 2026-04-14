@@ -1,4 +1,5 @@
 hostname ISP
+service password-encryption
 
 !
 ! --- Security Banner ---
@@ -8,11 +9,11 @@ Unauthorized access is prohibited
 
 !
 ! --- Local User ---
-username admin privilege 15 secret <hidden>
+username admin privilege 15 secret <your secret>
 
 !
 ! --- Domain & SSH ---
-no ip domain lookup
+no ip domain-lookup
 ip domain name lab.local
 ip ssh version 2
 
@@ -24,18 +25,22 @@ interface Loopback0
 !
 ! --- WAN Links ---
 interface GigabitEthernet0/0
+ description TO HQ-R1
  ip address 10.0.0.2 255.255.255.252
  no shutdown
 
 interface GigabitEthernet0/1
+ description TO HQ-R2
  ip address 10.0.0.6 255.255.255.252
  no shutdown
 
 interface GigabitEthernet0/2
+ description TO BR1
  ip address 10.0.0.9 255.255.255.252
  no shutdown
 
 interface GigabitEthernet0/3
+ description TO BR2
  ip address 10.0.0.13 255.255.255.252
  no shutdown
 
@@ -66,6 +71,6 @@ event manager applet AUTO-UP-INTERFACES
  event syslog pattern "SYS-5-RESTART"
  action 1.0 cli command "enable"
  action 2.0 cli command "conf t"
- action 3.0 cli command "interface range g0/0 - 3"
+ action 3.0 cli command "interface range g0/0-3"
  action 4.0 cli command "no shutdown"
  action 5.0 cli command "end"
