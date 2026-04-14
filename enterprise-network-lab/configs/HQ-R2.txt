@@ -8,7 +8,7 @@ Unauthorized access is prohibited
 
 !
 ! --- Local User ---
-username admin privilege 15 secret <hidden>
+username admin privilege 15 secret <your secret>
 
 !
 ! --- Domain & SSH ---
