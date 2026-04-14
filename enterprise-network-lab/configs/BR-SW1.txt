@@ -16,7 +16,7 @@ Unauthorized access is prohibited
 
 !
 ! --- Local User ---
-username admin privilege 15 secret Password123
+username admin privilege 15 secret <your secret>
 
 !
 ! --- Domain & SSH ---
