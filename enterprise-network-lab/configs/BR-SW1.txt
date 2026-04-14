@@ -4,8 +4,8 @@ service password-encryption
 
 !
 ! --- VLAN Definition ---
-vlan 40
- name SALES
+vlan 30
+ name ENGINEERING
 
 !
 ! --- Security Banner ---
