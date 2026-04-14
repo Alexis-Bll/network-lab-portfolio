@@ -3,10 +3,9 @@ service password-encryption
 !
 
 !
-! --- VLAN ---
-vlan 30
-name ENGINEERING
-
+! --- VLAN Definition ---
+vlan 40
+ name SALES
 
 !
 ! --- Security Banner ---
