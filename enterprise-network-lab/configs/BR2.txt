@@ -1,4 +1,5 @@
 hostname BR2
+service password-encryption
 
 !
 ! --- Security Banner ---
@@ -12,8 +13,8 @@ username admin privilege 15 secret <hidden>
 
 !
 ! --- Domain & SSH ---
-no ip domain lookup
-ip domain name lab.local
+no ip domain-lookup
+ip domain-name lab.local
 ip ssh version 2
 
 !
@@ -31,6 +32,7 @@ interface GigabitEthernet0/0
 !
 ! --- WAN Interface (to ISP) ---
 interface GigabitEthernet0/1
+ description WAN to ISP
  ip address 10.0.0.14 255.255.255.252
  no shutdown
 
@@ -47,7 +49,7 @@ router ospf 1
 !
 ! --- Access Control List ---
 ip access-list extended BLOCK_SALES_TO_ENG
- deny   ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
+ deny ip 192.168.40.0 0.0.0.255 192.168.30.0 0.0.0.255
  permit ip any any
 
 !
@@ -66,6 +68,6 @@ event manager applet AUTO-UP-INTERFACES
  event syslog pattern "SYS-5-RESTART"
  action 1.0 cli command "enable"
  action 2.0 cli command "conf t"
- action 3.0 cli command "interface range g0/0 - 1"
+ action 3.0 cli command "interface range g0/0-1"
  action 4.0 cli command "no shutdown"
  action 5.0 cli command "end"
