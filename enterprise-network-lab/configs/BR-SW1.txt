@@ -1,4 +1,12 @@
 hostname BR-SW1
+service password-encryption
+!
+
+!
+! --- VLAN ---
+vlan 30
+name ENGINEERING
+
 
 !
 ! --- Security Banner ---
@@ -8,7 +16,7 @@ Unauthorized access is prohibited
 
 !
 ! --- Local User ---
-username admin privilege 15 secret <hidden>
+username admin privilege 15 secret Password123
 
 !
 ! --- Domain & SSH ---
@@ -37,7 +45,6 @@ interface GigabitEthernet0/1
  spanning-tree bpduguard enable
  switchport port-security
  switchport port-security mac-address sticky
- switchport port-security mac-address sticky 0050.7966.680c
  switchport port-security violation restrict
 
 !
