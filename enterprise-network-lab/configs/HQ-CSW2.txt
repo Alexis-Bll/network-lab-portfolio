@@ -1,4 +1,6 @@
 hostname HQ-CSW2
+service password-encryption
+ip routing
 
 !
 ! --- Security Banner ---
@@ -8,7 +10,7 @@ Unauthorized access is prohibited
 
 !
 ! --- Local User ---
-username admin privilege 15 secret <hidden>
+username admin privilege 15 secret <your secret>
 
 !
 ! --- Domain & SSH ---
@@ -46,11 +48,13 @@ interface Port-channel1
 !
 ! --- Routed Uplinks to HQ Routers ---
 interface GigabitEthernet0/0
+ description TO HQ-R2
  no switchport
  ip address 10.0.1.13 255.255.255.252
  no shutdown
 
 interface GigabitEthernet0/1
+ description TO HQ-R1
  no switchport
  ip address 10.0.1.5 255.255.255.252
  no shutdown
@@ -58,6 +62,7 @@ interface GigabitEthernet0/1
 !
 ! --- EtherChannel Member Links ---
 interface GigabitEthernet0/2
+ description CORE LINK TO HQ-CSW1
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20
@@ -108,12 +113,14 @@ interface Vlan10
  standby 10 ip 192.168.10.1
  standby 10 priority 90
  standby 10 preempt
+ no shutdown
 
 interface Vlan20
  ip address 192.168.20.3 255.255.255.0
  standby 20 ip 192.168.20.1
  standby 20 priority 110
  standby 20 preempt
+ no shutdown
 
 !
 ! --- OSPF Configuration ---
