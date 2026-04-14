@@ -3,6 +3,11 @@ service password-encryption
 !
 
 !
+! --- VLAN Definition ---
+vlan 40
+ name SALES
+
+!
 ! --- Security Banner ---
 banner motd ^C
 Unauthorized access is prohibited
@@ -21,11 +26,6 @@ ip ssh version 2
 !
 ! --- Spanning Tree ---
 spanning-tree mode rapid-pvst
-
-!
-! --- VLAN Definition ---
-vlan 40
- name SALES
 
 !
 ! --- Uplink to Router ---
