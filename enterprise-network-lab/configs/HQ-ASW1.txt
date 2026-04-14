@@ -1,4 +1,5 @@
 hostname HQ-ASW1
+service password-encryption
 
 !
 ! --- Security Banner ---
@@ -8,7 +9,7 @@ Unauthorized access is prohibited
 
 !
 ! --- Local User ---
-username admin privilege 15 secret <hidden>
+username admin privilege 15 secret <your secret>
 
 !
 ! --- Layer 2 Security ---
@@ -37,6 +38,7 @@ vlan 20
 !
 ! --- Trunk Uplinks to Core Switches ---
 interface GigabitEthernet0/0
+ description TO HQ-CSW1
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20
@@ -45,6 +47,7 @@ interface GigabitEthernet0/0
  ip arp inspection trust
 
 interface GigabitEthernet0/1
+ description TO HQ-CSW2
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20
@@ -55,19 +58,20 @@ interface GigabitEthernet0/1
 !
 ! --- Access Port (Admin PC) ---
 interface GigabitEthernet0/2
+ description ADMIN-PC
  switchport mode access
  switchport access vlan 10
  spanning-tree portfast
  spanning-tree bpduguard enable
  switchport port-security
  switchport port-security mac-address sticky
- switchport port-security mac-address sticky 0050.7966.680e
  switchport port-security violation restrict
 
 !
 ! --- Management SVI ---
 interface Vlan10
  ip address 192.168.10.4 255.255.255.0
+ no shutdown
 
 !
 ! --- Default Gateway ---
