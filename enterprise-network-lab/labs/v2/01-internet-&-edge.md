@@ -19,7 +19,7 @@ Port Address Translation (PAT) is implemented to allow multiple internal devices
 * **HQ-R1** acts as the NAT boundary
 * Internal networks use **192.168.0.0/16**
 * Transit/WAN links use **10.0.x.x** (not translated)
-* External network connected via **GigabitEthernet0/3**
+* External network connected via **GigabitEthernet0/3 (internet-facing interface)**
 
 ---
 
@@ -63,7 +63,9 @@ This approach mirrors real-world environments where the ISP is externally manage
 
 ### NAT Configuration
 
-```bash
+Traffic from internal networks is matched using a standard ACL and translated using PAT on the internet-facing interface.
+
+```cisco
 access-list 1 permit 192.168.0.0 0.0.255.255
 
 ip nat inside source list 1 interface GigabitEthernet0/3 overload
@@ -73,7 +75,7 @@ ip nat inside source list 1 interface GigabitEthernet0/3 overload
 
 ### Interface Configuration
 
-```bash
+```cisco
 interface GigabitEthernet0/0
  ip nat inside
 
@@ -94,7 +96,7 @@ interface GigabitEthernet0/3
 
 ### Default Route
 
-```bash
+```cisco
 ip route 0.0.0.0 0.0.0.0 203.0.113.1
 ```
 
@@ -102,7 +104,7 @@ ip route 0.0.0.0 0.0.0.0 203.0.113.1
 
 ### OSPF Default Route Advertisement
 
-```bash
+```cisco
 router ospf 1
  default-information originate
 ```
@@ -113,7 +115,7 @@ router ospf 1
 
 ### NAT Translations
 
-```bash
+```cisco
 show ip nat translations
 ```
 
@@ -131,6 +133,18 @@ output:
 * ICMP replies are not received due to the simulated nature of the internet environment
 
 ---
+
+### Default Static Route Verification
+
+```cisco 
+show ip route
+```
+
+* A default route (0.0.0.0/0) is present and advertised via OSPF
+
+---
+
+
 
 ## Observations
 
