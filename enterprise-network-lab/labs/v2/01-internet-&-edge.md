@@ -140,11 +140,14 @@ output:
 show ip route
 ```
 
-* A default route (0.0.0.0/0) is present and advertised via OSPF
+- A default route (0.0.0.0/0) is configured on HQ-R1 pointing to the ISP (203.0.113.1)
+- The default route is advertised into OSPF using default-information originate
+- HQ-R1 acts as the central internet gateway for the enterprise network
+- Internal routers learn the default route via OSPF and forward unknown traffic towards HQ-R1
+- This removes the need to configure static routes for external networks on every router
+- Without this, internet-bound traffic would be dropped due to missing routes
 
 ---
-
-
 
 ## Observations
 
