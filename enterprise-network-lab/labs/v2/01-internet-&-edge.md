@@ -102,12 +102,10 @@ router ospf 1
 show ip nat translations
 ```
 
-Example output:
+output:
 
-```
-Inside local     Inside global     Outside local     Outside global
-192.168.10.10    203.0.113.2       8.8.8.8           8.8.8.8
-```
+<img width="1792" height="670" alt="image" src="https://github.com/user-attachments/assets/7fa6cb96-7bdb-43bc-a625-bae12b1f0a3e" />
+
 
 ---
 
