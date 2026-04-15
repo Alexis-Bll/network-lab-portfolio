@@ -109,15 +109,8 @@ output:
 
 ---
 
-### Connectivity Test
 
-From an internal client:
-
-```bash
-ping 8.8.8.8
-```
-
-Result:
+### Result from Ping:
 
 * Traffic is successfully translated and forwarded
 * ICMP replies are not received due to the simulated nature of the internet environment
