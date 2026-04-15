@@ -134,9 +134,9 @@ output:
 
 ---
 
-### Default Static Route Verification
+### Default Route & OSPF Verification
 
-```cisco 
+```cisco
 show ip route
 ```
 
