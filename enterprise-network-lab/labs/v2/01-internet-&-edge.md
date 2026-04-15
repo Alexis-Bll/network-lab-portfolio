@@ -34,6 +34,8 @@ The simulated internet router:
 - Acts as the next-hop for the default route on HQ-R1
 - Does not return traffic, which is expected in this lab setup
 
+This approach mirrors real-world environments where the ISP is externally managed and not configured by the enterprise.
+
 ---
 
 ## Key Concepts Implemented
