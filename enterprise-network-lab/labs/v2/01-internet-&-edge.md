@@ -23,6 +23,19 @@ Port Address Translation (PAT) is implemented to allow multiple internal devices
 
 ---
 
+### External Network Simulation
+
+The external network (internet) is simulated using a simple router within EVE-NG.
+
+This device represents an upstream ISP and is not part of the enterprise network configuration. It is used purely to validate NAT and routing behaviour.
+
+The simulated internet router:
+- Uses a public IP range (e.g. 203.0.113.0/30)
+- Acts as the next-hop for the default route on HQ-R1
+- Does not return traffic, which is expected in this lab setup
+
+---
+
 ## Key Concepts Implemented
 
 * NAT (PAT / Overload)
