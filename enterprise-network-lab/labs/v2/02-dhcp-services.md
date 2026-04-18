@@ -2,6 +2,8 @@
 
 This section documents the implementation of centralised DHCP services for the enterprise lab. A Windows Server 2008 R2 DHCP server was deployed in the HQ server VLAN to provide addressing for the Admin, Engineering, and Sales networks across the topology.
 
+This lab builds on a previously secured Layer 2 environment (V1), where DHCP Snooping and Dynamic ARP Inspection (DAI) were already implemented. Introducing DHCP services in V2 required careful integration to avoid breaking existing security controls.
+
 ---
 
 ## Objective
@@ -12,7 +14,8 @@ The goal was to:
 - Provide dynamic addressing for multiple VLANs across the network  
 - Use DHCP relay (`ip helper-address`) to forward broadcasts across Layer 3  
 - Validate end-to-end connectivity between dynamically addressed hosts  
-- Introduce Layer 2 security (DHCP Snooping & DAI)  
+- Integrate DHCP with existing Layer 2 security (DHCP Snooping & DAI)
+- Troubleshoot and resolve conflicts between DHCP services and security features
 
 ---
 
@@ -71,21 +74,23 @@ After configuration:
 - Inter-VLAN routing worked correctly
 - DHCP server reachable from all VLANs
 
-Example DHCP Assignments
+### Example DHCP Assignments
 - Admin: 192.168.10.50/24
 - Engineering: 192.168.30.50/24
 - Sales: 192.168.40.50/24
 
 ## DHCP Snooping Implementation
 
-DHCP Snooping was introduced to prevent rogue DHCP servers and build a trusted binding table.
+DHCP Snooping was already implemented in the network from V1 as a Layer 2 security feature.
+
+When DHCP services were introduced in V2, DHCP Snooping initially prevented clients from receiving IP addresses, requiring troubleshooting and refinement of the existing configuration.
 
 ### Design Principles
 
-- Enable only on relevant VLANs
-- Trust uplinks and server-facing ports
-- Keep client access ports untrusted
-- Disable Option 82 (critical for this lab)
+- DHCP Snooping must align with actual traffic flow
+- Only uplinks and DHCP server paths should be trusted
+- Client access ports must remain untrusted
+- Option 82 may need to be disabled when using DHCP relay
 
 ---
 
@@ -141,17 +146,18 @@ interface GigabitEthernet0/0
 
 ### Symptoms
 - Clients failed to obtain IP addresses
-- Can't find dhcp server on VPCS
+- `Can't find dhcp server` observed on VPCS
 - Static IP connectivity worked fine
 
 ---
 
 ## Root Cause
 
-The issue was caused by:
-- Incorrect trust boundaries
-- DHCP Snooping blocking legitimate responses
-- Option 82 insertion interfering with DHCP relay
+DHCP failed due to an interaction between existing Layer 2 security controls and DHCP relay:
+
+- DHCP Snooping trust boundaries were incorrectly applied
+- Legitimate DHCP responses were being dropped on untrusted paths
+- Option 82 (relay information) insertion caused incompatibility with the DHCP server
 
 ---
 
@@ -182,12 +188,15 @@ DHCP Snooping requires careful design:
 
 ## Dynamic ARP Inspection (DAI)
 
-DAI was implemented after DHCP Snooping to prevent ARP spoofing.
+DAI was already present from V1 and relies on the DHCP Snooping binding table to validate ARP packets.
+
+After DHCP Snooping was fixed, DAI was validated to ensure it did not block legitimate traffic.
 
 ### Notes
+- DAI depends on a valid DHCP Snooping binding table
+- Incorrect DHCP Snooping configuration will cause DAI to drop legitimate ARP traffic
 - Enabled only on VLANs present on each switch
 - Uplinks must be trusted
-- Static devices require special handling
 
 ---
 
@@ -226,10 +235,16 @@ The network now supports:
 
 ## Key Takeaway
 
-This lab highlights a real-world lesson:
+This lab demonstrates a critical real-world networking concept:
 
-Security features like DHCP Snooping and DAI must be carefully integrated, as misconfiguration can break core services like DHCP.
+Layer 2 security features such as DHCP Snooping and DAI can unintentionally disrupt core services if not carefully designed.
 
-Understanding traffic flow is critical when implementing Layer 2 security.
+The key is understanding:
+
+- Traffic flow across the network
+- Trust boundaries
+- How security features interact with protocols like DHCP
+
+This troubleshooting process reflects real enterprise network challenges, where security and functionality must be balanced correctly.
 
 ---
