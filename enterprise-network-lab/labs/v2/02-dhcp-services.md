@@ -97,14 +97,16 @@ However, this behaviour was not initially achieved due to conflicts with existin
 
 After implementing DHCP services, clients were unable to obtain IP addresses despite correct DHCP server and relay configuration.
 
-Through step-by-step debugging, the following observations were made:
+<img width="882" height="215" alt="image" src="https://github.com/user-attachments/assets/9adb367d-aad4-4185-ada6-82095bc0104e" />
+
+---
+
+### Through step-by-step debugging, the following observations were made:
 
 - Static IP addressing worked correctly
 - Inter-VLAN routing was functional
 - DHCP server was reachable from all VLANs
 - Only DHCP requests were failing
-
-<img width="882" height="215" alt="image" src="https://github.com/user-attachments/assets/9adb367d-aad4-4185-ada6-82095bc0104e" />
 
 
 This indicated the issue was not related to Layer 3 routing, but rather a Layer 2 control-plane problem.
