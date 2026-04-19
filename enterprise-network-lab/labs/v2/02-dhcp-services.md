@@ -217,12 +217,19 @@ no ip dhcp snooping information option
 
 Final design:
 
-- Only uplinks and DHCP server-facing interfaces are trusted
-- All client access ports remain untrusted
+Final design:
+
+- Only uplinks and DHCP server-facing interfaces are trusted for DHCP Snooping
+- Client access ports remain untrusted for DHCP Snooping
 - DHCP Snooping enabled only on relevant VLANs
 - Option 82 disabled to ensure compatibility with DHCP relay
+- Static IP devices require additional consideration for DAI:
+  - Either ARP ACLs must be configured, or
+  - Interfaces hosting static devices must be trusted for ARP inspection
 
 This restored full DHCP functionality without removing Layer 2 security controls.
+
+Note: Static hosts are not present in the DHCP Snooping binding table, which can cause DAI to drop legitimate ARP traffic unless explicitly handled.
 
 ---
 
@@ -243,10 +250,25 @@ DAI was already present from V1 and relies on the DHCP Snooping binding table to
 After DHCP Snooping was fixed, DAI was validated to ensure it did not block legitimate traffic.
 
 ### Notes
+
 - DAI depends on a valid DHCP Snooping binding table
 - Incorrect DHCP Snooping configuration will cause DAI to drop legitimate ARP traffic
 - Enabled only on VLANs present on each switch
 - Uplinks must be trusted
+
+#### Static IP Device Consideration
+
+Static IP hosts are not present in the DHCP Snooping binding table. As a result, DAI may incorrectly drop legitimate ARP traffic from these devices.
+
+In this lab, a simplified approach was used:
+
+- Interfaces connected to static IP devices were configured as trusted for ARP inspection
+
+This ensures connectivity but slightly reduces Layer 2 security on those ports.
+
+In a production environment, a more secure approach would be:
+
+- Implementing ARP ACLs to explicitly permit static IP-to-MAC bindings without trusting the entire interface
 
 ---
 
@@ -271,6 +293,10 @@ The following validation tests were performed:
 - DHCP server (192.168.20.10) reachable from all networks
 - DHCP Snooping operation validated (binding table population)
 - DAI confirmed not to block legitimate ARP traffic
+
+---
+
+<img width="886" height="411" alt="image" src="https://github.com/user-attachments/assets/5f072355-4bd6-423c-9a63-e96903565038" />
 
 ---
 
