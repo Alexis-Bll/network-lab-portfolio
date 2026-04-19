@@ -1,8 +1,10 @@
 # DHCP Services
 
-This section documents the implementation of centralised DHCP services for the enterprise lab. A Windows Server 2008 R2 DHCP server was deployed in the HQ server VLAN to provide addressing for the Admin, Engineering, and Sales networks across the topology.
+This section documents the design, implementation, and troubleshooting of centralised DHCP services within the enterprise lab.
 
-This lab builds on a previously secured Layer 2 environment (V1), where DHCP Snooping and Dynamic ARP Inspection (DAI) were already implemented. Introducing DHCP services in V2 required careful integration to avoid breaking existing security controls.
+A Windows Server 2008 R2 DHCP server was deployed in the HQ server VLAN to provide dynamic addressing for Admin, Engineering, and Sales networks across the topology.
+
+This lab builds on a previously secured Layer 2 environment (V1), where DHCP Snooping and Dynamic ARP Inspection (DAI) were already implemented. Introducing DHCP services in V2 required careful integration to avoid disrupting existing security controls.
 
 ---
 
@@ -13,8 +15,8 @@ The goal was to:
 - Centralise DHCP services on a dedicated server at HQ  
 - Provide dynamic addressing for multiple VLANs across the network  
 - Use DHCP relay (`ip helper-address`) to forward broadcasts across Layer 3  
-- Validate end-to-end connectivity between dynamically addressed hosts  
-- Integrate DHCP with existing Layer 2 security (DHCP Snooping & DAI)
+- Validate end-to-end connectivity between dynamically addressed hosts
+- Integrate DHCP with existing Layer 2 security mechanisms (DHCP Snooping & DAI)
 - Troubleshoot and resolve conflicts between DHCP services and security features
 
 ---
@@ -69,13 +71,13 @@ Relay was configured on all Layer 3 gateways serving client VLANs.
 
 ## Expected Behaviour
 
-This section outlines the expected behaviour after DHCP configuration.
+The intended outcome after DHCP configuration was:
 
-- Clients should receive DHCP addresses dynamically
-- Inter-VLAN routing should function correctly
-- The DHCP server should be reachable from all VLANs
+- Clients receive IP addresses dynamically via DHCP
+- Inter-VLAN routing functions correctly
+- DHCP server is reachable from all VLANs
 
-However, this expected behaviour was not initially observed due to existing Layer 2 security configurations, which required further troubleshooting.
+However, this behaviour was not initially achieved due to conflicts with existing Layer 2 security controls, requiring structured troubleshooting.
 
 ### Example DHCP Assignments
 - Admin: 192.168.10.50/24
@@ -97,7 +99,7 @@ Through step-by-step debugging, the following observations were made:
 
 This indicated the issue was not related to Layer 3 routing, but rather a Layer 2 control-plane problem.
 
-Further investigation identified DHCP Snooping as the root cause, as it was blocking legitimate DHCP traffic due to incorrect trust boundaries and Option 82 behaviour.
+Further investigation isolated DHCP Snooping as the root cause. Specifically, legitimate DHCP traffic was being dropped due to incorrect trust boundaries and the insertion of Option 82 (relay information), which was not compatible with the DHCP server configuration.
 
 ---
 
@@ -105,7 +107,9 @@ Further investigation identified DHCP Snooping as the root cause, as it was bloc
 
 DHCP Snooping was already implemented in the network from V1 as a Layer 2 security feature.
 
-When DHCP services were introduced in V2, DHCP Snooping initially prevented clients from receiving IP addresses, requiring troubleshooting and refinement of the existing configuration.
+When DHCP services were introduced in V2, DHCP Snooping unintentionally blocked legitimate DHCP traffic, preventing clients from receiving IP addresses. This required refinement of trust boundaries and protocol behaviour.
+
+---
 
 ### Design Principles
 
@@ -117,6 +121,8 @@ When DHCP services were introduced in V2, DHCP Snooping initially prevented clie
 ---
 
 ### Example Configuration (Access Switch)
+
+Example configuration for access layer switches (uplinks trusted, client ports untrusted):
 
 ```cisco
 ip dhcp snooping
@@ -133,6 +139,8 @@ interface GigabitEthernet0/1
 ---
 
 ### Example Configuration (Server Switch)
+
+Example configuration for server-facing switches (DHCP server path trusted):
 
 ```cisco
 ip dhcp snooping
@@ -152,6 +160,8 @@ interface GigabitEthernet0/2
 ---
 
 ### Example Configuration (Branch Switch)
+
+Example configuration for branch access switches:
 
 ```cisco
 ip dhcp snooping
@@ -175,26 +185,32 @@ interface GigabitEthernet0/0
 
 ## Root Cause
 
-DHCP failed due to an interaction between existing Layer 2 security controls and DHCP relay:
+The issue was caused by the interaction between DHCP Snooping and DHCP relay:
 
-- DHCP Snooping trust boundaries were incorrectly applied
-- Legitimate DHCP responses were being dropped on untrusted paths
-- Option 82 (relay information) insertion caused incompatibility with the DHCP server
+- DHCP Snooping trust boundaries were incorrectly defined
+- DHCP server responses were dropped when traversing untrusted interfaces
+- Option 82 insertion modified DHCP packets, causing incompatibility with the DHCP server
+
+This resulted in clients being unable to complete the DHCP DORA process.
 
 ---
 
-## Fix
+## Resolution
 
-The working solution:
+The issue was resolved by correcting trust boundaries and disabling Option 82 insertion.
 
 ```cisco
 no ip dhcp snooping information option
 ```
 
-AND:
+Final design:
 
-- Trust only uplinks + DHCP server path
-- Keep client ports untrusted
+- Only uplinks and DHCP server-facing interfaces are trusted
+- All client access ports remain untrusted
+- DHCP Snooping enabled only on relevant VLANs
+- Option 82 disabled to ensure compatibility with DHCP relay
+
+This restored full DHCP functionality without removing Layer 2 security controls.
 
 ---
 
@@ -235,38 +251,41 @@ interface GigabitEthernet0/0
 
 ## Validation
 
-The following tests were performed:
-- DHCP assignment across all VLANs
-- Ping to default gateways
-- Inter-VLAN communication
-- Connectivity to DHCP server (192.168.20.10)
-- DHCP Snooping functionality verified
-- DAI not blocking legitimate traffic
+The following validation tests were performed:
+
+- DHCP address assignment verified across all VLANs
+- Successful ping to default gateways
+- Inter-VLAN communication confirmed
+- DHCP server (192.168.20.10) reachable from all networks
+- DHCP Snooping operation validated (binding table population)
+- DAI confirmed not to block legitimate ARP traffic
 
 ---
 
 ## Outcome
 
-The network now supports:
+The network successfully supports:
 
 - Centralised DHCP across multiple VLANs
 - DHCP relay across Layer 3 boundaries
-- DHCP Snooping protection
-- Dynamic ARP Inspection (DAI) security
-- Full connectivity between dynamically assigned clients
+- Secure DHCP operation using DHCP Snooping
+- ARP protection using Dynamic ARP Inspection (DAI)
+- Full end-to-end connectivity between dynamically addressed clients
+
+---
 
 ## Key Takeaway
 
-This lab demonstrates a critical real-world networking concept:
+This lab highlights a critical real-world networking challenge:
 
-Layer 2 security features such as DHCP Snooping and DAI can unintentionally disrupt core services if not carefully designed.
+Layer 2 security mechanisms such as DHCP Snooping and DAI can unintentionally disrupt core services if not correctly designed.
 
-The key is understanding:
+Successful implementation requires:
 
-- Traffic flow across the network
-- Trust boundaries
-- How security features interact with protocols like DHCP
+- Understanding traffic flow across Layer 2 and Layer 3
+- Correctly defining trust boundaries
+- Awareness of how security features interact with protocols like DHCP
 
-This troubleshooting process reflects real enterprise network challenges, where security and functionality must be balanced correctly.
+This troubleshooting process reflects real enterprise environments, where maintaining both security and functionality requires careful design and iterative validation.
 
 ---
