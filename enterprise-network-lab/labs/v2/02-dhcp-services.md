@@ -104,6 +104,9 @@ Through step-by-step debugging, the following observations were made:
 - DHCP server was reachable from all VLANs
 - Only DHCP requests were failing
 
+<img width="882" height="215" alt="image" src="https://github.com/user-attachments/assets/9adb367d-aad4-4185-ada6-82095bc0104e" />
+
+
 This indicated the issue was not related to Layer 3 routing, but rather a Layer 2 control-plane problem.
 
 Further investigation isolated DHCP Snooping as the root cause. Specifically, legitimate DHCP traffic was being dropped due to incorrect trust boundaries and the insertion of Option 82 (relay information), which was not compatible with the DHCP server configuration.
