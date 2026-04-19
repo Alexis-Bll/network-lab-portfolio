@@ -67,17 +67,22 @@ Relay was configured on all Layer 3 gateways serving client VLANs.
 
 ---
 
-## Initial Verification
+## ## Expected Behaviour
 
-After configuration:
-- Clients successfully received DHCP addresses
-- Inter-VLAN routing worked correctly
-- DHCP server reachable from all VLANs
+This section outlines the expected behaviour after DHCP configuration.
+
+- Clients should receive DHCP addresses dynamically
+- Inter-VLAN routing should function correctly
+- The DHCP server should be reachable from all VLANs
+
+However, this expected behaviour was not initially observed due to existing Layer 2 security configurations, which required further troubleshooting.
 
 ### Example DHCP Assignments
 - Admin: 192.168.10.50/24
 - Engineering: 192.168.30.50/24
 - Sales: 192.168.40.50/24
+
+---
 
 ## DHCP Snooping Implementation
 
