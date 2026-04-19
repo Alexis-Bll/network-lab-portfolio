@@ -30,7 +30,14 @@ The DHCP server is hosted on **DC1** in the HQ server VLAN.
 - **Hostname:** DC1  
 - **IP Address:** `192.168.20.10`  
 - **Subnet:** `255.255.255.0`  
-- **Default Gateway:** `192.168.20.1`  
+- **Default Gateway:** `192.168.20.1`
+
+---
+
+<img width="702" height="347" alt="image" src="https://github.com/user-attachments/assets/36d6f666-5b47-48e8-9d3a-a43734ab8258" />
+
+---
+
 
 ### DHCP Scopes
 
