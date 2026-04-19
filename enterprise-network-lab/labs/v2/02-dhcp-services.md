@@ -67,7 +67,7 @@ Relay was configured on all Layer 3 gateways serving client VLANs.
 
 ---
 
-## ## Expected Behaviour
+## Expected Behaviour
 
 This section outlines the expected behaviour after DHCP configuration.
 
@@ -81,6 +81,23 @@ However, this expected behaviour was not initially observed due to existing Laye
 - Admin: 192.168.10.50/24
 - Engineering: 192.168.30.50/24
 - Sales: 192.168.40.50/24
+
+---
+
+## Troubleshooting Process
+
+After implementing DHCP services, clients were unable to obtain IP addresses despite correct DHCP server and relay configuration.
+
+Through step-by-step debugging, the following observations were made:
+
+- Static IP addressing worked correctly
+- Inter-VLAN routing was functional
+- DHCP server was reachable from all VLANs
+- Only DHCP requests were failing
+
+This indicated the issue was not related to Layer 3 routing, but rather a Layer 2 control-plane problem.
+
+Further investigation identified DHCP Snooping as the root cause, as it was blocking legitimate DHCP traffic due to incorrect trust boundaries and Option 82 behaviour.
 
 ---
 
