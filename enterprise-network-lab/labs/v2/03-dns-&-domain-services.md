@@ -90,7 +90,7 @@ lab.local
 
 ---
 
-5. User & Group Management
+## 5. User & Group Management
 
 Users were created per department:
 
@@ -115,7 +115,40 @@ Users were assigned to their respective groups.
 
 ---
 
+## 6. Authentication Verification
 
+Users successfully logged into domain-joined machines using:
+
+```LAB\username```
+
+Validation performed using:
+
+```whoami```
+```whoami /groups```
+
+---
+
+<img width="795" height="659" alt="image" src="https://github.com/user-attachments/assets/35ca7340-9cbf-42d1-81a5-c33b307d2f2c" />
+
+---
+
+## 7. Shared Folder & Access Control
+
+A shared folder was created on DC1:
+
+```C:\Shares\Shared-Internal```
+
+This was configured with:
+
+NTFS Permissions:
+- Domain Admins → Full Control
+- ENG-Users → Modify
+- SALES-Users → No access
+
+Share Permissions:
+- Restricted to Admin + Engineering groups
+
+---
 
 
 
