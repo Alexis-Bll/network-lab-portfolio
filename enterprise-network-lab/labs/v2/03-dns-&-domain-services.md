@@ -4,6 +4,8 @@
 
 This section covers the deployment of core identity and name resolution services within the enterprise lab. A Windows Server domain controller (DC1) was configured to provide Active Directory Domain Services (AD DS) and DNS, enabling centralized authentication, authorization, and resource access control across multiple VLANs.
 
+---
+
 ## Objectives
 
 - Deploy Active Directory domain (lab.local)
@@ -13,6 +15,33 @@ This section covers the deployment of core identity and name resolution services
 - Implement group-based access control
 - Validate domain authentication and resource access
 
+---
+
+### 1. Active Directory Domain Setup
+
+Active Directory Domain Services were installed on DC1 and a new domain was created:
+
+```lab.local```
+
+DNS was integrated with AD, allowing secure dynamic updates and centralized name resolution.
+
+<img width="797" height="659" alt="image" src="https://github.com/user-attachments/assets/58741d94-1a39-45d6-8215-78f3486661eb" />
+
+---
+
+### 2. DNS Configuration & Validation
+
+DNS was configured as an Active Directory-integrated zone, allowing:
+
+- Secure dynamic updates
+- Automatic client registration
+- Replication across domain controllers (future scalability)
+
+Clients successfully registered their records using:
+
+bash``` ipconfig /registerdns```
+
+---
 
 
 
