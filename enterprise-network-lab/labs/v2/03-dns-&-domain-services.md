@@ -47,17 +47,73 @@ bash``` ipconfig /registerdns```
 
 ---
 
+#### DNS is resolving hosts
+
 <img width="794" height="665" alt="image" src="https://github.com/user-attachments/assets/3cfad976-9303-4a15-92f4-58c661094f07" />
 
 ---
 
+## 3. Domain Join (Multi-VLAN Clients)
 
+Client machines across multiple VLANs (Admin, Engineering, Sales) were joined to the domain.
 
+Each client received:
 
+- IP via DHCP
+- DNS pointing to DC1
+- Domain authentication via AD
 
+---
 
+<img width="795" height="661" alt="image" src="https://github.com/user-attachments/assets/876e85c7-510e-430e-a1a9-b1033cede204" />
 
+---
 
+<img width="797" height="657" alt="image" src="https://github.com/user-attachments/assets/08ab3f22-a07c-4232-9c6b-5ef11178191c" />
+
+---
+
+## 4. Organizational Unit (OU) Design
+
+To structure the environment logically, OUs were created:
+
+lab.local
+├── Admin
+├── Engineering
+├── Sales
+├── Servers
+├── Workstations
+
+---
+
+<img width="794" height="661" alt="image" src="https://github.com/user-attachments/assets/6751e1c3-5f33-453c-b46b-da11b476d9cb" />
+
+---
+
+5. User & Group Management
+
+Users were created per department:
+
+- alex.admin
+- eng.user1
+- sales.user1
+
+Security groups were created:
+
+- ENG-Users
+- SALES-Users
+
+Users were assigned to their respective groups.
+
+---
+
+<img width="799" height="666" alt="image" src="https://github.com/user-attachments/assets/ba07a310-3e75-46b5-8ef1-5e91716fdf09" />
+
+---
+
+<img width="798" height="659" alt="image" src="https://github.com/user-attachments/assets/6de9f2d5-701f-45d0-930d-93477c572c7b" />
+
+---
 
 
 
