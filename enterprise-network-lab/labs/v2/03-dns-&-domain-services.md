@@ -150,6 +150,88 @@ Share Permissions:
 
 ---
 
+<img width="800" height="666" alt="image" src="https://github.com/user-attachments/assets/4809bc25-8393-4c5d-a06e-96cfccc888f1" />
+
+---
+
+## 8. Access Validation
+
+Access to the shared folder was tested across departments:
+
+| User Type   | Access Result |
+| ----------- | ------------- |
+| Admin       | ✅ Allowed     |
+| Engineering | ✅ Allowed     |
+| Sales       | ❌ Denied      |
+
+
+---
+
+## 10. Group Policy – Access Control
+
+### Overview
+
+Group Policy was used to restrict access to system settings based on department.
+
+### Objective
+- Sales users → ❌ No Control Panel access
+- Engineering users → ✅ Full access
+- Admin users → ✅ Full access
+
+---
+
+### Configuration
+
+A Group Policy Object (GPO) was created and linked to the Sales OU.
+
+Path:
+
+```User Configuration → Administrative Templates → Control Panel```
+
+Setting applied:
+
+```Prohibit access to Control Panel and PC settings = Enabled```
+
+---
+
+
+### Deployment
+
+The policy was applied using:
+
+```gpupdate /force```
+
+Users then logged off and back on for the policy to take effect.
+
+---
+
+### Validation
+
+- Sales user → blocked with restriction error when opening Control Panel
+- Engineering user → full access confirmed
+- Admin user → full access confirmed
+
+---
+
+### Outcome
+
+This demonstrates role-based access control using Group Policy, ensuring non-technical users cannot modify system settings while administrators retain full control.
+
+
+
+<img width="796" height="659" alt="image" src="https://github.com/user-attachments/assets/b64c2d1f-3d8a-4a6f-9218-d544506320d6" />
+
+---
+
+<img width="796" height="658" alt="image" src="https://github.com/user-attachments/assets/b8384f14-6c73-4d02-9a1f-58ec1aa8bf05" />
+
+---
+
+
+<img width="791" height="654" alt="image" src="https://github.com/user-attachments/assets/8df513b0-e5a5-457a-8810-b47880a0fb0d" />
+
+---
+
 
 
 
@@ -161,13 +243,7 @@ Share Permissions:
 
 <img width="801" height="664" alt="image" src="https://github.com/user-attachments/assets/1fa464c8-3333-4234-b994-8526f0bfdd72" />
 
----
 
-<img width="796" height="659" alt="image" src="https://github.com/user-attachments/assets/b64c2d1f-3d8a-4a6f-9218-d544506320d6" />
-
----
-
-<img width="791" height="654" alt="image" src="https://github.com/user-attachments/assets/8df513b0-e5a5-457a-8810-b47880a0fb0d" />
 
 
 
