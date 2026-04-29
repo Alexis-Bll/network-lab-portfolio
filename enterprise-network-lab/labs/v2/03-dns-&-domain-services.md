@@ -71,6 +71,25 @@ ipconfig /registerdns
 
 ---
 
+### Troubleshooting Note
+
+During testing, DNS registration and resolution were manually validated using:
+
+```bash
+ipconfig /registerdns
+nslookup <hostname>
+```
+
+This ensured that:
+
+- Clients were correctly registering with DNS
+- Name resolution was functioning across VLANs
+- The domain controller was being used as the primary DNS server
+
+This step helped identify and confirm proper DNS behaviour before proceeding with domain joins.
+
+---
+
 ## 3. Domain Join Across VLANs
 
 Client machines in multiple VLANs (Admin, Engineering, Sales) were successfully joined to the domain.
