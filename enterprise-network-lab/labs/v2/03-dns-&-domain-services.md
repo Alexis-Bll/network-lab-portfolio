@@ -131,6 +131,8 @@ Users were added to their respective groups to enable **role-based access contro
 
 <img width="799" height="666" alt="image" src="https://github.com/user-attachments/assets/ba07a310-3e75-46b5-8ef1-5e91716fdf09" />
 
+---
+
 <img width="798" height="659" alt="image" src="https://github.com/user-attachments/assets/6de9f2d5-701f-45d0-930d-93477c572c7b" />
 
 ---
