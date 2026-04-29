@@ -63,6 +63,8 @@ ipconfig /registerdns
 
 <img width="793" height="660" alt="image" src="https://github.com/user-attachments/assets/d5900bfc-9b26-412b-a20c-83cc522b2d53" />
 
+---
+
 #### DNS Resolution Test
 
 <img width="794" height="665" alt="image" src="https://github.com/user-attachments/assets/3cfad976-9303-4a15-92f4-58ec1aa8bf05" />
@@ -82,6 +84,8 @@ Each client received:
 This confirms proper **inter-VLAN routing + DNS + AD integration**.
 
 <img width="795" height="661" alt="image" src="https://github.com/user-attachments/assets/876e85c7-510e-430e-a1a9-b1033cede204" />
+
+---
 
 <img width="797" height="657" alt="image" src="https://github.com/user-attachments/assets/08ab3f22-a07c-4232-9c6b-5ef11178191c" />
 
