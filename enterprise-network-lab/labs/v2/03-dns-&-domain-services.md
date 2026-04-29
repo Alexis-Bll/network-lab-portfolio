@@ -1,3 +1,5 @@
+# 03 – DNS & Domain Services
+
 ## Overview
 
 This section documents the deployment of core identity and name resolution services within the enterprise lab environment.
@@ -22,7 +24,24 @@ This enables centralized authentication, authorization, and internal name resolu
 
 ---
 
+## 1. Active Directory Domain Deployment
+
+Active Directory Domain Services were installed on **DC1**, and a new domain was created:
+
+```
+lab.local
+```
+
+DNS was integrated with Active Directory, allowing:
+
+- Secure dynamic updates
+- Centralized name resolution
+- Scalability for future domain controllers
+
 <img width="797" height="659" alt="image" src="https://github.com/user-attachments/assets/58741d94-1a39-45d6-8215-78f3486661eb" />
+
+---
+
 
 ---
 
