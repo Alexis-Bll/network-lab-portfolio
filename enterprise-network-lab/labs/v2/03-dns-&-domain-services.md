@@ -202,7 +202,11 @@ This confirms correct enforcement of **group-based access policies**.
 
 <img width="796" height="659" alt="image" src="https://github.com/user-attachments/assets/b64c2d1f-3d8a-4a6f-9218-d544506320d6" />
 
+---
+
 <img width="796" height="658" alt="image" src="https://github.com/user-attachments/assets/b8384f14-6c73-4d02-9a1f-58ec1aa8bf05" />
+
+---
 
 <img width="791" height="654" alt="image" src="https://github.com/user-attachments/assets/8df513b0-e5a5-457a-8810-b47880a0fb0d" />
 
