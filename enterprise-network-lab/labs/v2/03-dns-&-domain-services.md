@@ -67,7 +67,7 @@ ipconfig /registerdns
 
 #### DNS Resolution Test
 
-<img width="794" height="665" alt="image" src="https://github.com/user-attachments/assets/3cfad976-9303-4a15-92f4-58ec1aa8bf05" />
+<img width="800" height="666" alt="image" src="https://github.com/user-attachments/assets/2ea10070-5c34-4f56-aa71-3ef4003a98ce" />
 
 ---
 
