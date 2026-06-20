@@ -1,224 +1,345 @@
-# Enterprise Network Topology – V1
+# Enterprise Network Topology - V1
+
+## Overview
+
+This folder contains the topology diagrams for **V1** of the Enterprise Network Lab.
+
+V1 represents the completed private enterprise WAN design. It focuses on the core networking foundation of the lab, including routing, switching, VLAN segmentation, redundancy, access control, and Layer 2 security.
+
+V2 builds on this topology later by adding internet access, NAT, DHCP, DNS, Active Directory, Group Policy, and application server integration.
+
+---
 
 ## Network Diagram
 
-![Topology](v1_ccna_lab.drawio.png)
+![V1 Enterprise Network Topology](v1_ccna_lab.drawio.png)
 
-This lab represents a simulated enterprise network built using CCNA-level technologies, designed to reflect real-world network architecture and design principles.
+The diagram above shows the logical design of the V1 enterprise network.
 
-The design demonstrates how enterprise networks use hierarchical architecture, private WAN connectivity, and dynamic routing to provide scalable and resilient communication between sites.
+Additional topology file:
 
-This version represents the original implementation of the lab and focuses on private WAN connectivity and internal enterprise design.
-
-A second version (V2) builds upon this foundation by introducing internet connectivity, NAT, and centralised services.
+- [EVE-NG topology screenshot](v1-eve-ng-topology.png)
 
 ---
 
 ## What This Topology Demonstrates
 
-- Multi-site enterprise network design (HQ + branch offices)
-- Redundant core architecture using HSRP and dual core switches
-- Dynamic routing across a private WAN using OSPF
-- Layer 2 and Layer 3 security implementation at the network edge
-- High availability through multiple physical and logical paths
+This topology demonstrates a complete CCNA-level enterprise network foundation, including:
+
+- Multi-site network design with HQ and branch sites
+- Collapsed core/access switching at HQ
+- Redundant HQ core switches
+- Private WAN/MPLS-style transit network
+- Dynamic routing across all routed devices using OSPF
+- VLAN segmentation for different departments
+- Inter-VLAN routing using SVIs at the HQ core
+- HSRP gateway redundancy for HQ VLANs
+- EtherChannel between HQ core switches
+- ACLs controlling traffic between Engineering and Sales
+- Layer 2 security controls at the access layer
 
 ---
 
 ## Architecture Overview
 
-- **WAN**: Simulated service provider network (MPLS-style using private IP addressing)  
-- **Routing Protocol**: OSPF Area 0 across all Layer 3 devices  
-- **HQ Design**: Collapsed core using dual Layer 3 switches  
-- **Branch Design**: Single router and access switch per branch
-- **WAN Edge Devices**: HQ-R1, HQ-R2, BR1, BR2
-- **Traffic Flow**: Inter-VLAN routing is performed at the core layer (SVIs), while inter-site traffic is routed via OSPF across the WAN edge
+| Area | Description |
+|---|---|
+| **HQ Site** | Contains dual Layer 3 core switches, access switches, admin PCs, and server devices |
+| **Branch 1** | Engineering branch with a router, access switch, and Engineering PC |
+| **Branch 2** | Sales branch with a router, access switch, and Sales PC |
+| **WAN / Transit** | Simulated private WAN/MPLS-style provider network using an ISP router |
+| **Routing Protocol** | OSPF Area 0 across routers and Layer 3 core switches |
+| **Redundancy** | HSRP, EtherChannel, dual HQ routers, and redundant routed paths |
+| **Security Controls** | ACLs, DHCP Snooping, Dynamic ARP Inspection, Port Security, PortFast, and BPDU Guard |
 
 ---
 
 ## Network Layers
 
-### Core Layer (HQ)
+### HQ Core Layer
+
+The HQ core is built using two Layer 3 switches:
+
 - HQ-CSW1
 - HQ-CSW2
 
-Layer 3 switches provides:
-- Inter-VLAN routing (SVIs)
-- HSRP gateway redundancy
+The core switches provide:
+
+- Inter-VLAN routing for HQ VLANs using SVIs
+- HSRP default gateway redundancy
+- OSPF routing towards the WAN edge routers
 - Core switching and traffic distribution
+- STP root bridge control
+- LACP EtherChannel between both core switches
+
+In this design, HQ-CSW1 is the preferred gateway/root path for VLAN 10, while HQ-CSW2 is the preferred gateway/root path for VLAN 20.
 
 ---
 
-### Access Layer
-- HQ-ASW1 / HQ-ASW2 → Admin VLAN (VLAN 10)
-- HQ-SSW1 / HQ-SSW2 → Server VLAN (VLAN 20)
-- BR-SW1 → Engineering VLAN (VLAN 30)
-- BR-SW2 → Sales VLAN (VLAN 40)
+### HQ Access Layer
 
-Provides:
+The HQ access layer provides endpoint and server connectivity.
+
+| Switch | VLAN | Purpose |
+|---|---|---|
+| HQ-ASW1 | VLAN 10 | Admin access switch |
+| HQ-ASW2 | VLAN 10 | Admin access switch |
+| HQ-SSW1 | VLAN 20 | Server access switch |
+| HQ-SSW2 | VLAN 20 | Server access switch |
+
+The HQ access switches provide:
+
 - End-device connectivity
 - VLAN segmentation
-- Layer 2 security is implemented at the access layer using DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security
+- 802.1Q trunking towards the core switches
+- Layer 2 security controls
+- Redundant uplinks to both core switches
+
+---
+
+### Branch Access Layer
+
+Each branch site uses a simplified small-office design with one router and one access switch.
+
+| Site | VLAN | Subnet | Devices |
+|---|---|---|---|
+| Branch 1 - Engineering | VLAN 30 | 192.168.30.0/24 | BR1, BR-SW1, Engineering PC |
+| Branch 2 - Sales | VLAN 40 | 192.168.40.0/24 | BR2, BR-SW2, Sales PC |
+
+At each branch, the router acts as both:
+
+- The default gateway for the local branch LAN
+- The WAN edge device connecting the branch to the provider network
+
+This keeps the branch design simple and reflects a small-site deployment.
 
 ---
 
 ### WAN / Edge Layer
 
+The WAN/edge layer contains:
+
 - HQ-R1
 - HQ-R2
 - BR1
 - BR2
-- ISP Router
+- ISP router
 
-Provides:
-- Connectivity between headquarters and branch sites
-- WAN edge routing for both HQ and branch networks
-- Transit network simulating a service provider MPLS core using private addressing
-- OSPF adjacency and route propagation across all sites
+This layer provides:
 
----
+- Connectivity between HQ and branch sites
+- Simulated private WAN/MPLS-style transit
+- OSPF neighbour relationships between routed devices
+- Route propagation across all sites
+- Redundant paths from HQ towards the WAN
 
-### Design Notes
-
-- Both **HQ and branch routers operate as WAN edge devices**, connecting their local networks to the service provider WAN
-- The ISP router acts as a **simulated MPLS core**, providing transit between sites
-- Branch routers (BR1 / BR2) serve as:
-
-  - Default gateways for branch LANs
-  - Edge devices connecting to the WAN
-
-- The design reflects a balance between performance, redundancy, and operational simplicity, aligning with real-world enterprise network design principles
+The ISP router acts as the simulated service provider transit router. It does not provide public internet access in V1.
 
 ---
 
-## Branch Sites
-
-Each branch site consists of:
-
-### Branch 1 (Engineering)
-- Network: 192.168.30.0/24
-- VLAN 30
-- Devices: BR1 + BR-SW1 + Engineering PC
-
----
-
-### Branch 2 (Sales)
-- Network: 192.168.40.0/24
-- VLAN 40
-- Devices: BR2 + BR-SW2 + Sales PC
-
----
-
-### Key Design Choices
-
-- Each branch uses a **single VLAN**, reflecting a simplified small-site deployment
-- The **branch router acts as both the default gateway and WAN edge device**
-- Layer 2 switching is kept minimal at branch sites to reduce complexity
-- Routing decisions are handled at the branch edge (router), aligning with real-world branch deployments
-
----
-
-## IP Addressing Strategy
-
-The entire network uses **private IP addressing**, simulating an enterprise MPLS WAN:
+## VLAN and IP Addressing Summary
 
 ### LAN Networks
-- VLAN 10 (Admin): 192.168.10.0/24
-- VLAN 20 (Servers): 192.168.20.0/24
-- VLAN 30 (Engineering Branch): 192.168.30.0/24
-- VLAN 40 (Sales Branch): 192.168.40.0/24
 
----
+| VLAN | Name / Purpose | Subnet | Default Gateway |
+|---|---|---|---|
+| VLAN 10 | Admin | 192.168.10.0/24 | 192.168.10.1 via HSRP |
+| VLAN 20 | Servers | 192.168.20.0/24 | 192.168.20.1 via HSRP |
+| VLAN 30 | Engineering Branch | 192.168.30.0/24 | 192.168.30.1 via BR1 |
+| VLAN 40 | Sales Branch | 192.168.40.0/24 | 192.168.40.1 via BR2 |
+
+### Router and Switch Loopbacks
+
+| Device | Loopback |
+|---|---|
+| HQ-CSW1 | 1.1.1.1/32 |
+| HQ-CSW2 | 2.2.2.2/32 |
+| HQ-R1 | 3.3.3.3/32 |
+| HQ-R2 | 4.4.4.4/32 |
+| ISP | 5.5.5.5/32 |
+| BR1 | 6.6.6.6/32 |
+| BR2 | 7.7.7.7/32 |
 
 ### WAN / Transit Networks
-- 10.0.0.0/8 private address space used for point-to-point links  
-- /30 subnets used for efficient addressing of router-to-router connections  
 
----
+The WAN and routed core links use private `10.0.0.0/8` addressing with `/30` point-to-point subnets.
 
-### Design Approach
-- 192.168.x.x ranges are used for LAN and VLAN segmentation  
-- 10.x.x.x range is reserved for WAN/transit networks  
-- This separation improves clarity, scalability, and aligns with real-world enterprise addressing practices
+This keeps the addressing clear by separating:
 
----
-
-### Design Justification
-- Reflects real enterprise WAN/MPLS deployments
-- No public IP addressing required internally
-- All routing handled via OSPF
+- `192.168.x.x` networks for LAN/VLAN subnets
+- `10.x.x.x` networks for routed transit links
+- `/32` loopbacks for device identification and routing tests
 
 ---
 
 ## Redundancy Design
 
-The network includes multiple layers of redundancy:
+V1 includes redundancy across multiple areas of the topology.
 
-### Core Redundancy
-- Dual core switches (HQ-CSW1 / HQ-CSW2)
-- Load sharing using HSRP:
-  - HQ-CSW1 active for VLAN 10
-  - HQ-CSW2 active for VLAN 20
+### Gateway Redundancy
+
+HSRP is used on the HQ core switches to provide resilient default gateways for HQ VLANs.
+
+| VLAN | Virtual Gateway | Preferred Active Device |
+|---|---|---|
+| VLAN 10 | 192.168.10.1 | HQ-CSW1 |
+| VLAN 20 | 192.168.20.1 | HQ-CSW2 |
+
+This provides gateway redundancy while also allowing basic load sharing between the two core switches.
+
+---
 
 ### Layer 2 Redundancy
-- EtherChannel (LACP) between core switches
-- Dual uplinks from access switches to both core switches
-- Spanning Tree root bridge placement aligned with HSRP active gateways to optimise traffic flow and avoid suboptimal Layer 2 paths
+
+Layer 2 redundancy is provided through:
+
+- Dual uplinks from access switches to the core switches
+- LACP EtherChannel between HQ-CSW1 and HQ-CSW2
+- Rapid PVST+ for loop prevention
+- STP root bridge placement aligned with HSRP active gateways
+
+This helps avoid Layer 2 loops while keeping predictable forwarding paths.
+
+---
 
 ### WAN Redundancy
-- Dual HQ routers (HQ-R1 / HQ-R2)
-- Each core switch connects to both routers
-- Multiple paths to the WAN
-- Failover is achieved through OSPF convergence and redundant physical paths
 
-### Routing Redundancy
-- OSPF dynamically recalculates routes
-- Equal-cost load balancing (ECMP)
-- Automatic failover on link/device failure
+WAN redundancy is provided through:
+
+- Dual HQ WAN routers
+- Multiple routed links between the HQ core and HQ routers
+- OSPF route recalculation if a routed path fails
+- Equal-cost route options where available
+
+This allows the network to maintain connectivity if a link or routed path fails.
+
+---
+
+## Security Design
+
+V1 includes security controls at both Layer 2 and Layer 3.
+
+### Layer 2 Security
+
+Layer 2 security is applied mainly on access switches and includes:
+
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- PortFast on access ports
+- BPDU Guard on access ports
+- Trunk hardening using allowed VLAN lists
+
+These controls help protect the access layer from common Layer 2 issues such as rogue DHCP servers, ARP spoofing, accidental loops, and unauthorised endpoint changes.
+
+### Layer 3 Security
+
+Layer 3 traffic filtering is provided using ACLs.
+
+In V1, ACLs are used to:
+
+- Block Engineering-to-Sales traffic
+- Block Sales-to-Engineering traffic
+- Allow both departments to access HQ resources
+
+This demonstrates basic inter-department traffic control without blocking required business access to central services.
+
+---
+
+## Routing Design
+
+OSPF Area 0 is used across the entire V1 routed network.
+
+OSPF is used to advertise:
+
+- HQ VLAN networks
+- Branch LAN networks
+- WAN transit networks
+- Device loopbacks
+
+This allows dynamic route learning between HQ, the simulated ISP/WAN provider, and both branch sites.
+
+V1 does not use NAT or internet breakout. All connectivity is internal to the private enterprise lab.
+
+---
+
+## Key Design Choices
+
+| Design Choice | Reason |
+|---|---|
+| Collapsed core/access design | Keeps the lab realistic but manageable for a CCNA-level enterprise topology |
+| Dual HQ core switches | Provides gateway, switching, and path redundancy |
+| HSRP for HQ VLANs | Maintains default gateway availability during a core switch failure |
+| STP root alignment with HSRP | Keeps Layer 2 forwarding paths aligned with active gateways |
+| OSPF for routing | Provides scalable dynamic routing and automatic route recalculation |
+| Single VLAN per branch | Keeps the branch design simple and focused |
+| ACLs between branch departments | Demonstrates segmentation and traffic control |
+| Layer 2 security at access layer | Adds realistic protection against common access-layer risks |
 
 ---
 
 ## Technologies Implemented
 
-- OSPF (Dynamic routing across all sites)
-- VLANs (Network segmentation)
-- Inter-VLAN Routing (SVIs)
-- HSRP (Gateway redundancy)
-- EtherChannel (Link aggregation)
-- 802.1Q Trunking
-- Rapid PVST+ (Spanning Tree)
-- Spanning Tree Enhancements (Portfast, BPDU Guard)
-- ACLs (Traffic filtering between departments)
-- DHCP Snooping & DAI (Layer 2 security)
-- Port Security (Access layer protection)
-
----
-
-## Key Design Principles
-
-- **Hierarchical network design** (Core + Access)
-- **Separation of Layer 2 and Layer 3 roles**
-- **Private WAN/MPLS-style architecture**
-- **Redundancy at every layer**
-- **Security at the network edge**
-- **Scalability through dynamic routing (OSPF)**
+- VLANs and trunking
+- Inter-VLAN routing using SVIs
+- OSPF dynamic routing
+- HSRP gateway redundancy
+- Rapid PVST+
+- STP root bridge tuning
+- EtherChannel using LACP
+- Access Control Lists
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- PortFast
+- BPDU Guard
+- SSH management access
 
 ---
 
 ## Scope
 
-This lab focuses on private WAN connectivity and internal enterprise design. Internet edge services such as NAT and public connectivity are not included in this version and are introduced in V2 of the lab.
+V1 focuses on the completed private enterprise WAN foundation.
+
+Included in V1:
+
+- Internal routing
+- VLAN segmentation
+- HQ redundancy
+- Branch connectivity
+- ACL-based traffic filtering
+- Layer 2 security
+- Connectivity and failover validation
+
+Not included in V1:
+
+- Internet access
+- NAT/PAT
+- Centralised DHCP from Windows Server
+- DNS services
+- Active Directory
+- Group Policy
+- Application server integration
+
+Those services are introduced in V2.
+
+---
+
+## Related Documentation
+
+- [V1 Lab Documentation](../../labs/v1/)
+- [V1 Device Configurations](../../configs/)
+- [Topology Overview](../)
+- [V2 Topology](../v2/)
 
 ---
 
 ## Summary
 
-This topology represents a complete enterprise network design, demonstrating how multiple networking technologies integrate to provide:
+This V1 topology represents the completed enterprise network foundation of the lab.
 
-- Secure segmentation of departments
-- High availability through redundancy
-- Scalable multi-site connectivity
-- Efficient routing across a private WAN
+It demonstrates how routing, switching, redundancy, segmentation, access control, and Layer 2 security can work together in a multi-site enterprise network.
 
-It reflects both CCNA-level knowledge and practical enterprise design principles used in real-world environments.
+This version provides the stable network base that V2 later expands with internet connectivity and enterprise infrastructure services.
 
 ---
