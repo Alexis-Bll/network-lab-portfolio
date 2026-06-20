@@ -1,32 +1,44 @@
 # Network Lab Portfolio
 
-This repository showcases my hands-on lab work and technical projects, focused on building real-world IT and networking skills.
+This repository showcases my hands-on networking and infrastructure lab work, built to demonstrate practical skills in enterprise network design, implementation, troubleshooting, and documentation.
 
-The aim of this portfolio is to demonstrate my ability to **design, implement, and troubleshoot enterprise-style network environments** using industry-relevant technologies.
+The portfolio is centred around an **Enterprise Network Lab** built in **EVE-NG**, with documentation split into clear stages:
+
+- **V1** — a completed CCNA-level enterprise network foundation.
+- **V2** — an extended enterprise services version introducing internet access, NAT, DHCP, DNS, Active Directory, and Group Policy.
+
+The aim of this portfolio is to show not only that the network works, but also that I can explain the design decisions, document configurations, validate behaviour, and troubleshoot issues in a professional way.
 
 ---
 
 ## About Me
 
-I am a UK-based aspiring **Network Engineer** with a **First Class degree in Forensic Computing & Security from Bournemouth University**.
+I am a UK-based **Junior IT Support and Network Engineer** working for an **MSP**, with a **First Class degree in Forensic Computing & Security from Bournemouth University**.
 
-I have achieved the **Cisco CCNA certification** and have built a complete enterprise network lab to develop practical, job-ready skills.
+I have achieved the **Cisco CCNA certification** and built this lab portfolio to strengthen my practical networking, infrastructure, and troubleshooting skills.
 
-I am now focused on expanding into **network security and firewalls**, particularly **Fortinet technologies**.
+I am continuing to develop my skills in enterprise networking, network security, firewalls, and MSP-style support environments, with a particular interest in **Fortinet technologies**.
 
 ---
 
 ## What This Portfolio Demonstrates
 
-This portfolio highlights my ability to design and implement real-world network solutions, including:
+This portfolio highlights my ability to design, configure, test, and document realistic network environments, including:
 
-* Multi-site enterprise network design (HQ + branches)
-* Routing and switching configuration and troubleshooting
-* High availability and redundancy (HSRP, STP tuning)
-* Network segmentation and access control (VLANs, ACLs)
-* Layer 2 security (DHCP Snooping, Dynamic ARP Inspection, Port Security)
-* Link aggregation (EtherChannel)
-* End-to-end testing and validation (failover, connectivity, SSH access)
+- Multi-site enterprise network design
+- VLAN segmentation and inter-VLAN routing
+- Core/access switching design
+- WAN routing between HQ and branch sites
+- Dynamic routing using OSPF
+- High availability using HSRP
+- Spanning Tree tuning and Layer 2 loop prevention
+- EtherChannel using LACP
+- Access Control Lists for traffic restriction
+- Layer 2 security controls including DHCP Snooping, Dynamic ARP Inspection, Port Security, and BPDU Guard
+- Internet edge connectivity using NAT/PAT
+- Centralised DHCP and DNS services
+- Active Directory domain services and Group Policy
+- End-to-end validation, failover testing, and troubleshooting documentation
 
 All labs are built and tested in a virtual environment to simulate real-world enterprise scenarios.
 
