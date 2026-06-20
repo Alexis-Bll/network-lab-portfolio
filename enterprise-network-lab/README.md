@@ -2,69 +2,127 @@
 
 ## Overview
 
-This project simulates a small enterprise network based on technologies covered in the Cisco CCNA.
+This lab simulates a multi-site enterprise network built in **EVE-NG** using Cisco virtual routers, switches, end devices, and server infrastructure.
 
-The lab is designed to represent a realistic business environment with a headquarters (HQ), two branch offices, and WAN connectivity. It demonstrates scalability, redundancy, and secure communication between sites using industry-relevant networking practices.
+The lab was designed to demonstrate practical networking skills across routing, switching, redundancy, segmentation, security controls, troubleshooting, and enterprise services.
 
-The project is split into two versions to show progression in both design and implementation:
+The project is split into two defined stages:
 
-- **V1** – Core enterprise network (completed)
-- **V2** – Enhanced enterprise network with internet connectivity and services (in progress)
+| Version | Status | Purpose |
+|---|---|---|
+| **V1** | Completed | Builds the CCNA-level enterprise network foundation |
+| **V2** | In Progress | Expands the network with internet access and enterprise services |
+
+V1 provides the core network design. V2 builds on that foundation by introducing services such as NAT, DHCP, DNS, Active Directory, Group Policy, and application server integration.
+
+---
+
+## Lab Design Summary
+
+The lab represents a small enterprise with:
+
+- A headquarters site
+- Two branch sites
+- A private WAN/MPLS-style provider network
+- Department-based VLAN segmentation
+- Redundant HQ core switching
+- Dynamic routing between all sites
+- Controlled inter-department access
+- Layer 2 security features
+- Centralised infrastructure services in V2
+
+The design is intended to show how a business network can be built, secured, tested, and expanded over time.
 
 ---
 
 ## Topology
 
-<p align="center">
-  <img src="./topology/v2/v2_ccna_lab.drawio.png" width="800">
-</p>
+### V1 - Completed Enterprise Network Foundation
 
-### The topology includes:
+V1 focuses on the core enterprise network.
 
-- HQ with core and access layer switching
-- Two branch offices (Sales and Engineering)
-- Private WAN (MPLS-style) connectivity between sites
-- Public internet connectivity via HQ edge (V2)
-- End devices and servers for testing
+It includes:
+
+- HQ core and access layer switching
+- Engineering and Sales branch sites
+- Private WAN connectivity between sites
+- OSPF routing across the enterprise
+- HSRP gateway redundancy at HQ
+- VLAN segmentation for Admin, Servers, Engineering, and Sales
+- ACLs controlling traffic between departments
+- Layer 2 security controls
+- End devices and servers for validation testing
+
+[V1 Topology Files](topology/v1/)
 
 ---
 
-## Technologies Used
+### V2 - Enterprise Services Expansion
 
-### Core Technologies (V1)
+V2 extends the V1 network by adding internet edge connectivity and enterprise infrastructure services.
 
-- VLANs (Network segmentation)
-- Inter-VLAN Routing (SVIs on Layer 3 switches)
-- OSPF (Dynamic routing across the enterprise)
-- HSRP (Gateway redundancy at HQ)
-- EtherChannel (Link aggregation between core switches)
-- Access Control Lists (ACLs)
-- DHCP Snooping
-- Dynamic ARP Inspection (DAI)
-- Port Security
-- Rapid Spanning Tree (RSTP) with PortFast and BPDU Guard
+It introduces:
 
-### Additional Technologies (V2)
-
-- NAT (Network Address Translation)
-- Internet edge connectivity
-- Centralised services (DHCP, DNS, Active Directory)
+- Internet connectivity via the HQ edge
+- NAT/PAT for outbound internet access
+- Centralised DHCP services
+- DNS services
+- Active Directory Domain Services
+- Domain-joined clients
+- Group Policy testing
 - Application server integration
+
+[V2 Topology Files](topology/v2/)
+
+---
+
+## Technologies Demonstrated
+
+### V1 - Core Networking
+
+- VLANs and trunking
+- Inter-VLAN routing using SVIs
+- OSPF dynamic routing
+- HSRP default gateway redundancy
+- Rapid PVST+ and root bridge tuning
+- LACP EtherChannel
+- Access Control Lists
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- PortFast and BPDU Guard
+- SSH management access
+- End-to-end testing and failover validation
+
+### V2 - Enterprise Services
+
+- Internet edge design
+- NAT/PAT
+- Default route advertisement into OSPF
+- DHCP relay using `ip helper-address`
+- Centralised DHCP scopes
+- DNS services
+- Active Directory Domain Services
+- Organisational Units, users, and groups
+- Group Policy Objects
+- Application server access control
 
 ---
 
 ## IP Addressing Design
 
-The network primarily uses **private IP addressing**, simulating an internal enterprise WAN similar to MPLS.
+The lab primarily uses private IP addressing to simulate an internal enterprise WAN.
 
-- All internal communication uses private IP ranges
-- OSPF is used to advertise routes across the network
-- WAN links use /30 subnets for efficient point-to-point communication
+Key design points:
 
-In **V2**, external connectivity is introduced:
+- Internal VLANs use private IPv4 addressing
+- WAN links use `/30` point-to-point subnets
+- Loopback interfaces are used for router identification and testing
+- OSPF advertises internal routes between HQ, ISP, and branch routers
+- V1 remains fully private with no internet breakout
+- V2 introduces NAT at the HQ edge for outbound internet access
 
-- NAT is used at the HQ edge to allow internal devices to access the public internet
-- Internal addressing remains private while external access is translated
+This separation makes it clear how the original private enterprise network was later expanded to include internet connectivity and centralised services.
 
 ---
 
@@ -72,10 +130,13 @@ In **V2**, external connectivity is introduced:
 
 The lab is built using:
 
-- EVE-NG (Network emulation)
-- Cisco IOS routers and switches
-- Virtual PCs for endpoint testing
-- Windows Server 2008 R2 VM (used for extended testing and services)
+- **EVE-NG** for network emulation
+- **Cisco IOS routers**
+- **Cisco IOS Layer 2/Layer 3 switches**
+- **Virtual PCs** for endpoint testing
+- **Windows Server VM** for DHCP, DNS, Active Directory, and Group Policy in V2
+
+The environment allows routing, switching, redundancy, segmentation, security, and infrastructure services to be tested in a controlled virtual lab.
 
 ---
 
@@ -83,78 +144,129 @@ The lab is built using:
 
 ### V1 Objectives
 
-- Implement VLAN segmentation for different departments
-- Configure inter-VLAN routing using Layer 3 switches
-- Deploy OSPF for dynamic routing across all sites
-- Implement HSRP for gateway redundancy and high availability
-- Configure Rapid Spanning Tree (RSTP) for efficient Layer 2 convergence
-- Apply Layer 2 security features (DHCP Snooping, DAI, Port Security)
-- Configure EtherChannel for redundancy
-- Apply ACLs for traffic filtering
-- Validate failover and connectivity
+The objective of V1 was to build a complete enterprise network foundation.
+
+V1 implements:
+
+- Department-based VLAN segmentation
+- Inter-VLAN routing at the HQ core
+- Redundant default gateways using HSRP
+- STP tuning to align Layer 2 forwarding with gateway redundancy
+- EtherChannel between HQ core switches
+- OSPF routing across HQ, WAN, ISP, and branch routers
+- ACLs to restrict Engineering and Sales traffic
+- Layer 2 security controls on access ports and trunks
+- SSH management access
+- End-to-end connectivity and failover testing
 
 ### V2 Objectives
 
-- Introduce internet connectivity via an ISP edge
-- Implement NAT (PAT) for outbound traffic
-- Deploy centralised services (DHCP, DNS, Active Directory)
-- Replace static addressing with dynamic host configuration
-- Improve realism of enterprise network design
+The objective of V2 is to make the lab more realistic by adding enterprise services.
+
+V2 introduces:
+
+- Internet access from internal VLANs
+- NAT/PAT at the HQ edge
+- Centralised DHCP from a server
+- DNS and Active Directory domain services
+- Domain-joined clients across multiple VLANs
+- Group Policy testing
+- Application server integration
+- Additional validation and troubleshooting documentation
 
 ---
 
-## Key Design Concepts
+## Current Status
 
-- **Hierarchical Network Design** (Core + Access layers)
-- **Redundancy** using HSRP and dual core switches
-- **Scalability** through dynamic routing (OSPF)
-- **Segmentation** using VLANs
-- **Enterprise WAN Simulation** using private MPLS-style routing
-- **Internet Edge Design and NAT** (V2)
+### V1 - Completed
 
----
+V1 has been implemented and tested.
 
-## Status
+Completed areas include:
 
-### ✅ V1 – Completed
+- Router and switch configuration
+- VLANs and trunking
+- Inter-VLAN routing
+- HSRP redundancy
+- OSPF routing
+- EtherChannel
+- ACL enforcement
+- Layer 2 security
+- SSH management
+- Connectivity and failover validation
 
-The original enterprise network lab has been fully implemented and tested, including:
-
-- Full configuration of all routers and switches
-- End-to-end connectivity validation
-- OSPF route propagation across all sites
-- HSRP failover testing
-- ACL enforcement between departments
-- Layer 2 security implementation
-- SSH management access
+V1 is currently being reviewed and polished to ensure all documentation, links, testing notes, and configuration references are accurate.
 
 ---
 
-### 🚧 V2 – In Progress
+### V2 - In Progress
 
-The enhanced version of the lab is currently being developed and includes:
+V2 has been partially implemented and documented.
 
-- Internet connectivity via HQ edge
-- NAT configuration for external access
-- Deployment of centralised services
-- Additional testing and validation
+Completed or partially completed areas include:
+
+- Internet edge design
+- NAT/PAT configuration
+- DHCP services
+- DHCP relay
+- DNS and Active Directory services
+- Group Policy testing
+
+Remaining work includes:
+
+- Application server integration
+- Final V2 testing and validation
+- Final configuration change documentation
+- Documentation cleanup after V1 is fully polished
 
 ---
 
 ## Lab Documentation
 
-### V1
+### V1 Documentation
 
-- [Base Configuration](labs/v1/00-base-config.md)
-- [Core Configuration](labs/v1/01-core-setup.md)
-- [Access Layer Configuration](labs/v1/02-access-layer.md)
-- [Routing Configuration (OSPF)](labs/v1/03-routing-ospf.md)
-- [Branch Switches Configuration](labs/v1/04-branch-switches.md)
-- [Access Control Lists Configuration](labs/v1/05-access-control-lists.md)
-- [Testing & Validation](labs/v1/06-testing.md)
+- [V1 Overview](labs/v1/)
+- [00 - Base Configuration](labs/v1/00-base-config.md)
+- [01 - Core Setup](labs/v1/01-core-setup.md)
+- [02 - Access Layer](labs/v1/02-access-layer.md)
+- [03 - Routing with OSPF](labs/v1/03-routing-ospf.md)
+- [04 - Branch Switches](labs/v1/04-branch-switches.md)
+- [05 - Access Control Lists](labs/v1/05-access-control-lists.md)
+- [06 - Testing and Validation](labs/v1/06-testing.md)
 
-### V2
+### V2 Documentation
 
-Documentation will be added as the lab progresses.
+- [V2 Overview](labs/v2/)
+- [01 - Internet and Edge Connectivity](labs/v2/01-internet-%26-edge.md)
+- [02 - DHCP Services](labs/v2/02-dhcp-services.md)
+- [03 - DNS and Domain Services](labs/v2/03-dns-%26-domain-services.md)
+- [04 - Application Server Integration](labs/v2/04-application-server-intergration.md)
+
+### Configuration Files
+
+- [Full Device Configurations](configs/)
+- [V2 Configuration Changes](configs/changes-v2/)
+
+### Topology Files
+
+- [Topology Overview](topology/)
+- [V1 Topology](topology/v1/)
+- [V2 Topology](topology/v2/)
 
 ---
+
+## Project Outcome
+
+This lab helped demonstrate the practical skills required for a junior networking role by showing more than just configuration commands.
+
+It shows the ability to:
+
+- Design a realistic enterprise network
+- Build the network in a virtual lab
+- Configure routers and switches
+- Validate redundancy and routing behaviour
+- Apply segmentation and access control
+- Troubleshoot implementation issues
+- Document the work clearly for technical review
+
+V1 provides the completed networking foundation, while V2 shows how the same environment can be expanded with enterprise services.
