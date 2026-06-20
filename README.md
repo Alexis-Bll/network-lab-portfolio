@@ -1,13 +1,13 @@
 # Network Lab Portfolio
 
-This repository showcases my hands-on networking and infrastructure lab work, built to demonstrate practical skills in enterprise network design, implementation, troubleshooting, and documentation.
+This repository showcases my hands-on networking and infrastructure lab work, focused on building practical skills in enterprise network design, implementation, troubleshooting, and documentation.
 
-The portfolio is centred around an **Enterprise Network Lab** built in **EVE-NG**, with documentation split into clear stages:
+The portfolio is centred around an **Enterprise Network Lab** built in **EVE-NG**, with two defined stages:
 
 - **V1** — a completed CCNA-level enterprise network foundation.
-- **V2** — an extended enterprise services version introducing internet access, NAT, DHCP, DNS, Active Directory, and Group Policy.
+- **V2** — an enterprise services expansion adding internet access, NAT, DHCP, DNS, Active Directory, Group Policy, and application server integration.
 
-The aim of this portfolio is to show not only that the network works, but also that I can explain the design decisions, document configurations, validate behaviour, and troubleshoot issues in a professional way.
+The aim of this portfolio is to demonstrate my ability to **design, configure, test, troubleshoot, and document enterprise-style network environments** using industry-relevant technologies.
 
 ---
 
@@ -15,15 +15,15 @@ The aim of this portfolio is to show not only that the network works, but also t
 
 I am a UK-based **Junior IT Support and Network Engineer** working for an **MSP**, with a **First Class degree in Forensic Computing & Security from Bournemouth University**.
 
-I have achieved the **Cisco CCNA certification** and built this lab portfolio to strengthen my practical networking, infrastructure, and troubleshooting skills.
+I have achieved the **Cisco CCNA certification** and built this portfolio to develop and demonstrate practical networking, infrastructure, and troubleshooting skills.
 
-I am continuing to develop my skills in enterprise networking, network security, firewalls, and MSP-style support environments, with a particular interest in **Fortinet technologies**.
+I am continuing to expand my knowledge in enterprise networking, network security, firewalls, and MSP-style support environments, with a particular interest in **Fortinet technologies**.
 
 ---
 
 ## What This Portfolio Demonstrates
 
-This portfolio highlights my ability to design, configure, test, and document realistic network environments, including:
+This portfolio highlights my ability to design, configure, validate, and document realistic network environments, including:
 
 - Multi-site enterprise network design
 - VLAN segmentation and inter-VLAN routing
@@ -37,7 +37,7 @@ This portfolio highlights my ability to design, configure, test, and document re
 - Layer 2 security controls including DHCP Snooping, Dynamic ARP Inspection, Port Security, and BPDU Guard
 - Internet edge connectivity using NAT/PAT
 - Centralised DHCP and DNS services
-- Active Directory domain services and Group Policy
+- Active Directory Domain Services and Group Policy
 - End-to-end validation, failover testing, and troubleshooting documentation
 
 All labs are built and tested in a virtual environment to simulate real-world enterprise scenarios.
@@ -46,29 +46,14 @@ All labs are built and tested in a virtual environment to simulate real-world en
 
 ## Lab Environment
 
-All labs are built using:
+The lab environment uses:
 
-* **EVE-NG** for network simulation
-* **Virtual routers and switches**
-* **Virtual PCs and servers**
+- **EVE-NG** for network simulation
+- **Cisco virtual routers and switches**
+- **Virtual PCs and servers**
+- **Windows Server** for DHCP, DNS, Active Directory, and Group Policy in V2
 
-This environment allows for realistic testing of enterprise network behaviour, including redundancy, failover, and security controls.
-
----
-
-## Key Technologies
-
-Technologies and concepts demonstrated in this portfolio include:
-
-* VLANs, trunking, and Layer 2 switching
-* OSPF routing across a multi-site network
-* First-hop redundancy (HSRP)
-* Spanning Tree Protocol (Rapid-PVST) and root bridge control
-* EtherChannel (LACP)
-* Access Control Lists (ACLs)
-* DHCP Snooping and Dynamic ARP Inspection (DAI)
-* Port Security and STP protections (BPDU Guard)
-* WAN connectivity using /30 point-to-point links
+This allows realistic testing of routing, switching, redundancy, segmentation, security controls, and enterprise services.
 
 ---
 
@@ -76,31 +61,100 @@ Technologies and concepts demonstrated in this portfolio include:
 
 ### Enterprise Network Lab
 
-A complete enterprise-style network built in EVE-NG, featuring:
+The main project in this portfolio is a multi-site enterprise network lab.
 
-* Core, distribution, and access layer architecture
-* Dual core switches with HSRP load balancing
-* Multiple branch sites connected via WAN
-* Department-based segmentation (Admin, Engineering, Sales, Servers)
-* Inter-site routing using OSPF
-* Security controls at both Layer 2 and Layer 3
-* Full configuration set and testing validation
-
-👉 [View the Enterprise Network Lab](enterprise-network-lab/README.md)
+| Version | Status | Focus |
+|---|---|---|
+| **V1** | Completed | CCNA-level enterprise network foundation including VLANs, HSRP, STP, EtherChannel, OSPF, ACLs, and Layer 2 security |
+| **V2** | In Progress | Enterprise services expansion including internet access, NAT, DHCP, DNS, Active Directory, Group Policy, and application server integration |
 
 ---
 
-## Future Development
+## Enterprise Network Lab - V1
 
-* Expand into **Fortinet firewall technologies**
-* Implement firewall policies, NAT, and VPN scenarios
-* Build a second version of the lab with additional services (e.g. DHCP, NAT, internet access)
-* Continue developing troubleshooting scenarios and real-world simulations
+**V1** is the completed foundation of the lab.
+
+It demonstrates core networking skills including:
+
+- HQ and branch network design
+- Department-based VLAN segmentation
+- Dual core switch design
+- HSRP default gateway redundancy
+- Rapid PVST+ tuning and root bridge control
+- LACP EtherChannel between core switches
+- OSPF routing across HQ, ISP, and branch routers
+- ACLs to restrict Engineering and Sales traffic
+- Layer 2 security using DHCP Snooping, Dynamic ARP Inspection, Port Security, and BPDU Guard
+- SSH management access
+- End-to-end testing and validation
+
+Key V1 links:
+
+- [V1 Lab Documentation](enterprise-network-lab/labs/v1/)
+- [V1 Topology](enterprise-network-lab/topology/v1/)
+- [Device Configurations](enterprise-network-lab/configs/)
 
 ---
 
-## Career Objective
+## Enterprise Network Lab - V2
 
-My goal is to secure a **Junior Network Engineer / IT Infrastructure role**, where I can apply my hands-on lab experience and continue developing within a professional environment.
+**V2** expands the original network by adding services commonly found in enterprise environments.
+
+It introduces:
+
+- Internet edge connectivity
+- NAT/PAT on the HQ edge router
+- Default route advertisement into OSPF
+- Centralised DHCP services from Windows Server
+- DHCP relay using `ip helper-address`
+- DNS services using Active Directory-integrated DNS
+- Active Directory Domain Services
+- Domain-joined clients across multiple VLANs
+- Organisational Units, users, groups, and permissions
+- Group Policy testing
+- Application server integration
+
+V2 is currently partially complete and will be finished after V1 has been fully reviewed, polished, and confirmed operational.
+
+Key V2 links:
+
+- [V2 Lab Documentation](enterprise-network-lab/labs/v2/)
+- [V2 Topology](enterprise-network-lab/topology/v2/)
+- [V2 Configuration Changes](enterprise-network-lab/configs/changes-v2/)
+
+---
+
+## Key Technologies
+
+Technologies and concepts demonstrated across the portfolio include:
+
+- VLANs and trunking
+- Layer 2 switching
+- Inter-VLAN routing
+- OSPF
+- HSRP
+- Rapid PVST+
+- EtherChannel / LACP
+- ACLs
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- BPDU Guard
+- WAN point-to-point links
+- NAT/PAT
+- DHCP relay
+- DNS
+- Active Directory Domain Services
+- Group Policy
+
+---
+
+## Career Development
+
+This portfolio was originally created to support my transition into my first IT/networking role.
+
+I have now secured a role as a **Junior IT Support and Network Engineer for an MSP**, where I am continuing to build real-world experience supporting business networks, infrastructure, and client environments.
+
+My current goal is to keep developing as a network engineer by combining hands-on workplace experience with structured lab work, technical documentation, and continued study in network security and firewall technologies.
 
 ---
