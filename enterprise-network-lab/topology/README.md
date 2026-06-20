@@ -2,102 +2,144 @@
 
 ## Overview
 
-This directory contains the network topology diagrams for the Enterprise Network Lab.
+This folder contains the topology diagrams for the **Enterprise Network Lab**.
 
-Two versions of the topology are included to demonstrate the progression of the lab from a private enterprise WAN design to a more complete enterprise network with public internet connectivity and centralised services.
+The diagrams show how the lab is structured across two defined stages:
 
-Both versions are built using CCNA-level networking concepts and are designed to reflect real-world enterprise architecture and design principles.
+- **V1** - Completed private enterprise WAN design
+- **V2** - Enterprise services expansion with internet edge connectivity and centralised services
 
----
-
-## What These Topologies Demonstrate
-
-- Multi-site enterprise network design
-- Hierarchical network architecture
-- Private WAN connectivity between headquarters and branch offices
-- Redundancy across the core and WAN edge
-- Progression from internal enterprise design to a more realistic production-style environment
+The purpose of this folder is to visually support the lab documentation by showing how the network is built, how sites connect together, and how the design evolved from V1 into V2.
 
 ---
 
 ## Topology Versions
 
-### V1 – Private Enterprise WAN Design
-
-The first version of the topology focuses on the core enterprise network design and demonstrates:
-
-- Headquarters and branch office connectivity across a private WAN
-- Redundant HQ core architecture using dual Layer 3 switches
-- Dynamic routing using OSPF
-- Inter-VLAN routing at the core layer
-- High availability through multiple physical and logical paths
-- Layer 2 and Layer 3 security at the access layer and network edge
-
-This version represents the foundational enterprise design and focuses on internal network connectivity without public internet access.
+| Version | Status | Description | Files |
+|---|---|---|---|
+| [V1](v1/) | Completed | Private enterprise WAN design covering HQ, branch sites, routing, redundancy, VLANs, ACLs, and Layer 2 security | [V1 Draw.io PNG](v1/v1_ccna_lab.drawio.png), [V1 EVE-NG Screenshot](v1/v1-eve-ng-topology.png) |
+| [V2](v2/) | In Progress | Expanded topology adding internet access, NAT, centralised services, Active Directory, and application server integration | [V2 Draw.io PNG](v2/v2_ccna_lab.drawio.png), [V2 EVE-NG Screenshot](v2/v2-eve-ng-topology.png) |
 
 ---
 
-### V2 – Enhanced Enterprise Network Design
+## V1 - Private Enterprise WAN Design
 
-The second version builds upon the original design and introduces additional real-world components, including:
+V1 represents the completed enterprise network foundation.
 
-- Public internet connectivity from the HQ edge
-- NAT at the internet-facing edge
-- Centralised server infrastructure at HQ
-- A domain controller for services such as DHCP, DNS, and Active Directory
-- An application server to better reflect a business environment
-- A clearer separation between private WAN connectivity and public-facing access
+It focuses on internal network connectivity between a headquarters site and two branch offices using a private WAN/MPLS-style design.
 
-This version expands the scope of the lab to better simulate how enterprise networks operate in production environments.
+### V1 Demonstrates
+
+- HQ and branch office connectivity
+- Collapsed core/access switching at HQ
+- Redundant HQ core switches
+- VLAN segmentation for Admin, Servers, Engineering, and Sales
+- Inter-VLAN routing using SVIs
+- OSPF routing across the enterprise WAN
+- HSRP gateway redundancy
+- EtherChannel between HQ core switches
+- ACLs controlling traffic between departments
+- Layer 2 security controls at the access layer
+
+### V1 Topology Files
+
+- [V1 Topology Folder](v1/)
+- [V1 Draw.io Export](v1/v1_ccna_lab.drawio.png)
+- [V1 EVE-NG Screenshot](v1/v1-eve-ng-topology.png)
+
+---
+
+## V2 - Enterprise Services Expansion
+
+V2 builds on the V1 topology by adding services that are commonly found in real enterprise environments.
+
+It keeps the same core network design but expands the lab with internet access, centralised services, and additional client/server infrastructure.
+
+### V2 Demonstrates
+
+- Internet edge connectivity from HQ
+- NAT/PAT for outbound internet access
+- Default route advertisement into OSPF
+- Centralised DHCP services
+- DNS services
+- Active Directory Domain Services
+- Domain-joined clients across multiple VLANs
+- Group Policy testing
+- Application server integration
+- Additional client devices for more realistic testing
+
+### V2 Topology Files
+
+- [V2 Topology Folder](v2/)
+- [V2 Draw.io Export](v2/v2_ccna_lab.drawio.png)
+- [V2 EVE-NG Screenshot](v2/v2-eve-ng-topology.png)
 
 ---
 
 ## Design Progression
 
-The purpose of maintaining both topology versions is to demonstrate the evolution of the lab design.
+The topology progression shows how the lab developed from a network-only design into a more realistic enterprise environment.
 
-### V1 focuses on:
-- Private WAN/MPLS-style architecture
-- Internal routing and redundancy
-- Core enterprise networking principles
+### V1 Focus
 
-### V2 expands on this by introducing:
-- Internet edge design
-- NAT and external connectivity
-- Centralised enterprise services
-- Greater realism in network structure and traffic flow
+V1 focuses on the core networking foundation:
 
-This progression reflects a deliberate move from foundational CCNA-level enterprise design toward a broader and more realistic network implementation.
+- Private WAN connectivity
+- Internal routing
+- VLAN segmentation
+- Gateway redundancy
+- Layer 2 security
+- Department-based access control
+
+### V2 Focus
+
+V2 expands the same design by adding enterprise services:
+
+- Internet access
+- NAT/PAT
+- Centralised DHCP
+- DNS
+- Active Directory
+- Group Policy
+- Application server access
+
+This shows how an enterprise network can evolve incrementally without replacing the original design.
 
 ---
 
 ## Directory Structure
 
-- `v1/` → Original enterprise topology
-- `v2/` → Enhanced enterprise topology
+```text
+topology/
+├── README.md
+├── v1/
+│   ├── README.md
+│   ├── v1_ccna_lab.drawio.png
+│   └── v1-eve-ng-topology.png
+└── v2/
+    ├── README.md
+    ├── v2_ccna_lab.drawio.png
+    └── v2-eve-ng-topology.png
+```
 
 ---
 
-## Scope
+## Related Documentation
 
-The topology folder is intended to visually support the rest of the project by showing how the lab design evolved across versions.
-
-- **V1** represents the original private enterprise WAN implementation
-- **V2** represents the current and more complete topology design
-
-Further versions may be added in the future as additional technologies are explored.
+- [Enterprise Network Lab Overview](../)
+- [Lab Documentation](../labs/)
+- [V1 Lab Documentation](../labs/v1/)
+- [V2 Lab Documentation](../labs/v2/)
+- [Device Configurations](../configs/)
 
 ---
 
 ## Summary
 
-These topology diagrams document the design evolution of the Enterprise Network Lab, showing how multiple networking technologies and architectural decisions come together to provide:
+These topology diagrams provide a visual overview of the Enterprise Network Lab.
 
-- Scalable multi-site connectivity
-- High availability through redundancy
-- Clear separation of network roles
-- Progression from private WAN design to enterprise internet edge integration
+V1 shows the completed private enterprise WAN foundation, while V2 shows how the same network was expanded with internet connectivity and enterprise services.
 
-Together, they reflect both foundational CCNA-level knowledge and a growing understanding of practical enterprise network design.
+Together, the diagrams help demonstrate network design, segmentation, routing, redundancy, security controls, and infrastructure service integration.
 
 ---
