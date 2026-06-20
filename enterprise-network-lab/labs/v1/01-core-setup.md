@@ -1,51 +1,87 @@
-# 01 - Core Layer Setup
+# 01 - Core Setup
 
-## Objective
+## Overview
 
-The objective of this phase is to configure the HQ core layer to provide:
+This phase configures the HQ core layer for the V1 Enterprise Network Lab.
 
-- VLAN segmentation
-- Inter-VLAN routing
-- Default gateway redundancy
-- Resilient Layer 2 and Layer 3 connectivity
-
-This phase focuses on the two core switches:
+The HQ core is built using two Layer 3 switches:
 
 - HQ-CSW1
 - HQ-CSW2
 
+These switches provide the central switching and routing function for the headquarters site.
+
+The core layer is responsible for:
+
+- VLAN creation
+- Inter-VLAN routing using SVIs
+- Default gateway redundancy using HSRP
+- Layer 2 loop prevention using Rapid PVST+
+- STP root bridge placement
+- EtherChannel between core switches
+- Trunk connectivity to access switches
+- Routed connectivity towards the HQ WAN routers
+
 ---
 
-## Topology Overview
+## Objective
 
-![HQ Topology](../../topology/v1/v1-eve-ng-topology.png)
+The objective of this phase is to configure a resilient HQ core switching design.
+
+This includes:
+
+- Creating the HQ VLANs
+- Configuring SVIs for VLAN gateways
+- Enabling Layer 3 routing on the core switches
+- Configuring HSRP for gateway redundancy
+- Configuring Rapid PVST+ for Layer 2 stability
+- Aligning STP root bridge placement with HSRP active gateways
+- Configuring LACP EtherChannel between the core switches
+- Hardening trunk links using allowed VLAN lists and DTP disablement
+- Preparing routed uplinks towards the HQ WAN edge
+
+---
+
+## Topology Reference
+
+The screenshot below shows the V1 EVE-NG topology.
+
+![V1 EVE-NG Topology](../../topology/v1/v1-eve-ng-topology.png)
+
+The HQ core switches sit at the centre of the headquarters network and connect to:
+
+- HQ access switches
+- HQ server switches
+- HQ routers
+- Each other through an EtherChannel trunk
 
 ---
 
 ## Core Layer Design
 
-The core layer is built using two multilayer switches to provide high availability and efficient traffic forwarding.
+The HQ core uses a collapsed core/access design.
 
-Key design features:
-- Centralised inter-VLAN routing using SVIs
-- HSRP for redundant default gateways
-- STP tuning for optimal Layer 2 forwarding
-- EtherChannel (LACP) for increased bandwidth and redundancy
+This keeps the lab realistic for a small enterprise environment while remaining suitable for a CCNA-level project.
 
-### VLAN Design
-- VLAN 10 → Admin
-- VLAN 20 → Servers
-To optimise resource utilisation, traffic is load-balanced across both core switches:
-- HQ-CSW1 → Active for VLAN 10
-- HQ-CSW2 → Active for VLAN 20
+| Device | Role |
+|---|---|
+| HQ-CSW1 | Core switch, preferred HSRP active gateway for VLAN 10 |
+| HQ-CSW2 | Core switch, preferred HSRP active gateway for VLAN 20 |
 
-This prevents one switch from remaining idle and improves overall efficiency.
+This design allows both core switches to actively forward traffic instead of having one switch remain mostly idle.
 
 ---
 
-## VLAN Configuration
+## VLAN Design
 
-VLANs were created on both core switches to ensure consistency across the network.
+The HQ core switches support the following VLANs:
+
+| VLAN | Name | Purpose |
+|---|---|---|
+| 10 | ADMIN | Admin user network |
+| 20 | SERVERS | Server network |
+
+VLANs were created on both core switches to keep the Layer 2 database consistent.
 
 ```cisco
 vlan 10
@@ -54,38 +90,151 @@ vlan 10
 vlan 20
  name SERVERS
 ```
+
+Branch VLANs are not extended across the HQ switching fabric in V1. Engineering and Sales are routed branch networks connected through the WAN.
+
+---
+
+## Inter-VLAN Routing
+
+Inter-VLAN routing is provided by SVIs on the HQ core switches.
+
+Layer 3 routing is enabled using:
+
+```cisco
+ip routing
+```
+
+This allows the core switches to route traffic between VLAN 10, VLAN 20, and the routed WAN links.
+
+---
+
+## SVI and HSRP Design
+
+HSRP provides a resilient virtual default gateway for each HQ VLAN.
+
+| VLAN | Virtual Gateway | HQ-CSW1 IP | HQ-CSW2 IP | Preferred Active Device |
+|---|---|---|---|---|
+| VLAN 10 | 192.168.10.1 | 192.168.10.2 | 192.168.10.3 | HQ-CSW1 |
+| VLAN 20 | 192.168.20.1 | 192.168.20.2 | 192.168.20.3 | HQ-CSW2 |
+
+This provides gateway redundancy and basic load sharing across both core switches.
+
+---
+
+### HQ-CSW1 SVI Configuration
+
+```cisco
+interface Vlan10
+ ip address 192.168.10.2 255.255.255.0
+ standby 10 ip 192.168.10.1
+ standby 10 priority 110
+ standby 10 preempt
+ no shutdown
+
+interface Vlan20
+ ip address 192.168.20.2 255.255.255.0
+ standby 20 ip 192.168.20.1
+ standby 20 priority 90
+ standby 20 preempt
+ no shutdown
+```
+
+HQ-CSW1 has a higher HSRP priority for VLAN 10, making it the preferred active gateway for the Admin VLAN.
+
+---
+
+### HQ-CSW2 SVI Configuration
+
+```cisco
+interface Vlan10
+ ip address 192.168.10.3 255.255.255.0
+ standby 10 ip 192.168.10.1
+ standby 10 priority 90
+ standby 10 preempt
+ no shutdown
+
+interface Vlan20
+ ip address 192.168.20.3 255.255.255.0
+ standby 20 ip 192.168.20.1
+ standby 20 priority 110
+ standby 20 preempt
+ no shutdown
+```
+
+HQ-CSW2 has a higher HSRP priority for VLAN 20, making it the preferred active gateway for the Server VLAN.
+
+---
+
+## Loopback Interfaces
+
+Loopback interfaces are configured on both core switches to provide stable Layer 3 identities.
+
+| Device | Loopback |
+|---|---|
+| HQ-CSW1 | 1.1.1.1/32 |
+| HQ-CSW2 | 2.2.2.2/32 |
+
+### HQ-CSW1
+
+```cisco
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+```
+
+### HQ-CSW2
+
+```cisco
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+```
+
+The loopbacks are later advertised into OSPF and used for consistent device identification during routing and testing.
+
 ---
 
 ## EtherChannel Between Core Switches
 
-Two physical interfaces were bundled into a single logical link using LACP.
+An LACP EtherChannel is configured between HQ-CSW1 and HQ-CSW2.
 
-This provides:
-- Increased bandwidth
+This bundles two physical links into one logical Port-Channel.
+
+Benefits:
+
+- Increased bandwidth between core switches
 - Link redundancy
-- Simplified management
+- Simplified Spanning Tree behaviour
+- A single logical trunk between both core devices
 
-### Important Platform Note
+---
 
-On this platform, trunk encapsulation must be defined before enabling trunk mode:
+### Platform Note
+
+The Cisco virtual switch image used in this lab requires trunk encapsulation to be configured before enabling trunk mode.
 
 ```cisco
 switchport trunk encapsulation dot1q
 ```
-This behaviour is typical of older Cisco IOS platforms that support multiple encapsulation types.
+
+This is common on older Cisco IOS switching platforms that support multiple trunk encapsulation types.
 
 ---
 
 ### HQ-CSW1 EtherChannel Configuration
 
 ```cisco
-interface range gi0/2 - 3
+interface range GigabitEthernet0/2 - 3
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
  channel-group 1 mode active
 
-interface port-channel 1
+interface Port-channel1
+ switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
 ```
 
 ---
@@ -93,288 +242,298 @@ interface port-channel 1
 ### HQ-CSW2 EtherChannel Configuration
 
 ```cisco
-interface range gi0/2 - 3
+interface range GigabitEthernet0/2 - 3
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
  channel-group 1 mode active
 
-interface port-channel 1
+interface Port-channel1
+ switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
 ```
 
 ---
 
 ## Trunk Links to Access Switches
 
-Each access switch is dual-homed to both core switches for redundancy.
+The HQ access switches are dual-homed to both core switches.
 
-Uplink interfaces were configured as trunk ports to allow multiple VLANs to traverse the links.
+These uplinks are configured as 802.1Q trunks so VLAN traffic can pass between the access layer and core layer.
 
-### Example
+Example trunk configuration:
 
 ```cisco
-interface range gi1/0 - 3
+interface GigabitEthernet1/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ switchport nonegotiate
+ spanning-tree guard root
 ```
-Interface numbering may vary depending on the lab topology and switch image used.
+
+### Trunk Hardening
+
+The trunk links include two hardening measures.
+
+| Feature | Purpose |
+|---|---|
+| `switchport trunk allowed vlan 10,20` | Restricts the trunk to only the required VLANs |
+| `switchport nonegotiate` | Disables DTP and prevents dynamic trunk negotiation |
+
+This improves security and makes trunk behaviour predictable.
 
 ---
 
-## Inter-VLAN Routing (SVIs)
+## Root Guard on Access-Facing Trunks
 
-Switch Virtual Interfaces (SVIs) were created to provide Layer 3 gateways.
-
-### HQ-CSW1 Configuration
+Root Guard is applied on core switch interfaces facing the access layer.
 
 ```cisco
-ip routing
-
-interface vlan 10
- ip address 192.168.10.2 255.255.255.0
- standby 10 ip 192.168.10.1
- standby 10 priority 110
- standby 10 preempt
-
-interface vlan 20
- ip address 192.168.20.2 255.255.255.0
- standby 20 ip 192.168.20.1
- standby 20 priority 90
- standby 20 preempt
+spanning-tree guard root
 ```
+
+This helps prevent an access switch from becoming the STP root bridge.
+
+The purpose is to keep STP control at the core layer, where the intended root bridge placement has been configured.
 
 ---
 
-### HQ-CSW2 Configuration
+## Routed Uplinks to HQ Routers
+
+The core switches also connect to the HQ WAN routers using routed Layer 3 links.
+
+These links use `/30` point-to-point networks from the `10.0.1.0/24` range.
+
+Example routed interface:
 
 ```cisco
-ip routing
-
-interface vlan 10
- ip address 192.168.10.3 255.255.255.0
- standby 10 ip 192.168.10.1
- standby 10 priority 90
- standby 10 preempt
-
-interface vlan 20
- ip address 192.168.20.3 255.255.255.0
- standby 20 ip 192.168.20.1
- standby 20 priority 110
- standby 20 preempt
+interface GigabitEthernet0/0
+ description TO HQ-R1
+ no switchport
+ ip address 10.0.1.1 255.255.255.252
+ no shutdown
 ```
 
----
-
-## Loopback Interfaces (Management & Router ID)
-
-Loopback interfaces were configured on the core switches to provide a stable management address and consistent Layer 3 identity.
-
-Unlike physical interfaces, loopbacks remain up as long as the device is operational, making them ideal for management access and routing protocols.
+These routed links are used later in the OSPF phase to provide connectivity from the HQ core towards the WAN and branch networks.
 
 ---
 
-### HQ-CSW1
+## Spanning Tree Protocol
 
-```cisco
-interface loopback0
- ip address 1.1.1.1 255.255.255.255
-```
+Rapid PVST+ is configured across the switching environment.
 
-### HQ-CSW2
-
-```cisco
-interface loopback0
- ip address 2.2.2.2 255.255.255.255
-```
-
----
-
-### Integration with Routing and Management
-
-Loopback interfaces are advertised into OSPF to ensure reachability across the network.
-
-They are also used as the source interface for SSH to provide consistent management access.
-
----
-
-## HSRP Design
-
-HSRP provides redundant default gateways:
-
-| VLAN | Gateway      | Active Switch | Standby Switch |
-| ---- | ------------ | ------------- | -------------- |
-| 10   | 192.168.10.1 | HQ-CSW1       | HQ-CSW2        |
-| 20   | 192.168.20.1 | HQ-CSW2       | HQ-CSW1        |
-
-This design enables load sharing and high availability.
-
----
-
-## Spanning Tree Protocol (Rapid PVST+)
-
-Rapid Spanning Tree Protocol (Rapid PVST+) was implemented across all switches to provide fast Layer 2 convergence and improve network stability.
-
-Rapid PVST+ significantly reduces convergence time compared to traditional STP, allowing the network to quickly recover from link or device failures in a redundant topology.
-
-
-### Configuration
 ```cisco
 spanning-tree mode rapid-pvst
 ```
 
----
-
-### Design Justification
-- Enables faster convergence during topology changes
-- Improves failover performance in redundant Layer 2 designs
-- Aligns with enterprise best practices for modern switching environments
-- Ensures consistent Spanning Tree behaviour across all switches
-
---- 
-
-### Verification
-
-```cisco
-show spanning-tree summary
-```
-
-<img width="874" height="423" alt="image" src="https://github.com/user-attachments/assets/e6bf65a4-1e50-4481-9b0b-d38b4e0d27d4" />
-
-
-
-Expected output should confirm:
-
-- Spanning Tree mode is Rapid PVST+
-- Protocol shown as RSTP
+Rapid PVST+ provides faster convergence than traditional STP and is suitable for redundant Layer 2 designs.
 
 ---
 
-## STP Root Placement
+## STP Root Bridge Design
 
-Spanning Tree was aligned with HSRP to optimise traffic flow and avoid unnecessary Layer 2 hops.
+STP root bridge placement is aligned with the HSRP active gateway design.
 
-### HQ-CSW1 Configuration
+| VLAN | HSRP Active Gateway | STP Root Bridge |
+|---|---|---|
+| VLAN 10 | HQ-CSW1 | HQ-CSW1 |
+| VLAN 20 | HQ-CSW2 | HQ-CSW2 |
 
-```cisco
-spanning-tree vlan 10 root primary
-spanning-tree vlan 20 root secondary
-```
-
-### HQ-CSW2 Configuration
-
-```cisco
-spanning-tree vlan 10 root secondary
-spanning-tree vlan 20 root primary
-```
+This keeps Layer 2 forwarding paths aligned with the preferred Layer 3 gateway.
 
 ---
 
-## Verification
+### HQ-CSW1 STP Configuration
 
-The following commands were used to validate the configuration:
+```cisco
+spanning-tree vlan 10 priority 24576
+spanning-tree vlan 20 priority 28672
+```
 
-- ```show vlan brief```
-<img width="879" height="236" alt="image" src="https://github.com/user-attachments/assets/d3228a19-7221-4952-9e14-3a6bcefd3c43" />
+HQ-CSW1 is preferred as the STP root for VLAN 10 and secondary for VLAN 20.
 
-- ```show interfaces trunk```
-<img width="896" height="488" alt="image" src="https://github.com/user-attachments/assets/7fb766d8-ac35-4f44-a7f3-05ae882a801d" />
+---
 
-- ```show etherchannel summary```
-<img width="878" height="489" alt="image" src="https://github.com/user-attachments/assets/2f71a724-552e-45c4-a5ff-f4475b4665e1" />
+### HQ-CSW2 STP Configuration
 
-- ```show standby brief```
-<img width="875" height="147" alt="image" src="https://github.com/user-attachments/assets/f056fa55-9589-4534-bc89-96ea73c5bcc6" />
+```cisco
+spanning-tree vlan 10 priority 28672
+spanning-tree vlan 20 priority 24576
+```
 
-- ```show spanning-tree vlan 10```
-<img width="883" height="463" alt="image" src="https://github.com/user-attachments/assets/5ad32eae-e969-4054-ace1-c2b96c190ac5" />
+HQ-CSW2 is preferred as the STP root for VLAN 20 and secondary for VLAN 10.
 
-- ```show spanning-tree vlan 20```
-<img width="882" height="489" alt="image" src="https://github.com/user-attachments/assets/d3330948-b37d-43ba-8e4c-acf7f4e621ea" />
+---
+
+## Verification Commands
+
+The following commands were used to verify the core setup.
+
+| Command | Purpose |
+|---|---|
+| `show vlan brief` | Confirms VLAN creation |
+| `show interfaces trunk` | Confirms trunk links and allowed VLANs |
+| `show etherchannel summary` | Confirms EtherChannel status |
+| `show standby brief` | Confirms HSRP active and standby roles |
+| `show spanning-tree summary` | Confirms Rapid PVST+ operation |
+| `show spanning-tree vlan 10` | Confirms STP root placement for VLAN 10 |
+| `show spanning-tree vlan 20` | Confirms STP root placement for VLAN 20 |
+| `show ip interface brief` | Confirms SVI and routed interface status |
+
+---
+
+## Verification Evidence
+
+### VLAN Verification
+
+`show vlan brief` was used to confirm that VLANs were created.
+
+<img width="879" height="236" alt="show vlan brief output" src="https://github.com/user-attachments/assets/d3228a19-7221-4952-9e14-3a6bcefd3c43" />
+
+---
+
+### Trunk Verification
+
+`show interfaces trunk` was used to confirm trunk operation and allowed VLANs.
+
+<img width="896" height="488" alt="show interfaces trunk output" src="https://github.com/user-attachments/assets/7fb766d8-ac35-4f44-a7f3-05ae882a801d" />
+
+---
+
+### EtherChannel Verification
+
+`show etherchannel summary` was used to confirm that the physical links were bundled into Port-Channel1.
+
+<img width="878" height="489" alt="show etherchannel summary output" src="https://github.com/user-attachments/assets/2f71a724-552e-45c4-a5ff-f4475b4665e1" />
+
+---
+
+### HSRP Verification
+
+`show standby brief` was used to confirm HSRP active and standby roles.
+
+<img width="875" height="147" alt="show standby brief output" src="https://github.com/user-attachments/assets/f056fa55-9589-4534-bc89-96ea73c5bcc6" />
+
+---
+
+### Rapid PVST+ Verification
+
+`show spanning-tree summary` confirmed Rapid PVST+ operation.
+
+<img width="874" height="423" alt="show spanning-tree summary output" src="https://github.com/user-attachments/assets/e6bf65a4-1e50-4481-9b0b-d38b4e0d27d4" />
+
+---
+
+### VLAN 10 STP Verification
+
+`show spanning-tree vlan 10` was used to confirm the STP state for VLAN 10.
+
+<img width="883" height="463" alt="show spanning-tree vlan 10 output" src="https://github.com/user-attachments/assets/5ad32eae-e969-4054-ace1-c2b96c190ac5" />
+
+---
+
+### VLAN 20 STP Verification
+
+`show spanning-tree vlan 20` was used to confirm the STP state for VLAN 20.
+
+<img width="882" height="489" alt="show spanning-tree vlan 20 output" src="https://github.com/user-attachments/assets/d3330948-b37d-43ba-8e4c-acf7f4e621ea" />
 
 ---
 
 ## Expected Results
-- VLANs present on both switches
-- EtherChannel correctly bundled and operational
-- Trunk links active
-- HSRP active/standby roles aligned with design
-- STP root aligned with HSRP
+
+At the end of this phase:
+
+- VLAN 10 and VLAN 20 exist on both core switches
+- SVIs are configured for Admin and Server VLANs
+- HSRP virtual gateways are available
+- HQ-CSW1 is preferred active for VLAN 10
+- HQ-CSW2 is preferred active for VLAN 20
+- Rapid PVST+ is enabled
+- STP root bridge placement aligns with HSRP active gateways
+- Port-Channel1 is operational between HQ-CSW1 and HQ-CSW2
+- Trunk links only allow the required VLANs
+- DTP is disabled on trunk links
+- Routed uplinks towards HQ routers are prepared for OSPF
 
 ---
 
-## Key Learning Points
-- EtherChannel improves both bandwidth and redundancy
-- Some IOS platforms require manual 802.1Q encapsulation
-- SVIs enable Layer 3 routing on switches
-- HSRP provides gateway failover
-- STP tuning improves traffic efficiency and convergence
+## Design Notes
+
+### Why HSRP Was Used
+
+HSRP provides a virtual default gateway for each VLAN.
+
+If one core switch fails, hosts can continue using the same default gateway IP address while the standby switch takes over.
+
+### Why STP Was Aligned with HSRP
+
+STP was aligned with HSRP so that the preferred Layer 2 forwarding path matches the preferred Layer 3 gateway.
+
+This avoids inefficient traffic flow where hosts forward traffic towards one switch, only for the traffic to cross to the other switch to reach the active gateway.
+
+### Why EtherChannel Was Used
+
+EtherChannel allows multiple physical links to operate as a single logical link.
+
+This increases bandwidth and provides link redundancy while keeping the topology simpler for STP.
+
+### Why Trunks Were Restricted
+
+Trunks were restricted to VLANs 10 and 20 because only those VLANs are required across the HQ switching infrastructure in V1.
+
+Restricting VLANs reduces unnecessary VLAN exposure and improves clarity during troubleshooting.
 
 ---
 
-## Additional Enhancements
+## Platform Note
 
-To better reflect real-world enterprise design, the following optimisations were implemented:
+This lab was built using virtual Cisco images in EVE-NG.
 
-### VLAN Restriction on Trunks
-
-Trunk links were configured to only allow the required VLANs instead of all VLANs by default.
-
-```cisco
-switchport trunk allowed vlan 10,20
-```
-
-Benefits:
-- Reduces unnecessary broadcast traffic
-- Limits VLAN exposure (security)
-- Improves Layer 2 efficiency
+Some default or platform-generated CLI output may vary between devices. The published configurations and documentation focus on the relevant working configuration and design intent.
 
 ---
 
-## Disabling DTP (Dynamic Trunking Protocol)
+## Outcome
 
-```cisco
-switchport nonegotiate
-```
+The HQ core layer was successfully configured to provide:
 
-Benefits:
-- Prevents unwanted trunk negotiation
-- Reduces attack surface
-- Ensures manual control of trunking
+- VLAN segmentation
+- Inter-VLAN routing
+- HSRP gateway redundancy
+- STP-controlled Layer 2 redundancy
+- EtherChannel between core switches
+- Hardened trunk links
+- Routed links towards the WAN edge
 
----
-
-## Root Guard (Access-Facing Ports)
-
-```cisco
-interface range gi1/0 - 3
- spanning-tree guard root
-```
-### Purpose:
-- Prevents access switches from becoming STP root
-- Maintains control of Layer 2 topology at the core
+This created the resilient HQ network foundation required before configuring the access layer, WAN routing, ACLs, and final validation.
 
 ---
 
-## VLAN Design Considerations
+## Key Learning
 
-While VLANs 10 and 20 are currently allowed across all trunks, the design can be refined further:
-- Admin switches → VLAN 10 only
-- Server switches → VLAN 20 only
+This phase reinforced several important enterprise networking concepts:
 
-This would improve:
-- Network segmentation
-- Traffic efficiency
-- Security boundaries
+- Layer 3 switches can provide inter-VLAN routing using SVIs
+- HSRP improves gateway availability
+- STP root placement should align with the intended traffic path
+- EtherChannel improves bandwidth and redundancy between switches
+- Trunk links should be manually configured and restricted to required VLANs
+- DTP should be disabled where dynamic trunk negotiation is not required
+- Root Guard helps protect the intended STP root bridge design
 
 ---
 
-## Summary of Enhancements
+## Related Documentation
 
-The core layer provides:
-- Centralised inter-VLAN routing
-- Redundant default gateways using HSRP
-- Optimised Layer 2 forwarding via STP tuning
-- High availability through EtherChannel and dual-homing
-These configurations establish a resilient and scalable foundation for the network.
+- [Previous: 00 - Base Configuration](00-base-config.md)
+- [Next: 02 - Access Layer](02-access-layer.md)
+- [V1 Overview](./)
+- [V1 Topology](../../topology/v1/)
+- [Device Configurations](../../configs/)
 
 ---
