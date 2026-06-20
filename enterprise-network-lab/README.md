@@ -53,7 +53,7 @@ It includes:
 - Layer 2 security controls
 - End devices and servers for validation testing
 
-<p align="center">
+<p align="left">
   <img src="./topology/v1/v1_ccna_lab.drawio.png" width="800">
 </p>
 
@@ -74,7 +74,7 @@ It introduces:
 - Group Policy testing
 - Application server integration
 
-<p align="center">
+<p align="left">
   <img src="./topology/v2/v2_ccna_lab.drawio.png" width="800">
 </p>
 
@@ -221,7 +221,6 @@ Remaining work includes:
 - Application server integration
 - Final V2 testing and validation
 - Final configuration change documentation
-- Documentation cleanup after V1 is fully polished
 
 ---
 
@@ -244,7 +243,7 @@ Remaining work includes:
 - [01 - Internet and Edge Connectivity](labs/v2/01-internet-%26-edge.md)
 - [02 - DHCP Services](labs/v2/02-dhcp-services.md)
 - [03 - DNS and Domain Services](labs/v2/03-dns-%26-domain-services.md)
-- [04 - Application Server Integration](labs/v2/04-application-server-intergration.md)
+- [04 - Application Server Integration](labs/v2/04-application-server-integration.md)
 
 ### Configuration Files
 
