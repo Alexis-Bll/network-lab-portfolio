@@ -53,7 +53,9 @@ It includes:
 - Layer 2 security controls
 - End devices and servers for validation testing
 
-[V1 Topology Files](topology/v1/)
+p align="center">
+  <img src="./topology/v1/v1_ccna_lab.drawio.png" width="800">
+</p>
 
 ---
 
@@ -72,7 +74,9 @@ It introduces:
 - Group Policy testing
 - Application server integration
 
-[V2 Topology Files](topology/v2/)
+p align="center">
+  <img src="./topology/v2/v2_ccna_lab.drawio.png" width="800">
+</p>
 
 ---
 
