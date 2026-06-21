@@ -1,55 +1,89 @@
-# 02 - Access Layer Configuration
+# 02 - Access Layer
+
+## Overview
+
+This phase configures the HQ access layer for the V1 Enterprise Network Lab.
+
+The access layer provides endpoint connectivity for Admin users and server devices at the headquarters site. It operates at Layer 2, with inter-VLAN routing handled by the HQ core switches configured in the previous phase.
+
+This phase focuses on:
+
+- HQ access switch configuration
+- VLAN consistency
+- Trunk uplinks to the core switches
+- Access port configuration for end devices
+- Management SVIs for SSH access
+- Layer 2 security features
+- End-device connectivity testing
+
+---
 
 ## Objective
 
-The objective of this phase is to configure the access layer switches to provide reliable end-device connectivity, enforce VLAN segmentation, and implement secure Layer 2 operations.
+The objective of this phase is to provide reliable and secure access-layer connectivity.
 
 This includes:
 
-- VLAN implementation on access switches
-- Trunk configuration to the core layer
-- Access port configuration for end devices
-- Layer 2 security features
-- End-device IP configuration and connectivity validation
+- Configuring VLANs on the access switches
+- Connecting access switches to both HQ core switches
+- Configuring trunk links with allowed VLAN restrictions
+- Assigning endpoint-facing ports to the correct VLANs
+- Configuring management IP addresses for SSH access
+- Enabling Layer 2 security features
+- Validating gateway reachability and inter-VLAN routing
+
+---
+
+## Topology Reference
+
+The screenshot below shows the V1 EVE-NG topology.
+
+![V1 EVE-NG Topology](../../topology/v1/v1-eve-ng-topology.png)
+
+The HQ access switches connect end devices into the HQ core.
+
+| Switch | Role | Connected Devices |
+|---|---|---|
+| HQ-ASW1 | Admin access switch 1 | Admin PC |
+| HQ-ASW2 | Admin access switch 2 | Admin PC |
+| HQ-SSW1 | Server access switch 1 | Server |
+| HQ-SSW2 | Server access switch 2 | Server |
+
+Each access switch has redundant uplinks towards the HQ core switches.
 
 ---
 
 ## Access Layer Design
 
-The access layer consists of:
+The HQ access layer uses four Layer 2 switches:
 
-- HQ-ASW1 / HQ-ASW2 → Admin users (VLAN 10)
-- HQ-SSW1 / HQ-SSW2 → Servers (VLAN 20)
+- HQ-ASW1
+- HQ-ASW2
+- HQ-SSW1
+- HQ-SSW2
 
-Each access switch is dual-homed to both core switches, providing redundancy and high availability.
+The access switches provide:
 
-The access layer operates purely at Layer 2, with all routing handled by the core layer via SVIs.
+- End-device connectivity
+- VLAN assignment
+- Trunk connectivity towards the core
+- Layer 2 security enforcement
+- In-band management access using VLAN 10
 
-Management traffic is carried in-band over VLAN 10, ensuring all access switches remain reachable from the admin network.
-
----
-
-## Spanning Tree Protocol
-
-Rapid PVST+ is implemented across all switches in the network to provide fast Layer 2 convergence.
-
-The full configuration and design details are documented in the Core Layer Setup section:
-
-👉 [View Spanning Tree Configuration](01-core-setup.md)
+Routing is not performed at the access layer. All Layer 3 routing for HQ VLANs is handled by the core switches using SVIs and HSRP.
 
 ---
 
-### Design Justification
-- Enables faster convergence during topology changes
-- Improves failover performance in redundant Layer 2 designs
-- Aligns with enterprise best practices for modern switching environments
-- Ensures consistent Spanning Tree behaviour across all switches
+## VLAN Design
 
---- 
+The HQ access layer uses two VLANs:
 
-## VLAN Configuration
+| VLAN | Name | Purpose |
+|---|---|---|
+| VLAN 10 | ADMIN | Admin users and switch management |
+| VLAN 20 | SERVERS | Server devices |
 
-VLANs were created on all access switches to ensure consistency with the core layer.
+VLANs were created on the access switches to keep the VLAN database consistent with the HQ core.
 
 ```cisco
 vlan 10
@@ -59,37 +93,37 @@ vlan 20
  name SERVERS
 ```
 
----
-
-## Management Access (SVI for SSH)
-
-Although the access switches operate purely at Layer 2, they still require an IP address for remote management.
-
-To support SSH access, each access switch is configured with a management SVI in VLAN 10. This provides a reachable IP address for administration, while the default gateway points to the HSRP virtual IP on the core layer.
-
-VLAN 10 is used as the management VLAN because it already exists across the HQ access layer and has routed reachability through the core switches.
+VLAN 10 is also used for in-band management of the access switches.
 
 ---
 
-### Management IP Addressing
+## Management SVI Design
 
-- HQ-ASW1 → 192.168.10.4
-- HQ-ASW2 → 192.168.10.5
-- HQ-SSW1 → 192.168.10.6
-- HQ-SSW2 → 192.168.10.7
+Although the access switches operate as Layer 2 devices, each switch requires a management IP address for SSH access.
 
-Default gateway for all access switches:
+A management SVI is configured on VLAN 10 for each access switch.
+
+| Switch | Management VLAN | Management IP | Default Gateway |
+|---|---|---|---|
+| HQ-ASW1 | VLAN 10 | 192.168.10.4 | 192.168.10.1 |
+| HQ-ASW2 | VLAN 10 | 192.168.10.5 | 192.168.10.1 |
+| HQ-SSW1 | VLAN 10 | 192.168.10.6 | 192.168.10.1 |
+| HQ-SSW2 | VLAN 10 | 192.168.10.7 | 192.168.10.1 |
+
+The default gateway points to the HSRP virtual IP address for VLAN 10.
 
 ```text
 192.168.10.1
 ```
 
+This allows the access switches to remain manageable even if one core switch fails.
+
 ---
 
-### HQ-ASW1 Configuration
+### HQ-ASW1 Management Configuration
 
 ```cisco
-interface vlan 10
+interface Vlan10
  ip address 192.168.10.4 255.255.255.0
  no shutdown
 
@@ -98,10 +132,10 @@ ip default-gateway 192.168.10.1
 
 ---
 
-### HQ-ASW2 Configuration
+### HQ-ASW2 Management Configuration
 
 ```cisco
-interface vlan 10
+interface Vlan10
  ip address 192.168.10.5 255.255.255.0
  no shutdown
 
@@ -110,10 +144,10 @@ ip default-gateway 192.168.10.1
 
 ---
 
-### HQ-SSW1 Configuration
+### HQ-SSW1 Management Configuration
 
 ```cisco
-interface vlan 10
+interface Vlan10
  ip address 192.168.10.6 255.255.255.0
  no shutdown
 
@@ -122,10 +156,10 @@ ip default-gateway 192.168.10.1
 
 ---
 
-### HQ-SSW2 Configuration
+### HQ-SSW2 Management Configuration
 
 ```cisco
-interface vlan 10
+interface Vlan10
  ip address 192.168.10.7 255.255.255.0
  no shutdown
 
@@ -134,53 +168,65 @@ ip default-gateway 192.168.10.1
 
 ---
 
-### Design Justification
+## Trunk Uplinks to the Core
 
-- Provides IP-based management for Layer 2 switches
-- Uses a dedicated management address on each switch without conflicting with end devices
-- Relies on the HSRP virtual IP at the core for gateway redundancy
-- Keeps management simple and consistent across the HQ access layer
+Each access switch connects back to both HQ core switches using trunk links.
 
----
+These trunk links allow VLAN 10 and VLAN 20 traffic to pass between the access layer and the core layer.
 
-## Uplink Configuration (Trunk Links)
-
-Interfaces connecting access switches to the core were configured as trunk ports:
+Example trunk configuration:
 
 ```cisco
-interface range gi0/0 - 1
+interface range GigabitEthernet0/0 - 1
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk allowed vlan 10,20
  switchport nonegotiate
 ```
 
-### Key Design Decisions
-- 802.1Q encapsulation required due to platform limitations
-- Only VLANs 10 and 20 allowed across trunks
-- DTP disabled to prevent unwanted trunk negotiation
-- Dual uplinks provide redundancy to both core switches
+---
+
+## Trunk Hardening
+
+Trunk links were manually configured and restricted to only the VLANs required in the HQ LAN.
+
+| Configuration | Purpose |
+|---|---|
+| `switchport mode trunk` | Manually sets the interface as a trunk |
+| `switchport trunk allowed vlan 10,20` | Restricts the trunk to required VLANs only |
+| `switchport nonegotiate` | Disables DTP negotiation |
+| `switchport trunk encapsulation dot1q` | Sets 802.1Q trunk encapsulation on the virtual switch image |
+
+This makes trunk behaviour predictable and reduces unnecessary VLAN exposure.
 
 ---
 
 ## Access Port Configuration
 
-Access ports were configured to assign end devices to the correct VLAN and enable fast convergence.
+Endpoint-facing interfaces were configured as access ports.
 
-### Admin Switches (VLAN 10)
+### Admin Access Ports
+
+Admin PCs are connected to VLAN 10.
 
 ```cisco
-interface gi0/2
+interface GigabitEthernet0/2
+ description ADMIN-PC
  switchport mode access
  switchport access vlan 10
  spanning-tree portfast
  spanning-tree bpduguard enable
 ```
 
-### Server Switches (VLAN 20)
+---
+
+### Server Access Ports
+
+Servers are connected to VLAN 20.
 
 ```cisco
-interface gi0/2
+interface GigabitEthernet0/2
+ description SERVER
  switchport mode access
  switchport access vlan 20
  spanning-tree portfast
@@ -189,277 +235,400 @@ interface gi0/2
 
 ---
 
-## Layer 2 Security Features
+## Spanning Tree Access Port Protection
 
-Several security features were implemented on access ports:
+PortFast and BPDU Guard were enabled on endpoint-facing access ports.
 
-### PortFast
-- Allows immediate transition to forwarding state
-- Eliminates unnecessary delay for end devices
+| Feature | Purpose |
+|---|---|
+| PortFast | Allows endpoint ports to move to forwarding state quickly |
+| BPDU Guard | Protects against accidental or unauthorised switch connections |
 
-### BPDU Guard
-- Protects against rogue switches
-- Automatically disables port if BPDU is received
+These features are suitable for access ports connected to end devices.
 
-These features help maintain network stability and security at the access layer.
-
----
-
-## End Device Configuration
-
-End devices were configured with static IP addressing.
-
-### Admin PCs 
-
-```text
-IP Address: 192.168.10.10
-Subnet Mask: 255.255.255.0
-Default Gateway: 192.168.10.1
-```
-```text
-IP Address: 192.168.10.11
-Subnet Mask: 255.255.255.0
-Default Gateway: 192.168.10.1
-```
-
-### Servers
-
-```text
-IP Address: 192.168.20.10
-Subnet Mask: 255.255.255.0
-Default Gateway: 192.168.20.1
-```
-
-```text
-IP Address: 192.168.20.11
-Subnet Mask: 255.255.255.0
-Default Gateway: 192.168.20.1
-```
+If a BPDU is received on a BPDU Guard-enabled access port, the port is placed into an error-disabled state. This helps protect the Layer 2 topology from accidental loops or rogue switches.
 
 ---
 
-## Connectivity Testing
+## Layer 2 Security Overview
 
-The following tests were performed to validate the network:
+Layer 2 security features were added to improve access-layer protection.
 
-### Layer 2 Connectivity
-- Successful communication between devices within the same VLAN
+Implemented features include:
 
-### Gateway Reachability
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- PortFast
+- BPDU Guard
+- Trunk VLAN restrictions
+- DTP disablement
 
-```cisco
-ping 192.168.10.1
-ping 192.168.20.1
-```
-<img width="884" height="668" alt="image" src="https://github.com/user-attachments/assets/f5888c34-e802-49e4-9bad-9fcfdffa260d" />
-
----
-
-### Inter-VLAN Routing
-
-```cisco
-ping 192.168.20.10
-```
-
-<img width="878" height="239" alt="image" src="https://github.com/user-attachments/assets/7bc65c49-8915-45de-a271-f9a3b1215ce6" />
-
+These controls help protect the access layer from common risks such as rogue DHCP servers, ARP spoofing, accidental loops, and unauthorised device changes.
 
 ---
 
-## Observations
-- Intra-VLAN communication confirmed correct Layer 2 switching
-- Gateway reachability verified SVI functionality on the core
-- Inter-VLAN communication confirmed routing operation
-- Initial packet loss observed due to ARP resolution (expected behaviour)
+## DHCP Snooping
 
----
-
-## Troubleshooting
-
-### Issue Encountered: SVI Down
-
-During testing, the default gateway was initially unreachable.
-This was caused by the VLAN interface (SVI) being in a down/down state on the core switch.
-
-The issue was resolved by enabling the interface:
-
-```cisco
-interface vlan 10
- no shutdown
-```
-
-### Key Takeaway:
-
-An SVI requires:
-- The VLAN to exist
-- Active Layer 2 participation
-- The interface to be administratively enabled
-
----
-
-## Advanced Security – Dynamic ARP Inspection (DAI)
-
-Dynamic ARP Inspection (DAI) was implemented on the access layer switches to protect against ARP spoofing and man-in-the-middle attacks.
-
-DAI works by validating ARP packets against a trusted database of IP-to-MAC bindings before allowing them to be forwarded.
-
----
-
-### Configuration
-
-DAI was enabled for the relevant VLANs:
-
-```cisco
-ip arp inspection vlan 10,20
-```
-
----
-
-## DHCP Snooping Dependency
-
-DAI relies on DHCP Snooping to build a binding table of valid IP-to-MAC mappings.
+DHCP Snooping was enabled for VLAN 10 and VLAN 20.
 
 ```cisco
 ip dhcp snooping
 ip dhcp snooping vlan 10,20
 ```
 
+In V1, most endpoints use static IP addressing. DHCP Snooping is still included as part of the Layer 2 security design because it supports Dynamic ARP Inspection and demonstrates how access-layer trust boundaries are configured.
+
 ---
 
-### Trusted Interfaces (Uplinks)
+### Trusted Interfaces
 
-Uplink interfaces toward the core switches were configured as trusted:
+Trunk uplinks towards the core switches were configured as trusted.
 
 ```cisco
-interface range gi0/0 - 1
+interface range GigabitEthernet0/0 - 1
  ip dhcp snooping trust
+```
+
+Trusted interfaces are used for infrastructure-facing links.
+
+Endpoint-facing access ports remain untrusted by default.
+
+---
+
+## Dynamic ARP Inspection
+
+Dynamic ARP Inspection was enabled for VLAN 10 and VLAN 20.
+
+```cisco
+ip arp inspection vlan 10,20
+```
+
+DAI validates ARP traffic and helps protect against ARP spoofing and man-in-the-middle attacks.
+
+---
+
+### DAI Trust Boundary
+
+Infrastructure-facing uplinks towards the core were trusted for ARP inspection.
+
+```cisco
+interface range GigabitEthernet0/0 - 1
  ip arp inspection trust
 ```
 
----
-
-### Untrusted Interfaces (Access Ports)
-
-- All access ports remain untrusted by default.
-- ARP packets received on these ports are inspected.
-- Invalid ARP packets are dropped.
+Access ports remain untrusted, meaning ARP traffic from end devices is inspected.
 
 ---
 
 ### Static IP Addressing Consideration
 
-Since static addressing is used, manual bindings were required:
+Because the V1 lab uses static IP addressing, static source bindings were added for endpoint devices.
 
-### Example:
+Example:
+
 ```cisco
-ip source binding 5000.0002.0000 vlan 20 192.168.20.10 interface gi0/2
+ip source binding 0050.7966.680E vlan 10 192.168.10.10 interface GigabitEthernet0/2
 ```
-Without these bindings, ARP traffic is dropped and devices cannot communicate.
+
+These bindings provide the switch with known IP-to-MAC-to-interface information for statically addressed devices.
+
+Without valid bindings, ARP traffic may be dropped and endpoint connectivity can fail.
 
 ---
 
-### Verification
+## Static Binding Summary
 
-DAI operation was verified using:
-
-- ```show ip arp inspection statistics```
-<img width="884" height="412" alt="image" src="https://github.com/user-attachments/assets/923e3512-99a9-4153-b6bb-4b8b1284d79c" />
-
-- ```show ip arp inspection interfaces```
-<img width="885" height="338" alt="image" src="https://github.com/user-attachments/assets/132dbdca-1779-4d1a-a4ec-62fee2c0e7e6" />
-
-- ```show ip source binding```
-<img width="880" height="197" alt="image" src="https://github.com/user-attachments/assets/130d2439-14fe-496b-8a79-5898cab3d71d" />
-
+| Switch | Endpoint | VLAN | IP Address | Interface |
+|---|---|---|---|---|
+| HQ-ASW1 | Admin PC | VLAN 10 | 192.168.10.10 | Gi0/2 |
+| HQ-ASW2 | Admin PC | VLAN 10 | 192.168.10.11 | Gi0/2 |
+| HQ-SSW1 | Server | VLAN 20 | 192.168.20.10 | Gi0/2 |
+| HQ-SSW2 | Server | VLAN 20 | 192.168.20.11 | Gi0/2 |
 
 ---
 
-### Observations
-- ARP traffic from valid devices was successfully permitted
-- ARP traffic was dropped when bindings were missing
-- Connectivity was restored after adding correct bindings
+## Port Security
 
-This confirms that DAI is actively inspecting and protecting Layer 2 traffic.
+Port Security was configured on endpoint-facing access ports.
 
----
-
-### Design Justification
-DAI is implemented only at the access layer, where end devices connect and ARP attacks originate.
-
-Core devices are treated as trusted infrastructure.
-
----
-
-## Advanced Security - Port Security
-
-Port security was implemented to restrict access at the access layer.
-
----
-
-### Configuration
+Example configuration:
 
 ```cisco
-interface gi0/2
+interface GigabitEthernet0/2
  switchport mode access
  switchport access vlan 10
  switchport port-security
- switchport port-security maximum 1
  switchport port-security mac-address sticky
  switchport port-security violation restrict
 ```
 
 ---
 
-## Key Settings
-- Maximum 1 MAC address → prevents multiple devices
-- Sticky MAC → dynamically learns and saves MAC
-- Violation restrict → drops traffic without shutting down port
+### Port Security Behaviour
+
+| Setting | Purpose |
+|---|---|
+| `switchport port-security` | Enables port security on the interface |
+| `mac-address sticky` | Learns the connected device MAC address dynamically |
+| `violation restrict` | Drops unauthorised traffic but keeps the port operational |
+
+In this lab, Port Security is used to restrict endpoint-facing ports to the expected connected device.
+
+Restrict mode was used so that violations are blocked without immediately shutting down the interface.
 
 ---
 
-## Behaviour
-- First connected device is learned automatically
-- MAC address stored in running config
-- Unauthorized devices are blocked
+## End Device IP Addressing
+
+End devices were configured with static IP addresses.
+
+### Admin PCs
+
+| Device | IP Address | Subnet Mask | Default Gateway |
+|---|---|---|---|
+| Admin PC 1 | 192.168.10.10 | 255.255.255.0 | 192.168.10.1 |
+| Admin PC 2 | 192.168.10.11 | 255.255.255.0 | 192.168.10.1 |
 
 ---
 
-### Verification
+### Servers
 
-Port security was verified using:
-
-- ```show port-security interface gi0/2```
-<img width="882" height="353" alt="image" src="https://github.com/user-attachments/assets/579fd378-3e3e-4af7-9bb5-71edc806b312" />
-
-- ```show port-security address```
-<img width="887" height="306" alt="image" src="https://github.com/user-attachments/assets/fcb71b60-a246-48e4-84e4-3bd6e9303d5c" />
+| Device | IP Address | Subnet Mask | Default Gateway |
+|---|---|---|---|
+| Server 1 | 192.168.20.10 | 255.255.255.0 | 192.168.20.1 |
+| Server 2 | 192.168.20.11 | 255.255.255.0 | 192.168.20.1 |
 
 ---
 
-### Observations
-- MAC address successfully learned and secured
-- Unauthorized devices blocked
-- Interface remains operational due to restrict mode
+## Verification Commands
+
+The following commands were used to verify the access layer configuration.
+
+| Command | Purpose |
+|---|---|
+| `show vlan brief` | Confirms VLAN creation and access port assignment |
+| `show interfaces trunk` | Confirms trunk links and allowed VLANs |
+| `show spanning-tree` | Confirms STP operation |
+| `show ip interface brief` | Confirms management SVI status |
+| `show ip arp inspection statistics` | Verifies DAI operation |
+| `show ip arp inspection interfaces` | Confirms trusted and untrusted DAI interfaces |
+| `show ip source binding` | Confirms static IP-to-MAC bindings |
+| `show port-security interface gi0/2` | Verifies port security status |
+| `show port-security address` | Shows secure MAC address entries |
 
 ---
 
-### Design Justification
+## Connectivity Testing
 
-Port security enforces device-level access control at the edge, complementing:
-- DHCP Snooping
-- Dynamic ARP Inspection
-Together, these provide advanced Layer 2 security.
+Connectivity testing was performed from endpoint devices to confirm access-layer functionality.
+
+### Gateway Reachability
+
+Admin and server devices were tested against their default gateways.
+
+```cisco
+ping 192.168.10.1
+ping 192.168.20.1
+```
+
+<img width="884" height="668" alt="Gateway reachability test" src="https://github.com/user-attachments/assets/f5888c34-e802-49e4-9bad-9fcfdffa260d" />
 
 ---
 
+### Inter-VLAN Routing Test
 
-## Summary
+Connectivity between VLAN 10 and VLAN 20 was tested to confirm that access-layer switching and core-layer inter-VLAN routing were working correctly.
 
-The access layer provides:
-- VLAN-based segmentation
-- Secure and stable access port configuration
-- Redundant uplinks to the core
-- Reliable end-device connectivity
-At this stage, the LAN is fully operational, with routing handled by the core layer.
+```cisco
+ping 192.168.20.10
+```
+
+<img width="878" height="239" alt="Inter-VLAN routing test" src="https://github.com/user-attachments/assets/7bc65c49-8915-45de-a271-f9a3b1215ce6" />
+
+---
+
+## Dynamic ARP Inspection Verification
+
+DAI operation was verified using inspection and binding commands.
+
+### ARP Inspection Statistics
+
+```cisco
+show ip arp inspection statistics
+```
+
+<img width="884" height="412" alt="show ip arp inspection statistics output" src="https://github.com/user-attachments/assets/923e3512-99a9-4153-b6bb-4b8b1284d79c" />
+
+---
+
+### ARP Inspection Interfaces
+
+```cisco
+show ip arp inspection interfaces
+```
+
+<img width="885" height="338" alt="show ip arp inspection interfaces output" src="https://github.com/user-attachments/assets/132dbdca-1779-4d1a-a4ec-62fee2c0e7e6" />
+
+---
+
+### Source Binding Verification
+
+```cisco
+show ip source binding
+```
+
+<img width="880" height="197" alt="show ip source binding output" src="https://github.com/user-attachments/assets/130d2439-14fe-496b-8a79-5898cab3d71d" />
+
+---
+
+## Port Security Verification
+
+Port Security was verified on endpoint-facing access ports.
+
+### Interface Port Security
+
+```cisco
+show port-security interface gi0/2
+```
+
+<img width="882" height="353" alt="show port-security interface output" src="https://github.com/user-attachments/assets/579fd378-3e3e-4af7-9bb5-71edc806b312" />
+
+---
+
+### Secure MAC Address Table
+
+```cisco
+show port-security address
+```
+
+<img width="887" height="306" alt="show port-security address output" src="https://github.com/user-attachments/assets/fcb71b60-a246-48e4-84e4-3bd6e9303d5c" />
+
+---
+
+## Troubleshooting Note
+
+### Issue Encountered: SVI Down
+
+During testing, gateway reachability initially failed because an SVI was in a down/down state.
+
+The issue was resolved by enabling the SVI:
+
+```cisco
+interface Vlan10
+ no shutdown
+```
+
+An SVI requires:
+
+- The VLAN to exist
+- The VLAN to be active on the switch
+- At least one active Layer 2 port in that VLAN, or active trunk participation
+- The SVI to be administratively enabled
+
+This reinforced the importance of checking both Layer 2 VLAN state and Layer 3 SVI status during troubleshooting.
+
+---
+
+## Expected Results
+
+At the end of this phase:
+
+- VLAN 10 and VLAN 20 are present on the access switches
+- Access switches are manageable over VLAN 10
+- Access switches use the HSRP virtual gateway for management reachability
+- Trunks to the core switches are operational
+- Trunks only allow VLAN 10 and VLAN 20
+- DTP is disabled on trunk links
+- Admin PCs are assigned to VLAN 10
+- Servers are assigned to VLAN 20
+- Access ports use PortFast and BPDU Guard
+- DHCP Snooping and DAI are enabled for VLAN 10 and VLAN 20
+- Static bindings support statically addressed endpoints
+- Port Security is enabled on endpoint-facing ports
+- End devices can reach their default gateways
+- Inter-VLAN routing works through the HQ core switches
+
+---
+
+## Design Notes
+
+### Why Access Switches Use VLAN 10 for Management
+
+VLAN 10 is used for switch management because it already exists across the HQ access layer and has routed reachability through the HQ core.
+
+This keeps management simple while still allowing SSH access to each switch.
+
+### Why Access Switches Are Dual-Homed
+
+Each access switch connects to both core switches to provide uplink redundancy.
+
+If one uplink or core switch fails, the access switch still has a path back to the network through the remaining core switch.
+
+### Why Access Ports Use PortFast and BPDU Guard
+
+Endpoint-facing ports do not normally participate in Spanning Tree.
+
+PortFast allows hosts to connect quickly, while BPDU Guard protects the topology if a switch is accidentally connected to an access port.
+
+### Why DAI and DHCP Snooping Were Included
+
+DAI and DHCP Snooping were included to demonstrate common Layer 2 security controls.
+
+Even though V1 uses static addressing, these features show how access-layer trust boundaries can be configured and how ARP protection can be applied.
+
+### Why Port Security Was Used
+
+Port Security adds basic device-level control at the access layer.
+
+It helps prevent unexpected devices from being connected to endpoint-facing switch ports.
+
+---
+
+## Platform Note
+
+This lab was built using virtual Cisco images in EVE-NG.
+
+Some default or platform-generated CLI output may vary between devices. The published configurations and documentation focus on the relevant working configuration and design intent.
+
+---
+
+## Outcome
+
+The HQ access layer was successfully configured to provide:
+
+- VLAN-based endpoint connectivity
+- Redundant trunk uplinks to the core
+- In-band SSH management access
+- Secure access port behaviour
+- Layer 2 security controls
+- Successful gateway and inter-VLAN connectivity testing
+
+At this stage, the HQ LAN is operational, with access-layer switching provided by the HQ access switches and inter-VLAN routing handled by the HQ core switches.
+
+---
+
+## Key Learning
+
+This phase reinforced several important access-layer concepts:
+
+- Access switches provide endpoint connectivity but do not need to perform routing
+- Management SVIs allow Layer 2 switches to be managed remotely
+- Trunk links should be manually configured and restricted to required VLANs
+- Access ports should use PortFast and BPDU Guard
+- DHCP Snooping and DAI help protect against Layer 2 attacks
+- Static IP environments require extra care when using DAI
+- Port Security can limit access to expected endpoint devices
+- Gateway reachability testing is a useful first step when validating access-layer connectivity
+
+---
+
+## Related Documentation
+
+- [Previous: 01 - Core Setup](01-core-setup.md)
+- [Next: 03 - Routing with OSPF](03-routing-ospf.md)
+- [V1 Overview](./)
+- [V1 Topology](../../topology/v1/)
+- [Device Configurations](../../configs/)
 
 ---
