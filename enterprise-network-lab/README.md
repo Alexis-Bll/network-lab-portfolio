@@ -199,8 +199,6 @@ Completed areas include:
 - SSH management
 - Connectivity and failover validation
 
-V1 is currently being reviewed and polished to ensure all documentation, links, testing notes, and configuration references are accurate.
-
 ---
 
 ### V2 - In Progress
