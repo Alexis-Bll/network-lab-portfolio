@@ -1,237 +1,518 @@
-# Enterprise Network Topology – V2
+# Enterprise Network Topology - V2
+
+## Overview
+
+This folder contains the topology diagrams for **V2** of the Enterprise Network Lab.
+
+V2 is the enterprise services expansion of the completed V1 network foundation. It keeps the original multi-site enterprise design and adds additional services commonly found in real business environments.
+
+V2 introduces:
+
+- Internet edge connectivity
+- NAT/PAT on the HQ edge router
+- Centralised DHCP services
+- DNS services
+- Active Directory Domain Services
+- Domain-joined clients
+- Group Policy testing
+- Application server integration
+
+V2 is the final planned expansion of this lab.
+
+---
+
+## V2 Status
+
+**Status:** In Progress
+
+The V2 topology has been built to expand the completed V1 network.
+
+Some V2 services have already been implemented and documented, while application server integration, final testing, and configuration change documentation are still being completed.
+
+---
 
 ## Network Diagram
 
-![Topology](v2_ccna_lab.drawio.png)
+![V2 Enterprise Network Topology](v2_ccna_lab.drawio.png)
 
-This version of the lab represents an enhanced enterprise network design, building upon the original V1 implementation by introducing external connectivity and centralised services.
+The diagram above shows the logical design of the V2 enterprise network.
 
-The topology simulates a more realistic production environment where an internal enterprise network connects to both a private WAN (MPLS-style) and the public internet via an edge router.
+Additional topology file:
+
+- [V2 EVE-NG topology screenshot](v2-eve-ng-topology.png)
+
+---
+
+## Relationship to V1
+
+V2 does not replace the V1 topology.
+
+Instead, it builds on the completed V1 network baseline.
+
+| Area | V1 | V2 |
+|---|---|---|
+| HQ and branch topology | Completed | Reused |
+| VLAN segmentation | Completed | Reused |
+| OSPF routing | Completed | Extended with default route advertisement |
+| HSRP redundancy | Completed | Retained |
+| STP and EtherChannel | Completed | Retained |
+| ACL segmentation | Completed | Retained and expanded where required |
+| Layer 2 security | Completed | Adjusted for DHCP and DAI behaviour |
+| Internet access | Not included | Added |
+| NAT/PAT | Not included | Added |
+| DHCP | Static addressing | Centralised DHCP introduced |
+| DNS | Not included | Added |
+| Active Directory | Not included | Added |
+| Application services | Not included | Added |
+
+This shows how an existing enterprise network can be expanded without redesigning the entire topology.
 
 ---
 
 ## What This Topology Demonstrates
 
-- Multi-site enterprise network design (HQ + branch offices)
-- Integration of private WAN and public internet connectivity
-- NAT implementation at the network edge
-- Centralised services hosted within the HQ environment
-- Redundant core architecture using HSRP and dual core switches
-- Dynamic routing across the WAN using OSPF
-- High availability through multiple physical and logical paths
+The V2 topology demonstrates how infrastructure services can be added to a working enterprise network.
+
+It includes:
+
+- Multi-site enterprise network design
+- HQ and branch connectivity
+- Private WAN/MPLS-style transit network
+- Simulated internet connectivity
+- Internet edge design using HQ-R1
+- NAT/PAT for outbound internet access
+- Centralised DHCP from DC1
+- DHCP relay across routed VLANs
+- DNS and Active Directory services
+- Domain-joined clients across multiple VLANs
+- Application server placement
+- Continued use of OSPF, HSRP, VLANs, ACLs, and Layer 2 security from V1
 
 ---
 
 ## Architecture Overview
 
-- **Private WAN**: Simulated MPLS-style network using private IP addressing  
-- **Public Internet**: External network accessed via NAT at the HQ edge  
-- **Routing Protocol**: OSPF Area 0 across all Layer 3 devices  
-- **HQ Design**: Collapsed core using dual Layer 3 switches  
-- **Branch Design**: Single router and access switch per branch  
-- **WAN Edge Devices**: HQ-R1, HQ-R2, BR1, BR2  
-- **Internet Edge**: HQ-R1 providing NAT translation for outbound traffic  
+| Area | Description |
+|---|---|
+| **HQ Site** | Contains dual core switches, access switches, admin clients, server VLAN, DC1, and application server |
+| **Branch 1** | Engineering branch with router, access switch, and Engineering clients |
+| **Branch 2** | Sales branch with router, access switch, and Sales clients |
+| **Private WAN** | Simulated MPLS-style provider network using an ISP router |
+| **Internet Edge** | HQ-R1 provides NAT/PAT and default route access to a simulated internet network |
+| **Server Layer** | DC1 provides DHCP, DNS, Active Directory, and domain services |
+| **Application Layer** | Internal application server used for service reachability and access testing |
 
 ---
 
 ## Network Layers
 
-### Core Layer (HQ)
-- HQ-CSW1  
-- HQ-CSW2  
+### HQ Core Layer
 
-Layer 3 switches provide:
-- Inter-VLAN routing (SVIs)  
-- HSRP gateway redundancy  
-- Core switching and traffic distribution  
+The HQ core layer remains inherited from V1.
 
----
+It uses two Layer 3 switches:
 
-### Access Layer
-- HQ-ASW1 / HQ-ASW2 → Admin VLAN (VLAN 10)  
-- HQ-SSW1 / HQ-SSW2 → Server VLAN (VLAN 20)  
-- BR-SW1 → Engineering VLAN (VLAN 30)  
-- BR-SW2 → Sales VLAN (VLAN 40)  
+- HQ-CSW1
+- HQ-CSW2
 
-Provides:
-- End-device connectivity  
-- VLAN segmentation  
-- Layer 2 security using DHCP Snooping, Dynamic ARP Inspection (DAI), and Port Security  
+The core switches provide:
+
+- Inter-VLAN routing using SVIs
+- HSRP default gateway redundancy
+- OSPF routing towards the WAN edge
+- Core switching and traffic distribution
+- STP root bridge control
+- EtherChannel between both core switches
+
+The HQ core remains the routing and redundancy foundation for the internal VLANs.
 
 ---
 
-### WAN / Edge Layer
+### HQ Access Layer
 
-- HQ-R1  
-- HQ-R2  
-- BR1  
-- BR2  
+The HQ access layer provides endpoint and server connectivity.
 
-Provides:
-- Connectivity between headquarters and branch sites  
-- WAN edge routing across the private MPLS network  
-- OSPF adjacency and route propagation across all sites  
+| Switch | VLAN | Purpose |
+|---|---|---|
+| HQ-ASW1 | VLAN 10 | Admin access switch |
+| HQ-ASW2 | VLAN 10 | Admin access switch |
+| HQ-SSW1 | VLAN 20 | Server access switch |
+| HQ-SSW2 | VLAN 20 | Server access switch |
 
----
+The access layer continues to provide:
 
-### Internet Edge
-
-- HQ-R1 (NAT boundary)
-
-Provides:
-- Connectivity from the internal network to the public internet  
-- NAT (PAT) for translating private IP addresses to a public-facing address  
-- Separation between internal enterprise traffic and external communication  
+- End-device connectivity
+- VLAN segmentation
+- Trunk connectivity to the core
+- Layer 2 security controls
+- Access for servers and domain services
 
 ---
 
-### Server Layer (HQ)
+### Branch Access Layer
 
-- DC1 → Domain Controller (DHCP, DNS, Active Directory)  
-- Application Server  
+The branch design remains simple and consistent with V1.
 
-Provides:
-- Centralised network services  
-- Dynamic IP address allocation (DHCP)  
-- Name resolution (DNS)  
-- Foundation for enterprise identity and application services  
+| Site | VLAN | Subnet | Purpose |
+|---|---|---|---|
+| Branch 1 | VLAN 30 | 192.168.30.0/24 | Engineering branch |
+| Branch 2 | VLAN 40 | 192.168.40.0/24 | Sales branch |
 
----
+Each branch contains:
 
-## Branch Sites
+- One branch router
+- One Layer 2 access switch
+- Local client devices
+- One branch VLAN
 
-Each branch site consists of:
-
-### Branch 1 (Engineering)
-- Network: 192.168.30.0/24  
-- VLAN 30  
-- Devices: BR1 + BR-SW1 + Engineering clients  
+The branch routers act as both the local default gateways and WAN edge devices.
 
 ---
 
-### Branch 2 (Sales)
-- Network: 192.168.40.0/24  
-- VLAN 40  
-- Devices: BR2 + BR-SW2 + Sales clients  
+### Private WAN Layer
+
+The private WAN layer connects HQ and both branch sites.
+
+Devices involved:
+
+- HQ-R1
+- HQ-R2
+- ISP
+- BR1
+- BR2
+
+The WAN layer provides:
+
+- Routed connectivity between HQ and branches
+- OSPF neighbour relationships
+- Route propagation across all sites
+- Redundant HQ WAN paths inherited from V1
+
+The ISP router represents a simulated private WAN/MPLS-style provider network.
 
 ---
 
-### Key Design Choices
+### Internet Edge Layer
 
-- Branch routers act as both default gateways and WAN edge devices  
-- Single VLAN per branch for simplicity and clarity  
-- Routing decisions handled at the branch edge (router)  
-- Minimal Layer 2 complexity at branch sites  
+V2 introduces internet edge connectivity through HQ-R1.
+
+HQ-R1 acts as the NAT boundary between the internal enterprise network and the simulated external network.
+
+The internet edge provides:
+
+- NAT/PAT for outbound traffic
+- Default route towards the simulated internet
+- OSPF default route advertisement into the internal network
+- Separation between internal enterprise networks and external connectivity
+
+In this lab, internet access is simulated in EVE-NG. The external network is used to validate NAT and routing behaviour.
 
 ---
 
-## IP Addressing Strategy
+### Server Layer
+
+The V2 server layer is located in the HQ server VLAN.
+
+Key servers include:
+
+| Server | Role |
+|---|---|
+| DC1 | DHCP, DNS, Active Directory Domain Services |
+| Application Server | Internal application/service testing |
+
+DC1 provides centralised infrastructure services for the lab.
+
+This allows clients across different VLANs and branch sites to receive IP addressing, resolve names, join the domain, authenticate, and access internal resources.
+
+---
+
+## VLAN and IP Addressing Summary
 
 ### LAN Networks
-- VLAN 10 (Admin): 192.168.10.0/24  
-- VLAN 20 (Servers): 192.168.20.0/24  
-- VLAN 30 (Engineering): 192.168.30.0/24  
-- VLAN 40 (Sales): 192.168.40.0/24  
 
----
+| VLAN | Name / Purpose | Subnet | Default Gateway |
+|---|---|---|---|
+| VLAN 10 | Admin | 192.168.10.0/24 | 192.168.10.1 via HSRP |
+| VLAN 20 | Servers | 192.168.20.0/24 | 192.168.20.1 via HSRP |
+| VLAN 30 | Engineering Branch | 192.168.30.0/24 | 192.168.30.1 via BR1 |
+| VLAN 40 | Sales Branch | 192.168.40.0/24 | 192.168.40.1 via BR2 |
+
+### Server Addresses
+
+| Device | VLAN | IP Address | Role |
+|---|---|---|---|
+| DC1 | VLAN 20 | 192.168.20.10 | DHCP, DNS, Active Directory |
+| Application Server | VLAN 20 | To be documented | Internal application services |
 
 ### WAN / Transit Networks
-- 10.0.0.0/8 private address space used for point-to-point links  
-- /30 subnets used for efficient addressing of router-to-router connections  
+
+The private WAN and routed core links use private `10.0.0.0/8` addressing with `/30` point-to-point subnets.
+
+This keeps routed infrastructure links separate from user and server VLANs.
+
+### External / Internet Network
+
+V2 adds a simulated external network for NAT testing.
+
+Example external subnet:
+
+```text
+203.0.113.0/30
+```
+
+HQ-R1 uses this network on its internet-facing interface.
 
 ---
 
-### Design Approach
-- 192.168.x.x ranges are used for LAN and VLAN segmentation  
-- 10.x.x.x range is reserved for WAN/transit networks  
-- This separation improves clarity, scalability, and aligns with real-world enterprise addressing practices  
+## Internet Edge Design
+
+HQ-R1 is used as the internet edge router in V2.
+
+It provides:
+
+- NAT inside interfaces facing the enterprise network
+- NAT outside interface facing the simulated internet
+- PAT overload for internal private addresses
+- Default route towards the simulated internet
+- Default route advertisement into OSPF
+
+### NAT Design
+
+Internal networks remain privately addressed.
+
+The NAT policy translates internal traffic from:
+
+```text
+192.168.0.0/16
+```
+
+This allows Admin, Server, Engineering, and Sales networks to use outbound internet access through HQ-R1.
 
 ---
 
-### Internet Access (V2 Enhancement)
-- Private IP space is maintained internally  
-- NAT is implemented at HQ-R1 for outbound internet access  
-- Internal devices are not directly exposed to the public network  
+## DHCP and DNS Design
+
+V2 introduces centralised DHCP and DNS from DC1.
+
+DC1 is located in the HQ server VLAN:
+
+```text
+192.168.20.10
+```
+
+DC1 provides:
+
+- DHCP scopes for client VLANs
+- DNS services for the `lab.local` domain
+- Active Directory-integrated DNS
+- Name resolution for domain-joined clients
+
+DHCP relay is required because clients exist in different VLANs and branch networks.
+
+Layer 3 gateways use `ip helper-address` to forward DHCP requests to DC1.
+
+---
+
+## Active Directory Design
+
+V2 introduces Active Directory Domain Services.
+
+The lab domain is:
+
+```text
+lab.local
+```
+
+Active Directory provides:
+
+- Centralised authentication
+- Domain-joined clients
+- Organisational Units
+- Users and groups
+- Group-based access control testing
+- Group Policy testing
+
+This makes the lab more realistic by showing how network connectivity supports identity and endpoint management services.
+
+---
+
+## Application Server Design
+
+V2 includes an internal application server as the final service layer.
+
+The application server is intended to demonstrate:
+
+- Server placement in the HQ server environment
+- Client access from different VLANs
+- Internal service reachability
+- Access control considerations
+- End-to-end validation beyond basic ping testing
+
+This section is still being completed as part of the V2 documentation.
 
 ---
 
 ## Redundancy Design
 
+V2 retains the redundancy mechanisms from V1.
+
 ### Core Redundancy
-- Dual core switches (HQ-CSW1 / HQ-CSW2)  
-- HSRP for gateway redundancy  
 
----
-
-### Layer 2 Redundancy
-- EtherChannel (LACP) between core switches  
-- Dual uplinks from access switches  
-- Spanning Tree root placement aligned with HSRP  
-
----
+- Dual HQ core switches
+- HSRP virtual gateways
+- STP root placement aligned with HSRP
+- EtherChannel between core switches
 
 ### WAN Redundancy
-- Dual HQ routers (HQ-R1 / HQ-R2)  
-- Multiple paths to the MPLS WAN  
-- OSPF convergence ensures failover  
+
+- Dual HQ WAN routers
+- Multiple routed paths between HQ core and WAN edge
+- OSPF route recalculation during failures
+
+### Internet Edge Note
+
+The V2 internet edge is intentionally kept simple.
+
+HQ-R1 acts as the NAT boundary for the lab. Internet edge high availability is not implemented in V2 because the focus is on demonstrating NAT, default routing, DHCP, DNS, Active Directory, and application services.
 
 ---
 
-### Routing Redundancy
-- OSPF dynamic routing across all sites  
-- Equal-cost load balancing (ECMP)  
-- Automatic failover on link or device failure  
+## Security and Segmentation
+
+V2 keeps the segmentation model from V1.
+
+Security controls include:
+
+- VLAN segmentation
+- ACL-based Engineering and Sales separation
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- BPDU Guard
+- Trunk VLAN restrictions
+
+V2 also introduces additional security considerations around:
+
+- DHCP trust boundaries
+- DHCP relay behaviour
+- DAI behaviour with dynamically addressed clients
+- Domain-based access control
+- Group Policy enforcement
+- Application access control
 
 ---
 
-## Technologies Implemented
+## Key Design Choices
 
-### Core (Inherited from V1)
-- OSPF  
-- VLANs  
-- Inter-VLAN Routing  
-- HSRP  
-- EtherChannel  
-- 802.1Q Trunking  
-- Rapid PVST+  
-- STP Enhancements (PortFast, BPDU Guard)  
-- ACLs  
-- DHCP Snooping & DAI  
-- Port Security  
+| Design Choice | Reason |
+|---|---|
+| Build on V1 instead of redesigning | Shows realistic incremental network expansion |
+| Use HQ-R1 as NAT edge | Keeps internet breakout centralised at HQ |
+| Use DC1 for DHCP, DNS, and AD DS | Reflects a common small enterprise server design |
+| Keep branch design simple | Maintains focus on enterprise service integration |
+| Use DHCP relay | Allows one central DHCP server to serve multiple VLANs |
+| Keep OSPF in place | Preserves dynamic routing and route propagation |
+| Retain V1 ACLs | Maintains Engineering and Sales segmentation |
+| Add application server last | Validates that the network supports real internal services |
 
 ---
 
-### Additional (V2 Enhancements)
-- NAT (PAT)  
-- Internet edge design  
-- DHCP services (via DC1)  
-- DNS services  
-- Active Directory  
-- Application hosting  
+## Technologies Demonstrated
+
+### Inherited from V1
+
+- VLANs and trunking
+- Inter-VLAN routing using SVIs
+- OSPF dynamic routing
+- HSRP gateway redundancy
+- Rapid PVST+
+- STP root bridge tuning
+- LACP EtherChannel
+- Access Control Lists
+- DHCP Snooping
+- Dynamic ARP Inspection
+- Port Security
+- PortFast and BPDU Guard
+- SSH management
+
+### Added in V2
+
+- Internet edge connectivity
+- NAT/PAT
+- Default static route
+- OSPF default route advertisement
+- DHCP relay
+- Centralised DHCP scopes
+- DNS services
+- Active Directory Domain Services
+- Domain-joined clients
+- Organisational Units
+- Users and groups
+- Group Policy Objects
+- Application server integration
 
 ---
 
-## Key Design Principles
+## V2 Scope
 
-- **Hierarchical network design** (Core + Access layers)  
-- **Separation of internal and external networks**  
-- **Private WAN with controlled internet access**  
-- **Redundancy at every layer**  
-- **Centralised services architecture**  
-- **Scalability through dynamic routing (OSPF)**  
+### Included in V2
+
+- Internet access through HQ-R1
+- NAT/PAT for internal networks
+- Default route advertisement
+- DHCP from DC1
+- DNS from DC1
+- Active Directory domain services
+- Domain joins across VLANs
+- Group Policy testing
+- Application server integration
+- Final V2 testing and validation
+
+### Not Included in V2
+
+- Additional lab versions after V2
+- Firewall replacement
+- Fortinet integration
+- Wireless networking
+- VPN services
+- Cloud integration
+- Monitoring platforms
+- Full production hardening
+
+These topics may be explored separately in the future, but they are outside the scope of this Enterprise Network Lab progression.
 
 ---
 
-## Scope
+## Directory Structure
 
-This version extends the original V1 design by introducing internet connectivity and enterprise services.
+```text
+topology/v2/
+├── README.md
+├── v2_ccna_lab.drawio.png
+└── v2-eve-ng-topology.png
+```
 
-It focuses on how internal enterprise networks integrate with external networks while maintaining security, segmentation, and scalability.
+---
+
+## Related Documentation
+
+- [V2 Lab Documentation](../../labs/v2/)
+- [01 - Internet Edge and NAT](../../labs/v2/01-internet-%26-edge.md)
+- [02 - DHCP Services](../../labs/v2/02-dhcp-services.md)
+- [03 - DNS and Domain Services](../../labs/v2/03-dns-%26-domain-services.md)
+- [04 - Application Server Integration](../../labs/v2/04-application-server-integration.md)
+- [05 - Testing and Validation](../../labs/v2/05-testing-validation.md)
+- [V1 Topology](../v1/)
+- [Topology Overview](../)
+- [Device Configurations](../../configs/)
+- [V2 Configuration Changes](../../configs/changes-v2/)
 
 ---
 
 ## Summary
 
-This topology represents a more complete enterprise network design, demonstrating how internal infrastructure, WAN connectivity, and internet access are integrated in a real-world environment.
+The V2 topology shows how the completed V1 enterprise network foundation is expanded with internet connectivity and centralised services.
 
-It builds upon the V1 foundation and showcases progression into more advanced networking concepts such as NAT, service centralisation, and edge design.
+It demonstrates how routing, switching, redundancy, segmentation, NAT, DHCP, DNS, Active Directory, Group Policy, and application services can work together in a more realistic enterprise environment.
+
+Once complete, V2 will represent the final planned state of the Enterprise Network Lab.
