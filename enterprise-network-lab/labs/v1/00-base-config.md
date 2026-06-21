@@ -148,8 +148,8 @@ For example:
 |---|---|
 | HQ-R1 | `g0/0-2` |
 | HQ-R2 | `g0/0-2` |
-| BR1 | `g0/0-2` |
-| BR2 | `g0/0-2` |
+| BR1 | `g0/0-1` |
+| BR2 | `g0/0-1` |
 | ISP | `g0/0-3` |
 
 This EEM applet is used only as a lab workaround for router interface behaviour in EVE-NG. Switches did not require this workaround.
