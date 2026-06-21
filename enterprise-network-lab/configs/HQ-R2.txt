@@ -14,7 +14,7 @@ username admin privilege 15 secret <your secret>
 !
 ! --- Domain & SSH ---
 no ip domain-lookup
-ip domain name lab.local
+ip domain-name lab.local
 ip ssh version 2
 
 !
