@@ -79,7 +79,7 @@ The purpose of V2 is to show how a working network can be expanded without redes
 - [01 - Internet and Edge Connectivity](v2/01-internet-%26-edge.md)
 - [02 - DHCP Services](v2/02-dhcp-services.md)
 - [03 - DNS and Domain Services](v2/03-dns-%26-domain-services.md)
-- [04 - Application Server Integration](v2/04-application-server-intergration.md)
+- [04 - Application Server Integration](v2/04-application-server-integration.md)
 
 > Note: V2 is currently in progress and will be completed after the V1 documentation has been fully reviewed and polished.
 
