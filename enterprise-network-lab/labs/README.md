@@ -80,8 +80,7 @@ The purpose of V2 is to show how a working network can be expanded without redes
 - [02 - DHCP Services](v2/02-dhcp-services.md)
 - [03 - DNS and Domain Services](v2/03-dns-%26-domain-services.md)
 - [04 - Application Server Integration](v2/04-application-server-integration.md)
-- [05 - Testing and Validation](labs/v2/05-testing-validation.md)
-
+- [05 - Testing and Validation](v2/05-testing-validation.md)
 
 > Note: V2 is currently in progress.
 
