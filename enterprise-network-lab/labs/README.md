@@ -83,7 +83,7 @@ The purpose of V2 is to show how a working network can be expanded without redes
 - [05 - Testing and Validation](labs/v2/05-testing-validation.md)
 
 
-> Note: V2 is currently in progress and will be completed after the V1 documentation has been fully reviewed and polished.
+> Note: V2 is currently in progress.
 
 ---
 
