@@ -1,47 +1,111 @@
-# 05 - Access Control Lists (ACLs)
+# 05 - Access Control Lists
+
+## Overview
+
+This phase configures Access Control Lists for the V1 Enterprise Network Lab.
+
+At this stage, OSPF routing is already operational and all internal networks can reach each other. The purpose of this phase is to introduce Layer 3 traffic filtering so that departmental networks are segmented according to a basic security policy.
+
+The ACLs are used to prevent direct communication between the Engineering and Sales branch networks while still allowing both departments to access required HQ resources.
+
+---
 
 ## Objective
 
-The objective of this phase was to implement controlled traffic filtering between branch networks using extended ACLs.
+The objective of this phase is to enforce controlled traffic filtering between branch departments.
 
-This demonstrates how routers can be used to enforce security policy and control communication between departments while still allowing access to shared HQ resources.
+This includes:
+
+- Creating extended ACLs on the branch routers
+- Blocking Engineering-to-Sales traffic
+- Blocking Sales-to-Engineering traffic
+- Allowing both departments to access HQ Admin and Server VLANs
+- Applying ACLs close to the source of traffic
+- Verifying ACL behaviour using ping tests and ACL hit counters
+
+---
+
+## Topology Reference
+
+The screenshot below shows the V1 EVE-NG topology.
+
+![V1 EVE-NG Topology](../../topology/v1/v1-eve-ng-topology.png)
+
+The ACLs are applied on the branch routers:
+
+| Router | Branch | Local Network | ACL Purpose |
+|---|---|---|---|
+| BR1 | Engineering | 192.168.30.0/24 | Blocks Engineering traffic to Sales |
+| BR2 | Sales | 192.168.40.0/24 | Blocks Sales traffic to Engineering |
 
 ---
 
 ## Security Policy
 
-A simple segmentation policy was implemented:
+The required traffic policy is:
 
-- Engineering users must not be able to communicate directly with Sales
-- Sales users must not be able to communicate directly with Engineering
-- Both branch networks must still be able to access HQ services and VLANs
-
-### Networks
-
-- Engineering: 192.168.30.0/24
-- Sales: 192.168.40.0/24
-- HQ Admin: 192.168.10.0/24
-- HQ Servers: 192.168.20.0/24
+| Source | Destination | Result | Reason |
+|---|---|---|---|
+| Engineering | Sales | Deny | Departments should not communicate directly |
+| Sales | Engineering | Deny | Departments should not communicate directly |
+| Engineering | HQ Admin / Servers | Permit | Engineering still requires access to HQ resources |
+| Sales | HQ Admin / Servers | Permit | Sales still requires access to HQ resources |
+| HQ networks | Branch networks | Permit | HQ management and services remain reachable |
 
 ---
 
-## Design Approach
+## Network Summary
 
-Extended ACLs were chosen because they allow filtering based on both source and destination addresses.
+| Network | Purpose |
+|---|---|
+| 192.168.10.0/24 | HQ Admin VLAN |
+| 192.168.20.0/24 | HQ Server VLAN |
+| 192.168.30.0/24 | Engineering branch LAN |
+| 192.168.40.0/24 | Sales branch LAN |
 
-The ACLs were placed close to the source of the traffic, which is best practice for extended ACL deployment.
-
-This prevents unwanted traffic from crossing the WAN unnecessarily.
-
-ACLs were implemented symmetrically on both branch routers to ensure bidirectional traffic restrictions between the two networks.
+The ACLs only block traffic between the Engineering and Sales networks. All other required internal traffic remains permitted.
 
 ---
 
-## ACL Configuration
+## ACL Design Approach
 
-### BR1 - Block Engineering to Sales
+Extended ACLs were used because they can match both source and destination IP addresses.
 
-This ACL prevents traffic originating from the Engineering network from reaching the Sales network, while still allowing all other traffic.
+This allows the lab to block only specific traffic flows instead of blocking an entire source network from reaching the rest of the enterprise.
+
+The ACLs are placed inbound on the branch LAN interfaces.
+
+This follows the common best-practice approach for extended ACLs:
+
+```text
+Place extended ACLs as close to the source as possible.
+```
+
+Applying the ACL inbound on the branch LAN interface means unwanted traffic is dropped before it crosses the WAN.
+
+---
+
+## ACL Placement
+
+| Router | Interface | Direction | Reason |
+|---|---|---|---|
+| BR1 | Gi0/0 | Inbound | Filters Engineering traffic as it enters BR1 |
+| BR2 | Gi0/0 | Inbound | Filters Sales traffic as it enters BR2 |
+
+In this topology, `Gi0/0` is the branch LAN-facing interface on both branch routers.
+
+| Router | LAN Interface | LAN IP |
+|---|---|---|
+| BR1 | Gi0/0 | 192.168.30.1/24 |
+| BR2 | Gi0/0 | 192.168.40.1/24 |
+
+---
+
+## BR1 ACL - Block Engineering to Sales
+
+BR1 is the Engineering branch router.
+
+The ACL below blocks traffic from the Engineering subnet to the Sales subnet.
 
 ```cisco
 ip access-list extended BLOCK_ENG_TO_SALES
@@ -49,19 +113,22 @@ ip access-list extended BLOCK_ENG_TO_SALES
  permit ip any any
 ```
 
----
-
-Applied inbound on the LAN-facing interface:
+The ACL is applied inbound on the Engineering LAN interface:
 
 ```cisco
-interface gi0/0
+interface GigabitEthernet0/0
  ip access-group BLOCK_ENG_TO_SALES in
 ```
+
+This prevents Engineering users from sending traffic directly to the Sales branch network.
+
 ---
 
-### Block sales to Engineering 
+## BR2 ACL - Block Sales to Engineering
 
-This ACL prevents traffic originating from the Sales network from reaching the Engineering network, ensuring full bidirectional isolation.
+BR2 is the Sales branch router.
+
+The ACL below blocks traffic from the Sales subnet to the Engineering subnet.
 
 ```cisco
 ip access-list extended BLOCK_SALES_TO_ENG
@@ -69,120 +136,298 @@ ip access-list extended BLOCK_SALES_TO_ENG
  permit ip any any
 ```
 
----
-
-Applied inbound on the LAN-facing interface:
+The ACL is applied inbound on the Sales LAN interface:
 
 ```cisco
-interface gi0/0
+interface GigabitEthernet0/0
  ip access-group BLOCK_SALES_TO_ENG in
 ```
 
----
-
-## Why Inbound on the LAN Interface?
-
-The ACLs were applied inbound on the branch LAN interfaces because:
-- traffic is filtered as soon as it enters the router
-- unnecessary traffic is stopped before it crosses the WAN
-- this follows the best practice of placing extended ACLs close to the source
-This ensures that only valid traffic is forwarded into the enterprise network, improving both performance and security.
+This prevents Sales users from sending traffic directly to the Engineering branch network.
 
 ---
 
-## Verification
+## Why `permit ip any any` Is Required
 
-The following tests were performed:
+Cisco ACLs include an implicit deny at the end.
 
-### Expected to Fail
+This means that if only the deny statement was configured, all other traffic would also be blocked.
 
-#### From Engineering:
+The explicit permit statement allows all other traffic after the blocked inter-branch traffic has been denied.
 
 ```cisco
-ping 192.168.40.10
+permit ip any any
 ```
 
-<img width="875" height="325" alt="image" src="https://github.com/user-attachments/assets/1bd0f577-e52f-439f-8b53-46550be7a5a0" />
+This ensures that:
 
----
-
-#### From Sales:
-
-```cisco
-ping 192.168.30.10
-```
-
-<img width="882" height="335" alt="image" src="https://github.com/user-attachments/assets/16a822fa-12d3-4eee-b9d0-b6d79f0c3d8a" />
-
----
-
-
-### Expected to Succeed
-
-#### From Engineering:
-
-```cisco
-ping 192.168.10.10
-ping 192.168.20.10
-```
-
-<img width="884" height="394" alt="image" src="https://github.com/user-attachments/assets/9ff6b704-f5e8-489f-8c99-6356f68c44ab" />
-
----
-
-#### From Sales:
-
-```cisco
-ping 192.168.10.10
-ping 192.168.20.10
-```
-
-<img width="878" height="443" alt="image" src="https://github.com/user-attachments/assets/2a6f11dc-a889-417a-9571-d53c750c8413" />
+- Engineering cannot reach Sales directly
+- Sales cannot reach Engineering directly
+- Engineering can still reach HQ resources
+- Sales can still reach HQ resources
+- General routed connectivity remains functional
 
 ---
 
 ## Verification Commands
 
-- ```show access-lists```
-<img width="885" height="358" alt="image" src="https://github.com/user-attachments/assets/4bfd9ccf-2fce-4074-992f-8df9634c2ff2" />
+The following commands were used to verify the ACL configuration.
 
-- ```show ip interface gi0/0```
-<img width="888" height="237" alt="image" src="https://github.com/user-attachments/assets/3ce49e08-b2ee-440a-8aa5-efe53e12172b" />
-
----
-
-### These commands confirm:
-
-- ACL entries are present
-- hit counts increase when traffic matches the rules
-- the ACL is correctly applied to the interface
+| Command | Purpose |
+|---|---|
+| `show access-lists` | Confirms ACL entries and hit counters |
+| `show ip interface gi0/0` | Confirms the ACL is applied inbound on the LAN interface |
+| `show running-config section access-list` | Reviews ACL configuration |
+| `show running-config interface gi0/0` | Reviews interface ACL placement |
 
 ---
 
-## Observations
+## Verification Evidence
 
-- Inter-branch communication was successfully blocked
-- Branch access to HQ resources remained functional
-- ACL hit counters confirmed that the deny statements were matching traffic as expected
-- The use of `permit ip any any` ensures that only the specified traffic is denied, while all other communication remains unaffected.
+### Access List Verification
 
-This demonstrates effective traffic segmentation using Layer 3 policy enforcement.
+`show access-lists` was used to confirm that the ACLs were configured and that hit counters increased when matching traffic was tested.
 
----
-
-## Key Learning Points
-
-- Standard ACLs filter only by source address, while extended ACLs filter by both source and destination
-- Extended ACLs should generally be placed as close to the source as possible
-- ACLs can be used to enforce simple departmental security boundaries
-- Verification using hit counters is important to confirm that ACLs are working as intended
+<img width="885" height="358" alt="show access-lists output" src="https://github.com/user-attachments/assets/4bfd9ccf-2fce-4074-992f-8df9634c2ff2" />
 
 ---
 
-## Summary
+### Interface ACL Verification
 
-Extended ACLs were successfully implemented on the branch routers to prevent direct communication between Engineering and Sales.
-This improved the security posture of the network while maintaining required access to HQ services.
-The lab now demonstrates not only switching and routing, but also basic policy enforcement through traffic filtering.
+`show ip interface gi0/0` was used to confirm that the ACL was applied inbound on the branch LAN interface.
+
+<img width="888" height="237" alt="show ip interface gi0/0 output" src="https://github.com/user-attachments/assets/3ce49e08-b2ee-440a-8aa5-efe53e12172b" />
+
+---
+
+## Connectivity Testing
+
+Connectivity testing was performed to confirm that the ACLs matched the intended security policy.
+
+---
+
+## Expected to Fail
+
+The following tests should fail because direct Engineering-to-Sales and Sales-to-Engineering traffic is blocked.
+
+### Engineering to Sales
+
+From the Engineering PC:
+
+```cisco
+ping 192.168.40.10
+```
+
+Expected result:
+
+```text
+Fail
+```
+
+<img width="875" height="325" alt="Engineering to Sales blocked ping test" src="https://github.com/user-attachments/assets/1bd0f577-e52f-439f-8b53-46550be7a5a0" />
+
+---
+
+### Sales to Engineering
+
+From the Sales PC:
+
+```cisco
+ping 192.168.30.10
+```
+
+Expected result:
+
+```text
+Fail
+```
+
+<img width="882" height="335" alt="Sales to Engineering blocked ping test" src="https://github.com/user-attachments/assets/16a822fa-12d3-4eee-b9d0-b6d79f0c3d8a" />
+
+---
+
+## Expected to Succeed
+
+The following tests should succeed because both branch departments are still allowed to access HQ resources.
+
+### Engineering to HQ
+
+From the Engineering PC:
+
+```cisco
+ping 192.168.10.10
+ping 192.168.20.10
+```
+
+Expected result:
+
+```text
+Success
+```
+
+<img width="884" height="394" alt="Engineering to HQ successful ping test" src="https://github.com/user-attachments/assets/9ff6b704-f5e8-489f-8c99-6356f68c44ab" />
+
+---
+
+### Sales to HQ
+
+From the Sales PC:
+
+```cisco
+ping 192.168.10.10
+ping 192.168.20.10
+```
+
+Expected result:
+
+```text
+Success
+```
+
+<img width="878" height="443" alt="Sales to HQ successful ping test" src="https://github.com/user-attachments/assets/2a6f11dc-a889-417a-9571-d53c750c8413" />
+
+---
+
+## Test Summary
+
+| Test | Expected Result | Outcome |
+|---|---|---|
+| Engineering to Sales | Fail | Passed |
+| Sales to Engineering | Fail | Passed |
+| Engineering to HQ Admin | Success | Passed |
+| Engineering to HQ Servers | Success | Passed |
+| Sales to HQ Admin | Success | Passed |
+| Sales to HQ Servers | Success | Passed |
+
+The results confirm that the ACLs block only the intended inter-branch traffic while allowing required access to HQ resources.
+
+---
+
+## Troubleshooting Notes
+
+### ACL Direction
+
+The ACLs were applied inbound on the branch LAN interfaces.
+
+If the ACLs were applied in the wrong direction, the policy may not match traffic as intended.
+
+For this lab:
+
+- Engineering traffic enters BR1 on `Gi0/0`
+- Sales traffic enters BR2 on `Gi0/0`
+
+Therefore, inbound filtering on `Gi0/0` is the correct placement.
+
+---
+
+### ACL Order
+
+ACL entries are processed from top to bottom.
+
+The deny statement must appear before the permit statement.
+
+Correct order:
+
+```cisco
+deny ip 192.168.30.0 0.0.0.255 192.168.40.0 0.0.0.255
+permit ip any any
+```
+
+If `permit ip any any` was placed first, the deny statement would never be matched.
+
+---
+
+### Implicit Deny
+
+Every ACL has an implicit deny at the end.
+
+If the final `permit ip any any` statement was removed, traffic not matching the deny statement would still be dropped.
+
+This would break required connectivity to HQ resources.
+
+---
+
+## Expected Results
+
+At the end of this phase:
+
+- BR1 blocks Engineering-to-Sales traffic
+- BR2 blocks Sales-to-Engineering traffic
+- Engineering can still access HQ VLANs
+- Sales can still access HQ VLANs
+- ACLs are applied inbound on branch LAN interfaces
+- ACL hit counters increase during blocked traffic tests
+- OSPF routing remains operational
+- Required enterprise connectivity is preserved
+
+---
+
+## Design Notes
+
+### Why Extended ACLs Were Used
+
+Extended ACLs were used because the policy needed to match both source and destination networks.
+
+A standard ACL would only match the source address, which would not be precise enough for this requirement.
+
+### Why ACLs Were Applied Close to the Source
+
+Applying the ACLs close to the source prevents unwanted traffic from crossing the WAN.
+
+This is more efficient and follows common extended ACL placement guidance.
+
+### Why ACLs Were Applied on Branch Routers
+
+The branch routers are the Layer 3 boundary for the Engineering and Sales LANs.
+
+Because the branch switches operate at Layer 2, the routers are the correct place to enforce Layer 3 traffic filtering.
+
+### Why HQ Access Was Still Allowed
+
+The goal was not to isolate the branches completely.
+
+The goal was to block direct communication between Engineering and Sales while still allowing both departments to access shared HQ resources.
+
+---
+
+## Platform Note
+
+This lab was built using virtual Cisco images in EVE-NG.
+
+Some default or platform-generated CLI output may vary between devices. The published configurations and documentation focus on the relevant working configuration and design intent.
+
+---
+
+## Outcome
+
+Extended ACLs were successfully implemented on the branch routers.
+
+The ACLs enforced the required segmentation policy by blocking direct traffic between Engineering and Sales while preserving access to HQ networks.
+
+At this stage, the V1 network includes both dynamic routing and basic Layer 3 security policy enforcement.
+
+---
+
+## Key Learning
+
+This phase reinforced several important ACL concepts:
+
+- Extended ACLs can match both source and destination IP addresses
+- Extended ACLs should usually be placed close to the source
+- ACL direction matters
+- ACL rule order matters
+- Cisco ACLs include an implicit deny at the end
+- Hit counters are useful for confirming that traffic matches the intended ACL entries
+- ACLs can enforce simple departmental segmentation without breaking required business access
+
+---
+
+## Related Documentation
+
+- [Previous: 04 - Branch Switches](04-branch-switches.md)
+- [Next: 06 - Testing and Validation](06-testing.md)
+- [V1 Overview](./)
+- [V1 Topology](../../topology/v1/)
+- [Device Configurations](../../configs/)
 
 ---
