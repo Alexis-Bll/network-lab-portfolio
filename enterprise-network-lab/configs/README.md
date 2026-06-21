@@ -130,8 +130,6 @@ V2 introduces additional functionality such as:
 - Application server integration
 - Minor routing updates to support external connectivity
 
-The V2 configuration section is still in progress and will be completed after the V1 documentation and configuration references have been fully reviewed.
-
 ---
 
 ## Related Documentation
