@@ -114,7 +114,7 @@ It introduces:
 - Group Policy testing
 - Application server integration
 
-V2 is currently partially complete and will be finished after V1 has been fully reviewed, polished, and confirmed operational.
+V2 is currently partially complete and will be finished as the final enterprise services expansion of the lab.
 
 Key V2 links:
 
